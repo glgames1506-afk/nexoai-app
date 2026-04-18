@@ -1021,30 +1021,200 @@
       });
     </script>
 
-    <!-- NEXO AI SUPABASE ENGINE v2.0 LIVE -->
-    <script id="nexo-engine-v2">
+    
+    <!-- NEXO AI SUPABASE ENGINE v3.0 (SaaS MultiTenant) -->
+    <script id="nexo-engine-v3">
     const SUPABASE_URL = "https://tqqtjrunrimabitmersr.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxcXRqcnVucmltYWJpdG1lcnNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NjYwMjgsImV4cCI6MjA5MjA0MjAyOH0.CEJRX8rYb_5S5pN_M2KemyBRxdSPd9jf8Y-Xm3vlTDc";
-    async function sbGet(t,q){const r=await fetch(SUPABASE_URL+'/rest/v1/'+t+'?'+(q||''),{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY}});return r.json();}
-    async function sbPost(t,b){const r=await fetch(SUPABASE_URL+'/rest/v1/'+t,{method:'POST',headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(b)});return r.json();}
-    async function sbPatch(t,id,b){await fetch(SUPABASE_URL+'/rest/v1/'+t+'?id=eq.'+id,{method:'PATCH',headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'},body:JSON.stringify(b)});}
+    
+    // Auth Session Info
+    let nexoSession = null;
+    let nexoUser = null;
+
+    // Check Auth Barrier
+    async function sbAuthCheck() {
+      const localSess = localStorage.getItem('sb-tqqtjrunrimabitmersr-auth-token');
+      if(!localSess) {
+        window.location.replace('login.html');
+        return false;
+      }
+      try {
+        nexoSession = JSON.parse(localSess);
+        nexoUser = nexoSession.user;
+        
+        // Atualiza a interface com o nome da empresa
+        const compName = nexoUser.user_metadata?.company_name || 'Nexo AI';
+        const brandEls = document.querySelectorAll('.sidebar-brand-name');
+        if(brandEls.length) brandEls.forEach(el => el.textContent = compName);
+        
+        return true;
+      } catch(err) {
+        window.location.replace('login.html');
+        return false;
+      }
+    }
+
+    function sbLogout() {
+      localStorage.removeItem('sb-tqqtjrunrimabitmersr-auth-token');
+      window.location.replace('login.html');
+    }
+
+    // Adiciona o AccessToken no cabecalho
+    function sbHeaders() {
+      return {
+        apikey: SUPABASE_KEY,
+        Authorization: 'Bearer ' + nexoSession.access_token,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      };
+    }
+
+    async function sbGet(t, q) {
+      const r = await fetch(SUPABASE_URL+'/rest/v1/'+t+'?'+(q||''), { headers: sbHeaders() });
+      if(r.status === 401) sbLogout();
+      return r.json();
+    }
+    async function sbPost(t, b) {
+      // Forçamos a injecao do user_id nas tabelas para garantir RLS
+      b.user_id = nexoUser.id; 
+      const r = await fetch(SUPABASE_URL+'/rest/v1/'+t, { method:'POST', headers: sbHeaders(), body: JSON.stringify(b) });
+      if(r.status === 401) sbLogout();
+      return r.json();
+    }
+    async function sbPatch(t, id, b) {
+      const r = await fetch(SUPABASE_URL+'/rest/v1/'+t+'?id=eq.'+id, { method:'PATCH', headers: sbHeaders(), body: JSON.stringify(b) });
+      if(r.status === 401) sbLogout();
+    }
+
     const SL={novo:'badge-novo',atendimento:'badge-atendimento',convertido:'badge-convertido',frio:'badge-frio'};
     const SN={novo:'Novo',atendimento:'Em Atendimento',convertido:'Convertido',frio:'Sem Resposta'};
     function badge(s){return '<span class="'+(SL[s]||'badge-novo')+' text-xs font-bold px-2.5 py-1 rounded-full">'+(SN[s]||s)+'</span>';}
-    async function loadKPIs(){try{const l=await sbGet('leads','select=status');const t=l.length,cv=l.filter(x=>x.status==='convertido').length,rp=l.filter(x=>x.status!=='frio').length;const eL=document.getElementById('kpi-leads-hoje'),eT=document.getElementById('kpi-taxa-resposta'),eC=document.getElementById('kpi-conversoes');if(eL)eL.textContent=t;if(eT)eT.textContent=t>0?Math.round(rp/t*100):0;if(eC)eC.textContent=cv;document.querySelectorAll('#funnel-count-novo').forEach(e=>e.textContent=l.filter(x=>x.status==='novo').length);document.querySelectorAll('#funnel-count-atendimento').forEach(e=>e.textContent=l.filter(x=>x.status==='atendimento').length);document.querySelectorAll('#funnel-count-convertido').forEach(e=>e.textContent=cv);document.querySelectorAll('#funnel-count-frio').forEach(e=>e.textContent=l.filter(x=>x.status==='frio').length);}catch(e){console.warn('KPI offline',e.message);}}
-    async function loadLeadsTable(){const tb=document.getElementById('leads-tbody');if(!tb)return;tb.innerHTML='<tr><td colspan=6 class="py-8 text-center text-slate-500 text-sm">Sincronizando com banco de dados...</td></tr>';try{const leads=await sbGet('leads','select=*&order=created_at.desc');if(!leads||!leads.length){tb.innerHTML='<tr><td colspan=6 class="py-8 text-center text-slate-500 text-sm">Nenhum lead ainda. Adicione o primeiro!</td></tr>';return;}tb.innerHTML=leads.map(l=>{const act=l.status==='convertido'?'<span class="text-emerald-400 font-bold text-xs">Fechado</span>':l.status==='frio'?'<button onclick="triggerReactivation(\''+l.id+'\',\''+l.name+'\')" class="text-amber-400 font-bold text-xs cursor-pointer hover:text-amber-300">Reativar</button>':'<button onclick="openLeadChat(\''+l.id+'\',\''+l.name+'\',\''+escape(l.phone||'')+'\')" class="text-cyan-400 font-bold text-xs cursor-pointer hover:text-cyan-300">Ver Chat</button>';return '<tr class="hover:bg-white/[0.02] transition-colors"><td class="py-4 px-4 text-white font-bold">'+l.name+'</td><td class="py-4 px-4 text-slate-400">'+(l.phone||'—')+'</td><td class="py-4 px-4">'+badge(l.status)+'</td><td class="py-4 px-4 text-slate-400">'+(l.source||'—')+'</td><td class="py-4 px-4 text-slate-500 text-xs max-w-xs truncate">'+(l.last_message||'—')+'</td><td class="py-4 px-4 text-right">'+act+'</td></tr>';}).join('');}catch(e){tb.innerHTML='<tr><td colspan=6 class="py-8 text-center text-red-400 text-sm">Erro: '+e.message+'</td></tr>';}}
-    async function loadContacts(){const cl=document.getElementById('chat-contact-list');if(!cl)return;try{const leads=await sbGet('leads','select=*&order=updated_at.desc');const colors=['from-cyan-400 to-violet-500','from-violet-400 to-pink-500','from-emerald-400 to-cyan-500','from-amber-400 to-orange-500'];const items=leads.map((l,i)=>{const ini=l.name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();const col=colors[i%colors.length];const sub=l.status==='convertido'?'<div class="text-xs text-emerald-400">Convertido</div>':l.status==='frio'?'<div class="text-xs text-red-400">Sem resposta</div>':'<div class="text-xs text-cyan-400 truncate">IA atendendo...</div>';return '<div onclick="loadChat(\''+l.id+'\',\''+l.name+'\',\''+escape(l.phone||'')+'\'\')" class="p-4 border-b border-white/5 cursor-pointer flex items-center gap-3 hover:bg-white/[0.02] transition-colors"><div class="w-10 h-10 rounded-full bg-gradient-to-br '+col+' flex items-center justify-center text-white text-xs font-bold flex-shrink-0">'+ini+'</div><div class="flex-1 min-w-0"><div class="text-sm font-bold text-white">'+l.name+'</div>'+sub+'</div></div>';});cl.innerHTML=items.join('');if(leads.length>0)loadChat(leads[0].id,leads[0].name,leads[0].phone||'');}catch(e){console.warn('Contacts erro:',e);}}
+
+    async function loadKPIs(){
+      try{
+        const l=await sbGet('leads','select=status');
+        const t=l.length,cv=l.filter(x=>x.status==='convertido').length,rp=l.filter(x=>x.status!=='frio').length;
+        const eL=document.getElementById('kpi-leads-hoje'),eT=document.getElementById('kpi-taxa-resposta'),eC=document.getElementById('kpi-conversoes');
+        if(eL)eL.textContent=t;if(eT)eT.textContent=t>0?Math.round(rp/t*100):0;if(eC)eC.textContent=cv;
+        document.querySelectorAll('#funnel-count-novo').forEach(e=>e.textContent=l.filter(x=>x.status==='novo').length);
+        document.querySelectorAll('#funnel-count-atendimento').forEach(e=>e.textContent=l.filter(x=>x.status==='atendimento').length);
+        document.querySelectorAll('#funnel-count-convertido').forEach(e=>e.textContent=cv);
+        document.querySelectorAll('#funnel-count-frio').forEach(e=>e.textContent=l.filter(x=>x.status==='frio').length);
+      }catch(e){console.warn('KPI offline',e.message);}
+    }
+
+    async function loadLeadsTable(){
+      const tb=document.getElementById('leads-tbody');if(!tb)return;
+      tb.innerHTML='<tr><td colspan=6 class="py-8 text-center text-slate-500 text-sm">Sincronizando Leads via Vórtice...</td></tr>';
+      try{
+        const leads=await sbGet('leads','select=*&order=created_at.desc');
+        if(!leads||!leads.length){tb.innerHTML='<tr><td colspan=6 class="py-12 text-center"><div class="text-cyan-400 mb-2">✨ Seu banco de dados está vazio.</div><div class="text-slate-500 text-sm">Adicione seu primeiro lead clicando no botão no topo direito.</div></td></tr>';return;}
+        tb.innerHTML=leads.map(l=>{
+            const act=l.status==='convertido'?'<span class="text-emerald-400 font-bold text-xs">Fechado</span>'
+            :l.status==='frio'?'<button onclick="triggerReactivation(\''+l.id+'\',\''+l.name+'\')" class="text-amber-400 font-bold text-xs cursor-pointer hover:text-amber-300">Reativar</button>'
+            :'<button onclick="openLeadChat(\''+l.id+'\',\''+l.name+'\',\''+escape(l.phone||'')+'\')" class="text-cyan-400 font-bold text-xs cursor-pointer hover:text-cyan-300">Ver Chat</button>';
+            return '<tr class="hover:bg-white/[0.02] transition-colors"><td class="py-4 px-4 text-white font-bold">'+l.name+'</td><td class="py-4 px-4 text-slate-400">'+(l.phone||'—')+'</td><td class="py-4 px-4">'+badge(l.status)+'</td><td class="py-4 px-4 text-slate-400">'+(l.source||'—')+'</td><td class="py-4 px-4 text-slate-500 text-xs max-w-xs truncate">'+(l.last_message||'—')+'</td><td class="py-4 px-4 text-right">'+act+'</td></tr>';
+        }).join('');
+      }catch(e){tb.innerHTML='<tr><td colspan=6 class="py-8 text-center text-red-400 text-sm">Sua sessão expirou ou não há conexão.</td></tr>';}
+    }
+
+    async function loadContacts(){
+      const cl=document.getElementById('chat-contact-list');if(!cl)return;
+      try{
+        const leads=await sbGet('leads','select=*&order=updated_at.desc');
+        const colors=['from-cyan-400 to-violet-500','from-violet-400 to-pink-500','from-emerald-400 to-cyan-500','from-amber-400 to-orange-500'];
+        cl.innerHTML=leads.map((l,i)=>{
+            const ini=l.name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();const col=colors[i%colors.length];
+            const sub=l.status==='convertido'?'<div class="text-xs text-emerald-400">Convertido</div>':l.status==='frio'?'<div class="text-xs text-red-400">Sem resposta</div>':'<div class="text-xs text-cyan-400 truncate">IA atendendo...</div>';
+            return '<div onclick="loadChat(\''+l.id+'\',\''+l.name+'\',\''+escape(l.phone||'')+'\')" class="p-4 border-b border-white/5 cursor-pointer flex items-center gap-3 hover:bg-white/[0.02] transition-colors"><div class="w-10 h-10 rounded-full bg-gradient-to-br '+col+' flex items-center justify-center text-white text-xs font-bold flex-shrink-0">'+ini+'</div><div class="flex-1 min-w-0"><div class="text-sm font-bold text-white">'+l.name+'</div>'+sub+'</div></div>';
+        }).join('');
+        if(leads.length>0) loadChat(leads[0].id,leads[0].name,leads[0].phone||'');
+      }catch(e){console.warn('Contacts erro:',e);}
+    }
+
     let currentLeadId=null;
-    async function loadChat(leadId,name,phone){currentLeadId=leadId;const cm=document.getElementById('chat-messages'),ch=document.getElementById('chat-header-name'),cs=document.getElementById('chat-header-sub');if(ch)ch.textContent=name;if(cs)cs.textContent=(unescape(phone)||'Lead')+' - IA Ativa';if(!cm)return;cm.innerHTML='<div class="text-center text-slate-500 text-sm py-8">Carregando mensagens...</div>';try{const msgs=await sbGet('chats','lead_id=eq.'+leadId+'&order=created_at.asc');if(!msgs||!msgs.length){cm.innerHTML='<div class="text-center py-8"><p class="text-slate-500 text-sm mb-4">Sem mensagens ainda.</p><button onclick="sendFirstIA(\''+leadId+'\')" class="bg-cyan-400 text-slate-900 font-bold px-4 py-2 rounded-xl text-sm hover:bg-cyan-300 transition-colors">IA Iniciar Conversa</button></div>';return;}cm.innerHTML=msgs.map(m=>{const t=new Date(m.created_at).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});if(m.sender==='ia'||m.sender==='bot')return '<div class="flex flex-col items-end mb-4"><div class="bg-cyan-900/20 p-3 rounded-xl rounded-tr-none w-3/4 ml-auto text-sm border border-cyan-400/30 text-slate-200"><div class="text-[10px] text-cyan-400 font-bold mb-1">Nexo IA</div>'+m.message+'</div><div class="text-[10px] text-slate-600 mt-1">'+t+'</div></div>';return '<div class="flex flex-col items-start mb-4"><div class="bg-slate-800 p-3 rounded-xl rounded-tl-none w-3/4 text-sm text-slate-200">'+m.message+'</div><div class="text-[10px] text-slate-600 mt-1">'+t+'</div></div>';}).join('');cm.scrollTop=cm.scrollHeight;}catch(e){cm.innerHTML='<div class="text-center text-red-400 py-8 text-sm">Erro: '+e.message+'</div>';}}
-    async function sendMsg(){if(!currentLeadId)return;const inp=document.getElementById('chat-input');if(!inp||!inp.value.trim())return;const msg=inp.value.trim();inp.value='';await sbPost('chats',{lead_id:currentLeadId,sender:'humano',message:msg});await sbPatch('leads',currentLeadId,{last_message:msg,updated_at:new Date().toISOString()});await loadChat(currentLeadId,document.getElementById('chat-header-name')?.textContent||'','');}
-    async function sendFirstIA(leadId){await sbPost('chats',{lead_id:leadId,sender:'ia',message:'Ola! Percebi que voce demonstrou interesse anteriormente. Ainda posso te ajudar? Temos novidades que podem te interessar.'});await loadChat(leadId,document.getElementById('chat-header-name')?.textContent||'','');}
-    async function addLead(){const name=prompt('Nome do lead:');if(!name)return;const phone=prompt('WhatsApp (com DDD):');if(!phone)return;const source=prompt('Origem (Meta Ads, Google, Instagram...):')||'Manual';await sbPost('leads',{name:name.trim(),phone:phone.trim(),status:'novo',source:source,last_message:'Cadastrado manualmente'});await loadLeadsTable();await loadKPIs();}
-    async function openLeadChat(id,name,phone){document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));document.querySelectorAll('.view-section').forEach(v=>{v.classList.add('hidden');v.classList.remove('block');});const wv=document.getElementById('view-whatsapp');if(wv){wv.classList.remove('hidden');wv.classList.add('block');}document.querySelectorAll('.sidebar-item').forEach(i=>{if(i.innerText.includes('WhatsApp'))i.classList.add('active');});await loadContacts();await loadChat(id,name,unescape(phone||''));if(window.lucide)lucide.createIcons();}
-    async function triggerReactivation(id,name){if(!confirm('Disparar reativacao IA para '+name+'?'))return;await sbPatch('leads',id,{status:'atendimento',last_message:'Reativacao IA disparada',updated_at:new Date().toISOString()});await sbPost('chats',{lead_id:id,sender:'ia',message:'Ola! Percebi que voce demonstrou interesse ha alguns dias. Posso te ajudar agora?'});await loadLeadsTable();await loadKPIs();alert('Reativacao disparada!');}
-    async function nexoInit(){await Promise.all([loadKPIs(),loadLeadsTable(),loadContacts()]);}
-    window.addEventListener('load',nexoInit);
+    async function loadChat(leadId,name,phone){
+        currentLeadId=leadId;
+        const cm=document.getElementById('chat-messages'),ch=document.getElementById('chat-header-name'),cs=document.getElementById('chat-header-sub');
+        if(ch)ch.textContent=name;if(cs)cs.textContent=(unescape(phone)||'Lead')+' - IA Ativa';
+        if(!cm)return;
+        cm.innerHTML='<div class="text-center text-slate-500 text-sm py-8">Carregando mensagens do banco...</div>';
+        try{
+            const msgs=await sbGet('chats','lead_id=eq.'+leadId+'&order=created_at.asc');
+            if(!msgs||!msgs.length){cm.innerHTML='<div class="text-center py-8"><p class="text-slate-500 text-sm mb-4">Sem mensagens ainda.</p><button onclick="sendFirstIA(\''+leadId+'\')" class="bg-cyan-400 text-slate-900 font-bold px-4 py-2 rounded-xl text-sm hover:bg-cyan-300 transition-colors">IA Iniciar Abordagem</button></div>';return;}
+            cm.innerHTML=msgs.map(m=>{
+                const t=new Date(m.created_at).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+                if(m.sender==='ia'||m.sender==='bot')return '<div class="flex flex-col items-end mb-4"><div class="bg-cyan-900/20 p-3 rounded-xl rounded-tr-none w-3/4 ml-auto text-sm border border-cyan-400/30 text-slate-200"><div class="text-[10px] text-cyan-400 font-bold mb-1">IA Corporativa</div>'+m.message+'</div><div class="text-[10px] text-slate-600 mt-1">'+t+'</div></div>';
+                return '<div class="flex flex-col items-start mb-4"><div class="bg-slate-800 p-3 rounded-xl rounded-tl-none w-3/4 text-sm text-slate-200">'+m.message+'</div><div class="text-[10px] text-slate-600 mt-1">'+t+'</div></div>';
+            }).join('');
+            cm.scrollTop=cm.scrollHeight;
+        }catch(e){cm.innerHTML='<div class="text-center text-red-400 py-8 text-sm">Erro de sincronização.</div>';}
+    }
+
+    async function sendMsg(){
+        if(!currentLeadId)return;const inp=document.getElementById('chat-input');if(!inp||!inp.value.trim())return;
+        const msg=inp.value.trim();inp.value='';
+        await sbPost('chats',{lead_id:currentLeadId,sender:'humano',message:msg});
+        await sbPatch('leads',currentLeadId,{last_message:msg,updated_at:new Date().toISOString()});
+        await loadChat(currentLeadId,document.getElementById('chat-header-name')?.textContent||'','');
+    }
+    async function sendFirstIA(leadId){
+        await sbPost('chats',{lead_id:leadId,sender:'ia',message:'Olá! Vi que demonstrou interesse em nossas campanhas.'});
+        await loadChat(leadId,document.getElementById('chat-header-name')?.textContent||'','');
+    }
+
+    async function addLead(){
+        const name=prompt('Nome do novo Lead:');if(!name)return;
+        const phone=prompt('WhatsApp (com DDD):');if(!phone)return;
+        const source=prompt('Origem de Captura:')||'Manual';
+        const emp = nexoUser.user_metadata?.company_name || 'Nexo';
+        await sbPost('leads',{name:name.trim(),phone:phone.trim(),status:'novo',source:source,last_message:'Lead capturado',empresa_nome:emp});
+        await Promise.all([loadLeadsTable(),loadKPIs()]);
+    }
+
+    async function openLeadChat(id,name,phone){
+        document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));
+        document.querySelectorAll('.view-section').forEach(v=>{v.classList.add('hidden');v.classList.remove('block');});
+        const wv=document.getElementById('view-whatsapp');
+        if(wv){wv.classList.remove('hidden');wv.classList.add('block');}
+        document.querySelectorAll('.sidebar-item').forEach(i=>{if(i.innerText.includes('WhatsApp'))i.classList.add('active');});
+        await loadContacts();await loadChat(id,name,unescape(phone||''));
+        if(window.lucide)lucide.createIcons();
+    }
+
+    async function triggerReactivation(id,name){
+        if(!confirm('A IA irá abordar '+name+' para reativação. Deseja prosseguir?'))return;
+        await sbPatch('leads',id,{status:'atendimento',last_message:'Reativação IA disparada',updated_at:new Date().toISOString()});
+        await sbPost('chats',{lead_id:id,sender:'ia',message:'Olá! Queria retomar nosso papo anterior.'});
+        await loadLeadsTable();await loadKPIs();
+    }
+
+    async function nexoInit(){
+      const isAuth = await sbAuthCheck();
+      if(!isAuth) return;
+      document.body.style.display = 'block'; // Mostra body so apos auth
+      await Promise.all([loadKPIs(),loadLeadsTable(),loadContacts()]);
+    }
+
+    // Inject Logout button on the screen
+    function injectLogoutBtn() {
+        const header = document.querySelector('.flex.justify-between.items-center.mb-8');
+        if(header) {
+            const btn = document.createElement('button');
+            btn.className = "flex items-center gap-2 text-xs font-bold text-red-400 hover:text-red-300 transition-colors ml-4 px-3 py-1.5 rounded-lg border border-red-500/20 bg-red-500/10";
+            btn.innerHTML = `<i data-lucide="log-out" class="w-3 h-3"></i> SAIR`;
+            btn.onclick = sbLogout;
+            // Append aside of user avatar
+            const avatarArea = header.querySelector('.flex.items-center.gap-3');
+            if(avatarArea) avatarArea.appendChild(btn);
+        }
+    }
+
+    document.body.style.display = 'none'; // Impede piscar antes de logar
+    window.addEventListener('load', () => { nexoInit(); injectLogoutBtn(); });
     document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.activeElement?.id==='chat-input')sendMsg();});
     </script>
 </body>
+
 
 </html>

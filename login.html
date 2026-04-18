@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nexo AI — Acesso ao Vórtice</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #020617; color: white; }
+    .glass-panel { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.05); }
+    .btn-gradient { background: linear-gradient(135deg, #22d3ee 0%, #8b5cf6 100%); transition: all 0.3s ease; }
+    .btn-gradient:hover { transform: scale(1.02); box-shadow: 0 10px 20px -10px rgba(34, 211, 238, 0.5); }
+    .input-field { background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); color: white; padding: 12px 16px; border-radius: 8px; width: 100%; transition: all 0.2s; outline: none; }
+    .input-field:focus { border-color: #22d3ee; box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.2); }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center relative overflow-hidden">
+  
+  <!-- Background Elements -->
+  <div class="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-cyan-500/20 rounded-full blur-[120px] pointer-events-none"></div>
+  <div class="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-violet-600/20 rounded-full blur-[120px] pointer-events-none"></div>
+
+  <div class="w-full max-w-md p-6 z-10">
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-white/10 shadow-2xl mb-4">
+        <i data-lucide="cpu" class="text-cyan-400 w-8 h-8"></i>
+      </div>
+      <h1 class="text-2xl font-black tracking-tight" id="main-title">Acessar Nexo AI</h1>
+      <p class="text-sm text-slate-400 mt-2" id="main-subtitle">O seu ecossistema de vendas automatizado.</p>
+    </div>
+
+    <!-- Container -->
+    <div class="glass-panel p-8 rounded-2xl shadow-2xl relative overflow-hidden">
+      
+      <!-- Tabs -->
+      <div class="flex border-b border-white/5 mb-6">
+        <button id="tab-login" onclick="switchTab('login')" class="flex-1 pb-3 text-sm font-bold text-cyan-400 border-b-2 border-cyan-400 transition-colors">Entrar</button>
+        <button id="tab-register" onclick="switchTab('register')" class="flex-1 pb-3 text-sm font-bold text-slate-500 border-b-2 border-transparent hover:text-slate-300 transition-colors">Criar Empresa</button>
+      </div>
+
+      <!-- Alertas -->
+      <div id="alert-box" class="hidden mb-4 px-4 py-3 rounded-lg text-sm font-bold items-center gap-2"></div>
+
+      <!-- FORM: LOGIN -->
+      <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">E-mail corporativo</label>
+          <input type="email" id="login-email" class="input-field" placeholder="exemplo@empresa.com.br" required>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Senha master</label>
+          <input type="password" id="login-password" class="input-field" placeholder="••••••••" required>
+        </div>
+        <button type="submit" id="btn-login" class="btn-gradient w-full py-3 rounded-lg text-sm font-black text-white shadow-lg mt-2 flex justify-center items-center gap-2">
+          ENTRAR NO PAINEL
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </form>
+
+      <!-- FORM: REGISTER -->
+      <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 hidden">
+        <div>
+          <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Nome da Empresa / Operação</label>
+          <input type="text" id="reg-company" class="input-field" placeholder="Nexo Imóveis" required>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Seu Nome Completo</label>
+          <input type="text" id="reg-name" class="input-field" placeholder="Carlos Machado" required>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">E-mail corporativo</label>
+          <input type="email" id="reg-email" class="input-field" placeholder="exemplo@empresa.com.br" required>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Senha segura</label>
+          <input type="password" id="reg-password" class="input-field" placeholder="Mínimo 6 caracteres" minlength="6" required>
+        </div>
+        <button type="submit" id="btn-register" class="btn-gradient w-full py-3 rounded-lg text-sm font-black text-white shadow-lg mt-2 flex justify-center items-center gap-2">
+          ATIVAR MINHA ÁREA
+          <i data-lucide="zap" class="w-4 h-4"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+    
+    // Inicialização direta do Cliente Supabase do CDN
+    const supabase = supabase.createClient('https://tqqtjrunrimabitmersr.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxcXRqcnVucmltYWJpdG1lcnNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NjYwMjgsImV4cCI6MjA5MjA0MjAyOH0.CEJRX8rYb_5S5pN_M2KemyBRxdSPd9jf8Y-Xm3vlTDc');
+
+    // Ui logic
+    function switchTab(tab) {
+      const formLogin = document.getElementById('form-login');
+      const formReg = document.getElementById('form-register');
+      const tabLogin = document.getElementById('tab-login');
+      const tabReg = document.getElementById('tab-register');
+      const title = document.getElementById('main-title');
+      const sub = document.getElementById('main-subtitle');
+      hideAlert();
+
+      if(tab === 'login') {
+        formLogin.classList.remove('hidden'); formReg.classList.add('hidden');
+        tabLogin.classList.replace('text-slate-500', 'text-cyan-400');
+        tabLogin.classList.replace('border-transparent', 'border-cyan-400');
+        tabReg.classList.replace('text-cyan-400', 'text-slate-500');
+        tabReg.classList.replace('border-cyan-400', 'border-transparent');
+        title.innerText = "Acessar Nexo AI";
+        sub.innerText = "O seu ecossistema de vendas automatizado.";
+      } else {
+        formReg.classList.remove('hidden'); formLogin.classList.add('hidden');
+        tabReg.classList.replace('text-slate-500', 'text-cyan-400');
+        tabReg.classList.replace('border-transparent', 'border-cyan-400');
+        tabLogin.classList.replace('text-cyan-400', 'text-slate-500');
+        tabLogin.classList.replace('border-cyan-400', 'border-transparent');
+        title.innerText = "Novo Ecossistema";
+        sub.innerText = "Crie seu espaço isolado em 3 segundos.";
+      }
+    }
+
+    function showAlert(msg, isError) {
+      const b = document.getElementById('alert-box');
+      b.classList.remove('hidden', 'bg-red-500/20', 'text-red-400', 'border-red-500/50', 'bg-emerald-500/20', 'text-emerald-400', 'border-emerald-500/50');
+      b.classList.add('flex', 'border');
+      if(isError) {
+        b.innerHTML = `<i data-lucide="alert-circle" class="w-4 h-4"></i> ${msg}`;
+        b.classList.add('bg-red-500/20', 'text-red-400', 'border-red-500/50');
+      } else {
+        b.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> ${msg}`;
+        b.classList.add('bg-emerald-500/20', 'text-emerald-400', 'border-emerald-500/50');
+      }
+      lucide.createIcons();
+    }
+    function hideAlert() { document.getElementById('alert-box').classList.add('hidden'); }
+
+    // Supabase interações
+    async function handleRegister(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-register');
+      btn.innerHTML = 'CRIANDO...'; btn.disabled = true;
+      
+      const email = document.getElementById('reg-email').value;
+      const password = document.getElementById('reg-password').value;
+      const fullName = document.getElementById('reg-name').value;
+      const company = document.getElementById('reg-company').value;
+
+      try {
+        const { data, error } = await supabase.auth.signUp({
+          email, password,
+          options: {
+            data: { full_name: fullName, company_name: company }
+          }
+        });
+
+        if (error) throw error;
+        
+        // Sucesso
+        showAlert('Empresa criada! Entrando...', false);
+        setTimeout(() => { window.location.href = 'dashboard-comando.html'; }, 1000);
+      } catch (err) {
+        showAlert(err.message === "User already registered" ? "E-mail já está em uso." : "Erro ao cadastrar. Tente denovo.", true);
+      } finally {
+        btn.innerHTML = 'ATIVAR MINHA ÁREA <i data-lucide="zap" class="w-4 h-4"></i>'; btn.disabled = false; lucide.createIcons();
+      }
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-login');
+      btn.innerHTML = 'CARREGANDO...'; btn.disabled = true;
+
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        
+        showAlert('Login autorizado!', false);
+        setTimeout(() => { window.location.href = 'dashboard-comando.html'; }, 800);
+      } catch (err) {
+        showAlert("Credenciais inválidas.", true);
+      } finally {
+        btn.innerHTML = 'ENTRAR NO PAINEL <i data-lucide="arrow-right" class="w-4 h-4"></i>'; btn.disabled = false; lucide.createIcons();
+      }
+    }
+
+    // Check auth on load
+    window.addEventListener('load', async () => {
+      const {data} = await supabase.auth.getSession();
+      if(data.session) {
+        window.location.replace('dashboard-comando.html');
+      }
+    });
+  </script>
+</body>
+</html>
