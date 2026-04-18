@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nexo AI — Pare de Queimar Dinheiro no WhatsApp. Lucro Previsível com IA.</title>
+  <meta name="description" content="Nexo AI transforma o caos do seu WhatsApp em lucro previsível. Inteligência de dados para imobiliárias, clínicas e empresas que perdem vendas por falta de organização. ROI garantido.">
+  <meta name="keywords" content="inteligência artificial, WhatsApp, CRM, imobiliárias, clínicas, automação, ROI, leads, vendas">
+  <meta name="author" content="Nexo AI">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Nexo AI — Pare de Queimar Dinheiro no WhatsApp">
+  <meta property="og:description" content="Transforme o caos do atendimento em lucro previsível. Inteligência de dados que um diretor financeiro 24/7 entregaria.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://nexoai.app.br">
+  <meta property="og:site_name" content="Nexo AI">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="assets/images/WhatsApp Image 2026-04-17 at 14.39.30 (2).jpeg">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'inter': ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+          colors: {
+            'nexo-dark': '#0d1117',
+            'nexo-card': 'rgba(13, 17, 23, 0.6)',
+            'nexo-cyan': '#22d3ee',
+            'nexo-cyan-bright': '#67e8f9',
+            'nexo-violet': '#a855f7',
+            'nexo-violet-bright': '#c084fc',
+            'nexo-purple': '#7c3aed',
+          },
+          animation: {
+            'pulse-cta': 'pulse-cta 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'float-slow': 'float 8s ease-in-out infinite',
+            'glow': 'glow 3s ease-in-out infinite',
+            'counter-up': 'counter-up 0.6s ease-out',
+            'slide-up': 'slide-up 0.7s ease-out',
+            'slide-up-delay': 'slide-up 0.7s ease-out 0.2s both',
+            'slide-up-delay-2': 'slide-up 0.7s ease-out 0.4s both',
+            'shimmer': 'shimmer 3s linear infinite',
+          },
+          keyframes: {
+            'pulse-cta': {
+              '0%, 100%': { boxShadow: '0 0 20px rgba(34, 211, 238, 0.35), 0 0 60px rgba(168, 85, 247, 0.15)' },
+              '50%': { boxShadow: '0 0 50px rgba(34, 211, 238, 0.55), 0 0 100px rgba(168, 85, 247, 0.3)' },
+            },
+            'float': {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-15px)' },
+            },
+            'glow': {
+              '0%, 100%': { opacity: '0.4' },
+              '50%': { opacity: '0.8' },
+            },
+            'slide-up': {
+              '0%': { opacity: '0', transform: 'translateY(40px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            'shimmer': {
+              '0%': { backgroundPosition: '-200% center' },
+              '100%': { backgroundPosition: '200% center' },
+            },
+          },
+        },
+      },
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* Custom styles that complement Tailwind */
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #020617;
+    }
+
+    /* Glassmorphism card */
+    .glass {
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .glass-strong {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Gradient text — Cyan → Violet (logo palette) */
+    .text-gradient-emerald {
+      background: linear-gradient(135deg, #22d3ee, #67e8f9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .text-gradient-blue {
+      background: linear-gradient(135deg, #a855f7, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .text-gradient-mixed {
+      background: linear-gradient(135deg, #22d3ee, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* CTA Button glow — Cyan → Violet */
+    .cta-glow {
+      background: linear-gradient(135deg, #22d3ee, #a855f7);
+      box-shadow: 0 0 30px rgba(34, 211, 238, 0.35), 0 0 60px rgba(168, 85, 247, 0.15);
+      transition: all 0.3s ease;
+    }
+
+    .cta-glow:hover {
+      box-shadow: 0 0 55px rgba(34, 211, 238, 0.55), 0 0 110px rgba(168, 85, 247, 0.35);
+      transform: translateY(-3px) scale(1.02);
+    }
+
+    /* Orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      pointer-events: none;
+    }
+
+    /* Dashboard mockup */
+    .dashboard-card {
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.9), rgba(2, 6, 23, 0.95));
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .metric-bar {
+      border-radius: 4px;
+      height: 8px;
+    }
+
+    /* Scroll reveal */
+    .reveal-item {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+                  transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .reveal-item.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* FAQ */
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.4s ease;
+    }
+
+    .faq-item.active .faq-answer {
+      max-height: 300px;
+    }
+
+    .faq-item.active .faq-chevron {
+      transform: rotate(180deg);
+    }
+
+    /* Price strikethrough */
+    .price-strike {
+      position: relative;
+      color: #64748b;
+    }
+
+    .price-strike::after {
+      content: '';
+      position: absolute;
+      left: -4px;
+      right: -4px;
+      top: 50%;
+      height: 3px;
+      background: #ef4444;
+      transform: rotate(-5deg);
+    }
+
+    /* Shimmer effect for urgency badge */
+    .shimmer-bg {
+      background: linear-gradient(
+        90deg,
+        rgba(34, 211, 238, 0.0) 0%,
+        rgba(168, 85, 247, 0.15) 50%,
+        rgba(34, 211, 238, 0.0) 100%
+      );
+      background-size: 200% 100%;
+      animation: shimmer 3s linear infinite;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #020617;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+
+    /* Selection */
+    ::selection {
+      background: rgba(168, 85, 247, 0.35);
+      color: #fff;
+    }
+
+    /* Nav link underline */
+    .nav-link {
+      position: relative;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #22d3ee, #a855f7);
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* Mobile menu */
+    .mobile-nav {
+      transform: translateX(100%);
+      transition: transform 0.35s ease;
+    }
+    .mobile-nav.open {
+      transform: translateX(0);
+    }
+
+    /* Pricing card featured ring */
+    .featured-ring {
+      position: relative;
+    }
+    .featured-ring::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 1.25rem;
+      background: linear-gradient(135deg, #22d3ee, #a855f7);
+      z-index: -1;
+    }
+
+    /* Company logo marquee animation */
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+  </style>
+</head>
+
+<body class="bg-slate-950 text-slate-100 font-inter antialiased overflow-x-hidden">
+
+  <!-- ====== HEADER ====== -->
+  <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="glass-strong">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 h-[72px] flex items-center justify-between">
+        <!-- Logo -->
+        <a href="/" class="flex items-center gap-2" id="logo" aria-label="Nexo AI - Página inicial">
+          <img src="assets/images/WhatsApp Image 2026-04-17 at 14.39.30 (2).jpeg" alt="Nexo AI" class="h-12 w-auto object-contain rounded-lg" style="filter: drop-shadow(0 0 10px rgba(34,211,238,0.4)) drop-shadow(0 0 20px rgba(168,85,247,0.3));">
+        </a>
+
+        <!-- Desktop Nav -->
+        <nav class="hidden lg:flex items-center gap-8" id="desktop-nav">
+          <a href="#dor" class="nav-link text-sm font-medium text-slate-400 hover:text-white transition-colors">O Problema</a>
+          <a href="#solucao" class="nav-link text-sm font-medium text-slate-400 hover:text-white transition-colors">A Solução</a>
+          <a href="#dashboard" class="nav-link text-sm font-medium text-slate-400 hover:text-white transition-colors">Dashboard</a>
+          <a href="#licenca" class="nav-link text-sm font-medium text-slate-400 hover:text-white transition-colors">Licença</a>
+          <a href="#faq" class="nav-link text-sm font-medium text-slate-400 hover:text-white transition-colors">FAQ</a>
+        </nav>
+
+        <!-- Desktop CTA -->
+        <div class="hidden lg:flex items-center gap-4">
+          <a href="#licenca" class="cta-glow px-6 py-2.5 rounded-xl text-sm font-bold text-white" id="btn-header-cta">
+            Quero Parar de Perder Vendas →
+          </a>
+        </div>
+
+        <!-- Mobile Toggle -->
+        <button class="lg:hidden text-white p-2" id="mobile-toggle" aria-label="Menu" aria-expanded="false">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Nav -->
+  <nav class="mobile-nav fixed inset-0 z-[60] bg-slate-950/98 backdrop-blur-xl flex flex-col items-center justify-center gap-8 lg:hidden" id="mobile-menu">
+    <button class="absolute top-5 right-5 text-white p-2" id="mobile-close" aria-label="Fechar menu">
+      <i data-lucide="x" class="w-7 h-7"></i>
+    </button>
+    <a href="#dor" class="text-2xl font-semibold text-white mobile-link">O Problema</a>
+    <a href="#solucao" class="text-2xl font-semibold text-white mobile-link">A Solução</a>
+    <a href="#dashboard" class="text-2xl font-semibold text-white mobile-link">Dashboard</a>
+    <a href="#licenca" class="text-2xl font-semibold text-white mobile-link">Licença</a>
+    <a href="#faq" class="text-2xl font-semibold text-white mobile-link">FAQ</a>
+    <a href="#licenca" class="cta-glow px-8 py-4 rounded-xl text-lg font-bold text-white mt-4 mobile-link">Quero Parar de Perder Vendas →</a>
+  </nav>
+
+
+  <main>
+
+    <!-- ====== HERO SECTION (O Gancho Mortal) ====== -->
+    <section id="hero" class="relative min-h-screen flex items-center pt-[72px] overflow-hidden">
+      <!-- Background orbs -->
+      <div class="orb w-[600px] h-[600px] -top-40 -left-40 animate-float" style="background:rgba(34,211,238,0.08);"></div>
+      <div class="orb w-[500px] h-[500px] -bottom-20 -right-20 animate-float-slow" style="background:rgba(168,85,247,0.10);"></div>
+      <div class="orb w-[300px] h-[300px] top-1/2 left-1/2 animate-glow" style="background:rgba(124,58,237,0.05);"></div>
+
+      <!-- Grid pattern overlay -->
+      <div class="absolute inset-0" style="background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 40px 40px;"></div>
+
+      <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-20 lg:py-32 w-full">
+        <div class="max-w-4xl mx-auto text-center">
+
+          <!-- Urgency Badge -->
+          <div class="inline-flex items-center gap-2.5 px-5 py-2 rounded-full glass border border-cyan-400/20 mb-8 animate-slide-up">
+            <span class="w-2 h-2 bg-cyan-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.8)]"></span>
+            <span class="text-xs font-semibold tracking-wide text-cyan-400 uppercase">Vagas Limitadas — Período de Implantação Q2/2026</span>
+          </div>
+
+          <!-- H1 Headline -->
+          <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.05] mb-8 animate-slide-up">
+            Pare de <span class="text-gradient-emerald">Queimar Dinheiro</span><br class="hidden sm:block">
+            no WhatsApp.<br class="hidden md:block">
+            <span class="text-gradient-blue">Lucro Previsível</span> Começa Aqui.
+          </h1>
+
+          <!-- Subheadline -->
+          <p class="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-4 leading-relaxed animate-slide-up-delay">
+            Enquanto você controla atendimentos numa <strong class="text-white">planilha que ninguém atualiza</strong>, 
+            seus leads esfriam, seus vendedores esquecem follow-ups, e seu dinheiro de anúncio 
+            <strong class="text-red-400">vai direto pro lixo.</strong>
+          </p>
+
+          <p class="text-base text-slate-500 max-w-xl mx-auto mb-10 animate-slide-up-delay-2">
+            A Nexo AI substitui o caos por um sistema inteligente que vê cada lead, cada venda, cada centavo. 
+            <strong class="text-emerald-400">Em tempo real.</strong>
+          </p>
+
+          <!-- CTA Principal -->
+          <div class="flex flex-col items-center gap-4 animate-slide-up-delay-2">
+            <a href="#licenca" class="cta-glow animate-pulse-cta px-10 py-5 rounded-2xl text-lg sm:text-xl font-black text-white tracking-tight inline-flex items-center gap-3" id="btn-hero-cta">
+              <i data-lucide="zap" class="w-6 h-6"></i>
+              QUERO ESTANCAR A PERDA DE VENDAS
+            </a>
+            <p class="flex items-center gap-2 text-sm text-slate-500">
+              <i data-lucide="shield-check" class="w-4 h-4 text-cyan-400"></i>
+              Setup em 48h. Sem contrato de fidelidade. ROI ou seu dinheiro de volta.
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Scroll indicator -->
+      <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
+        <span class="text-xs text-slate-600 uppercase tracking-widest">Desça</span>
+        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-600"></i>
+      </div>
+    </section>
+
+
+    <!-- ====== SOCIAL PROOF / AGITAÇÃO (A Faca na Ferida) ====== -->
+    <section id="dor" class="relative py-24 lg:py-32">
+      <div class="absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-900/30 to-slate-950"></div>
+
+      <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
+
+        <!-- Section Header -->
+        <div class="text-center mb-16 reveal-item">
+          <span class="inline-flex items-center gap-2 text-xs font-bold tracking-[3px] uppercase text-red-400 mb-4">
+            <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+            Diagnóstico Brutal
+          </span>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight mb-4">
+            Você Está Sangrando Dinheiro.<br>
+            <span class="text-gradient-emerald">Todos os Dias.</span>
+          </h2>
+          <p class="text-lg text-slate-400 max-w-2xl mx-auto">
+            Se algum desses cenários parece familiar, cada dia de inação custa mais do que a solução inteira.
+          </p>
+        </div>
+
+        <!-- Dores — 3 blocos -->
+        <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
+
+          <!-- Dor 1: Leads esquecidos -->
+          <div class="glass rounded-2xl p-8 hover:border-red-500/30 transition-all duration-300 group reveal-item reveal-delay-1">
+            <div class="w-14 h-14 rounded-xl bg-red-500/10 flex items-center justify-center mb-6 group-hover:bg-red-500/20 transition-colors">
+              <i data-lucide="user-x" class="w-7 h-7 text-red-400"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-3">Leads Apodrecendo na Caixa de Entrada</h3>
+            <p class="text-slate-400 leading-relaxed mb-4">
+              O cliente mandou mensagem às 22h. Seu vendedor viu às 10h do dia seguinte. O prospect já fechou com o concorrente.
+            </p>
+            <div class="flex items-center gap-2 text-red-400 text-sm font-bold">
+              <i data-lucide="trending-down" class="w-4 h-4"></i>
+              <span>63% dos leads morrem em menos de 5 min sem resposta</span>
+            </div>
+          </div>
+
+          <!-- Dor 2: Custo de anúncio -->
+          <div class="glass rounded-2xl p-8 hover:border-orange-500/30 transition-all duration-300 group reveal-item reveal-delay-2">
+            <div class="w-14 h-14 rounded-xl bg-orange-500/10 flex items-center justify-center mb-6 group-hover:bg-orange-500/20 transition-colors">
+              <i data-lucide="flame" class="w-7 h-7 text-orange-400"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-3">R$ 15 Mil em Anúncios. E Cadê a Venda?</h3>
+            <p class="text-slate-400 leading-relaxed mb-4">
+              Você investe pesado no Google e Meta. Os leads chegam. Mas ninguém sabe o Custo de Aquisição real. Ninguém mede. Ninguém cobra.
+            </p>
+            <div class="flex items-center gap-2 text-orange-400 text-sm font-bold">
+              <i data-lucide="circle-dollar-sign" class="w-4 h-4"></i>
+              <span>Sem dados, seu marketing é roleta russa</span>
+            </div>
+          </div>
+
+          <!-- Dor 3: Dono cego -->
+          <div class="glass rounded-2xl p-8 hover:border-yellow-500/30 transition-all duration-300 group reveal-item reveal-delay-3">
+            <div class="w-14 h-14 rounded-xl bg-yellow-500/10 flex items-center justify-center mb-6 group-hover:bg-yellow-500/20 transition-colors">
+              <i data-lucide="eye-off" class="w-7 h-7 text-yellow-400"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-3">Você é o CEO. Mas Está Cego.</h3>
+            <p class="text-slate-400 leading-relaxed mb-4">
+              Qual sua margem de lucro por serviço? Qual vendedor traz mais resultado? Quanto custa cada lead? Se você hesitou, o problema é grave.
+            </p>
+            <div class="flex items-center gap-2 text-yellow-400 text-sm font-bold">
+              <i data-lucide="brain" class="w-4 h-4"></i>
+              <span>Decisão sem dados = achismo milionário</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Agitação extra -->
+        <div class="text-center mt-16 reveal-item">
+          <div class="glass inline-flex items-center gap-3 px-8 py-4 rounded-2xl border-red-500/20">
+            <i data-lucide="clock" class="w-5 h-5 text-red-400"></i>
+            <p class="text-base text-slate-300">
+              <strong class="text-white">Faça a conta:</strong> a cada mês sem controle, você perde 
+              <strong class="text-red-400">entre R$ 5.000 e R$ 50.000</strong> em vendas que nunca acontecem.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ====== SEPARADOR VISUAL ====== -->
+    <div class="w-full h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent"></div>
+
+
+    <!-- ====== A SOLUÇÃO ====== -->
+    <section id="solucao" class="relative py-24 lg:py-32 overflow-hidden">
+      <div class="orb w-[400px] h-[400px] bg-emerald-500/8 top-20 -right-40"></div>
+
+      <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
+
+        <div class="text-center mb-16 reveal-item">
+          <span class="inline-flex items-center gap-2 text-xs font-bold tracking-[3px] uppercase text-emerald-400 mb-4">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+            A Solução
+          </span>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight mb-4">
+            A Nexo AI Transforma Caos<br>
+            em <span class="text-gradient-emerald">Máquina de Lucro.</span>
+          </h2>
+          <p class="text-lg text-slate-400 max-w-2xl mx-auto">
+            Não é mais um CRM complicado. É inteligência de dados que te mostra 
+            <strong class="text-white">exatamente</strong> onde está o dinheiro.
+          </p>
+        </div>
+
+        <!-- Benefits Grid -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+          <div class="glass rounded-2xl p-8 hover:border-emerald-500/30 transition-all duration-300 group reveal-item">
+            <div class="w-14 h-14 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <i data-lucide="target" class="w-7 h-7 text-emerald-400"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">Lead chega, Lead é atendido</h3>
+            <p class="text-slate-400 text-sm leading-relaxed">
+              Atendimento automático inteligente que classifica, prioriza e responde leads em segundos. Nunca mais perca uma venda por demora.
+            </p>
+          </div>
+
+          <div class="glass rounded-2xl p-8 hover:border-blue-500/30 transition-all duration-300 group reveal-item reveal-delay-1">
+            <div class="w-14 h-14 rounded-xl bg-blue-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <i data-lucide="bar-chart-3" class="w-7 h-7 text-blue-400"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">CAC, LTV, Margem — Na sua tela</h3>
+            <p class="text-slate-400 text-sm leading-relaxed">
+              Cada centavo de anúncio rastreado. Custo de Aquisição por canal. Receita por vendedor. Margem por serviço. Tudo em tempo real.
+            </p>
+          </div>
+
+          <div class="glass rounded-2xl p-8 hover:border-cyan-500/30 transition-all duration-300 group reveal-item reveal-delay-2">
+            <div class="w-14 h-14 rounded-xl bg-cyan-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <i data-lucide="rotate-ccw" class="w-7 h-7 text-cyan-400"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">Leads Mortos? Ressuscite-os.</h3>
+            <p class="text-slate-400 text-sm leading-relaxed">
+              A IA identifica leads frios e dispara sequências de reativação cirúrgicas. Dinheiro parado vira faturamento.
+            </p>
+          </div>
+
+          <div class="glass rounded-2xl p-8 hover:border-violet-500/30 transition-all duration-300 group reveal-item">
+            <div class="w-14 h-14 rounded-xl bg-violet-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <i data-lucide="brain" class="w-7 h-7 text-violet-400"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">IA que Pensa como Diretor Financeiro</h3>
+            <p class="text-slate-400 text-sm leading-relaxed">
+              Relatórios inteligentes com insights acionáveis. A Nexo AI sugere onde cortar custo, onde investir mais e como escalar.
+            </p>
+          </div>
+
+          <div class="glass rounded-2xl p-8 hover:border-emerald-500/30 transition-all duration-300 group reveal-item reveal-delay-1">
+            <div class="w-14 h-14 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <i data-lucide="message-square" class="w-7 h-7 text-emerald-400"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">WhatsApp Integrado e Organizado</h3>
+            <p class="text-slate-400 text-sm leading-relaxed">
+              Todas as conversas centralizadas. Histórico completo. Atendimento por etiquetas e funil. Sem bagunça, sem retrabalho.
+            </p>
+          </div>
+
+          <div class="glass rounded-2xl p-8 hover:border-blue-500/30 transition-all duration-300 group reveal-item reveal-delay-2">
+            <div class="w-14 h-14 rounded-xl bg-blue-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <i data-lucide="lock" class="w-7 h-7 text-blue-400"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">Controle Total. Na sua mão.</h3>
+            <p class="text-slate-400 text-sm leading-relaxed">
+              Acesso pelo celular. Dashboards em tempo real. Você vê a operação inteira mesmo do carro, do avião, da praia.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ====== SEPARADOR ====== -->
+    <div class="w-full h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent"></div>
+
+
+    <!-- ====== SHOWCASE DO DASHBOARD (A Solução Visual) ====== -->
+    <section id="dashboard" class="relative py-24 lg:py-32 overflow-hidden">
+      <div class="orb w-[500px] h-[500px] bg-blue-500/8 -bottom-40 -left-40"></div>
+      <div class="orb w-[300px] h-[300px] bg-emerald-500/5 top-20 right-20"></div>
+
+      <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
+
+        <div class="text-center mb-16 reveal-item">
+          <span class="inline-flex items-center gap-2 text-xs font-bold tracking-[3px] uppercase text-blue-400 mb-4">
+            <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+            O Painel Executivo
+          </span>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight mb-4">
+            Seus Números. <span class="text-gradient-blue">Sem Filtro.</span><br>
+            Sem Desculpas.
+          </h2>
+          <p class="text-lg text-slate-400 max-w-2xl mx-auto">
+            Esqueça planilhas fantasmas. Cada KPI que importa, atualizado em tempo real, 
+            na palma da sua mão.
+          </p>
+        </div>
+
+        <!-- Dashboard Mockup CSS -->
+        <div class="reveal-item">
+          <div class="relative max-w-5xl mx-auto">
+            <!-- Dashboard container -->
+            <div class="dashboard-card rounded-3xl p-2 sm:p-3 overflow-hidden shadow-2xl shadow-blue-500/5" 
+                 style="transform: perspective(1200px) rotateX(2deg) rotateY(-1deg); transition: transform 0.5s ease;">
+
+              <!-- Title Bar -->
+              <div class="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-white/5">
+                <div class="flex items-center gap-3">
+                  <div class="flex gap-1.5">
+                    <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                    <div class="w-3 h-3 rounded-full bg-emerald-500/80"></div>
+                  </div>
+                  <span class="text-xs text-slate-500 font-medium hidden sm:block">nexoai.app.br/dashboard</span>
+                </div>
+                <div class="flex items-center gap-2 text-xs text-emerald-400 font-semibold">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  Ao vivo
+                </div>
+              </div>
+
+              <!-- Dashboard Content -->
+              <div class="p-4 sm:p-6 lg:p-8">
+
+                <!-- Top Metrics Row -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+
+                  <div class="rounded-2xl p-4 sm:p-5 bg-slate-800/40 border border-white/5 hover:border-emerald-500/20 transition-colors">
+                    <div class="flex items-center justify-between mb-3">
+                      <span class="text-xs text-slate-500 font-medium">Lucro Real</span>
+                      <div class="flex items-center gap-1 text-emerald-400 text-xs font-bold">
+                        <i data-lucide="trending-up" class="w-3 h-3"></i>+34%
+                      </div>
+                    </div>
+                    <div class="text-2xl sm:text-3xl font-black text-gradient-emerald" data-counter="127450" data-prefix="R$ " data-animated="false">R$ 0</div>
+                    <div class="text-xs text-slate-500 mt-1">Este mês</div>
+                  </div>
+
+                  <div class="rounded-2xl p-4 sm:p-5 bg-slate-800/40 border border-white/5 hover:border-blue-500/20 transition-colors">
+                    <div class="flex items-center justify-between mb-3">
+                      <span class="text-xs text-slate-500 font-medium">CAC Médio</span>
+                      <div class="flex items-center gap-1 text-emerald-400 text-xs font-bold">
+                        <i data-lucide="trending-down" class="w-3 h-3"></i>-22%
+                      </div>
+                    </div>
+                    <div class="text-2xl sm:text-3xl font-black text-gradient-blue" data-counter="47" data-prefix="R$ " data-animated="false">R$ 0</div>
+                    <div class="text-xs text-slate-500 mt-1">Por lead qualificado</div>
+                  </div>
+
+                  <div class="rounded-2xl p-4 sm:p-5 bg-slate-800/40 border border-white/5 hover:border-cyan-500/20 transition-colors">
+                    <div class="flex items-center justify-between mb-3">
+                      <span class="text-xs text-slate-500 font-medium">Leads Recuperados</span>
+                      <div class="flex items-center gap-1 text-cyan-400 text-xs font-bold">
+                        <i data-lucide="rotate-ccw" class="w-3 h-3"></i>IA
+                      </div>
+                    </div>
+                    <div class="text-2xl sm:text-3xl font-black text-cyan-400" data-counter="312" data-animated="false">0</div>
+                    <div class="text-xs text-slate-500 mt-1">Nos últimos 30 dias</div>
+                  </div>
+
+                  <div class="rounded-2xl p-4 sm:p-5 bg-slate-800/40 border border-white/5 hover:border-violet-500/20 transition-colors">
+                    <div class="flex items-center justify-between mb-3">
+                      <span class="text-xs text-slate-500 font-medium">Taxa de Conversão</span>
+                      <div class="flex items-center gap-1 text-emerald-400 text-xs font-bold">
+                        <i data-lucide="trending-up" class="w-3 h-3"></i>+8%
+                      </div>
+                    </div>
+                    <div class="text-2xl sm:text-3xl font-black text-violet-400" data-counter="28" data-suffix="%" data-animated="false">0%</div>
+                    <div class="text-xs text-slate-500 mt-1">Lead → Cliente</div>
+                  </div>
+
+                </div>
+
+                <!-- Chart Row -->
+                <div class="grid lg:grid-cols-3 gap-4">
+
+                  <!-- Chart Placeholder -->
+                  <div class="lg:col-span-2 rounded-2xl p-5 bg-slate-800/40 border border-white/5">
+                    <div class="flex items-center justify-between mb-6">
+                      <span class="text-sm font-semibold text-white">Receita vs. Custo de Aquisição</span>
+                      <div class="flex gap-4 text-xs text-slate-500">
+                        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-400"></span>Receita</span>
+                        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-blue-400"></span>CAC</span>
+                      </div>
+                    </div>
+                    <!-- Simulated chart bars -->
+                    <div class="flex items-end gap-2 h-32 sm:h-40">
+                      <div class="flex-1 flex flex-col items-center gap-1">
+                        <div class="w-full rounded-t-md bg-emerald-500/60" style="height: 45%"></div>
+                        <div class="w-full rounded-t-md bg-blue-500/40" style="height: 30%"></div>
+                        <span class="text-[10px] text-slate-600 mt-1">Jan</span>
+                      </div>
+                      <div class="flex-1 flex flex-col items-center gap-1">
+                        <div class="w-full rounded-t-md bg-emerald-500/60" style="height: 55%"></div>
+                        <div class="w-full rounded-t-md bg-blue-500/40" style="height: 28%"></div>
+                        <span class="text-[10px] text-slate-600 mt-1">Fev</span>
+                      </div>
+                      <div class="flex-1 flex flex-col items-center gap-1">
+                        <div class="w-full rounded-t-md bg-emerald-500/60" style="height: 50%"></div>
+                        <div class="w-full rounded-t-md bg-blue-500/40" style="height: 25%"></div>
+                        <span class="text-[10px] text-slate-600 mt-1">Mar</span>
+                      </div>
+                      <div class="flex-1 flex flex-col items-center gap-1">
+                        <div class="w-full rounded-t-md bg-emerald-500/60" style="height: 65%"></div>
+                        <div class="w-full rounded-t-md bg-blue-500/40" style="height: 22%"></div>
+                        <span class="text-[10px] text-slate-600 mt-1">Abr</span>
+                      </div>
+                      <div class="flex-1 flex flex-col items-center gap-1">
+                        <div class="w-full rounded-t-md bg-emerald-500/60" style="height: 75%"></div>
+                        <div class="w-full rounded-t-md bg-blue-500/40" style="height: 18%"></div>
+                        <span class="text-[10px] text-slate-600 mt-1">Mai</span>
+                      </div>
+                      <div class="flex-1 flex flex-col items-center gap-1">
+                        <div class="w-full rounded-t-md bg-emerald-500/70" style="height: 90%"></div>
+                        <div class="w-full rounded-t-md bg-blue-500/40" style="height: 15%"></div>
+                        <span class="text-[10px] text-slate-600 mt-1">Jun</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Side Stats -->
+                  <div class="rounded-2xl p-5 bg-slate-800/40 border border-white/5 flex flex-col gap-4">
+                    <span class="text-sm font-semibold text-white">Performance por Canal</span>
+
+                    <div class="space-y-4">
+                      <div>
+                        <div class="flex justify-between text-xs mb-1.5">
+                          <span class="text-slate-400">Google Ads</span>
+                          <span class="text-emerald-400 font-bold">78%</span>
+                        </div>
+                        <div class="w-full h-2 bg-slate-700/50 rounded-full overflow-hidden">
+                          <div class="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full" style="width: 78%"></div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div class="flex justify-between text-xs mb-1.5">
+                          <span class="text-slate-400">Meta Ads</span>
+                          <span class="text-blue-400 font-bold">65%</span>
+                        </div>
+                        <div class="w-full h-2 bg-slate-700/50 rounded-full overflow-hidden">
+                          <div class="h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full" style="width: 65%"></div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div class="flex justify-between text-xs mb-1.5">
+                          <span class="text-slate-400">WhatsApp Orgânico</span>
+                          <span class="text-cyan-400 font-bold">52%</span>
+                        </div>
+                        <div class="w-full h-2 bg-slate-700/50 rounded-full overflow-hidden">
+                          <div class="h-full bg-gradient-to-r from-cyan-500 to-cyan-400 rounded-full" style="width: 52%"></div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div class="flex justify-between text-xs mb-1.5">
+                          <span class="text-slate-400">Indicação</span>
+                          <span class="text-violet-400 font-bold">91%</span>
+                        </div>
+                        <div class="w-full h-2 bg-slate-700/50 rounded-full overflow-hidden">
+                          <div class="h-full bg-gradient-to-r from-violet-500 to-violet-400 rounded-full" style="width: 91%"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="mt-auto pt-4 border-t border-white/5">
+                      <div class="flex items-center gap-2 text-xs text-emerald-400 font-bold">
+                        <i data-lucide="activity" class="w-3.5 h-3.5"></i>
+                        Atualizado há 2 min
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <!-- Floating card -->
+            <div class="absolute -bottom-6 -right-4 sm:right-8 glass rounded-2xl px-6 py-4 flex items-center gap-4 shadow-2xl animate-float hidden sm:flex">
+              <div class="w-12 h-12 rounded-xl bg-emerald-500/15 flex items-center justify-center">
+                <i data-lucide="wallet" class="w-6 h-6 text-emerald-400"></i>
+              </div>
+              <div>
+                <div class="text-xl font-black text-white">+R$ 47.200</div>
+                <div class="text-xs text-slate-500">Receita recuperada pela IA</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Bottom CTA -->
+        <div class="text-center mt-16 reveal-item">
+          <a href="#licenca" class="cta-glow inline-flex items-center gap-3 px-10 py-5 rounded-2xl text-lg font-black text-white" id="btn-dashboard-cta">
+            <i data-lucide="rocket" class="w-5 h-5"></i>
+            QUERO ESSE PAINEL NA MINHA EMPRESA
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ====== SEPARADOR ====== -->
+    <div class="w-full h-px bg-gradient-to-r from-transparent via-violet-500/30 to-transparent"></div>
+
+
+    <!-- ====== PROVA SOCIAL (Depoimentos) ====== -->
+    <section id="resultados" class="relative py-24 lg:py-32 overflow-hidden">
+      <div class="orb w-[400px] h-[400px] -top-20 -right-20" style="background:rgba(168,85,247,0.06);"></div>
+
+      <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
+
+        <div class="text-center mb-16 reveal-item">
+          <span class="inline-flex items-center gap-2 text-xs font-bold tracking-[3px] uppercase text-violet-400 mb-4">
+            <i data-lucide="trophy" class="w-4 h-4"></i>
+            Resultados Reais
+          </span>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight mb-4">
+            Quem <span class="text-gradient-emerald">Ativou</span> Não Volta Atrás.
+          </h2>
+          <p class="text-lg text-slate-400 max-w-2xl mx-auto">
+            Empresários que pararam de perder dinheiro e hoje dormem tranquilos 
+            sabendo <strong class="text-white">exatamente</strong> quanto lucram por minuto.
+          </p>
+        </div>
+
+        <!-- Testimonial Cards -->
+        <div class="grid md:grid-cols-3 gap-6 lg:gap-8 mb-20">
+
+          <!-- Testimonial 1 — Imobiliária -->
+          <div class="glass rounded-2xl p-8 hover:border-cyan-400/20 transition-all duration-300 reveal-item group">
+            <!-- Stars -->
+            <div class="flex gap-1 mb-5">
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
+            </div>
+            <!-- Quote -->
+            <p class="text-slate-300 text-sm leading-relaxed mb-6">
+              "Perdíamos <strong class="text-white">40% dos leads dos portais</strong> porque ninguém fazia follow-up a tempo. 
+              Em <strong class="text-cyan-400">3 semanas</strong> com a Nexo AI, recuperamos 
+              <strong class="text-white">R$ 87 mil</strong> em comissões que estavam morrendo no WhatsApp. 
+              Hoje, minha equipe gasta zero tempo organizando atendimento."
+            </p>
+            <!-- Metric highlight -->
+            <div class="bg-cyan-400/5 border border-cyan-400/10 rounded-xl px-4 py-3 mb-6">
+              <div class="flex items-center gap-2">
+                <i data-lucide="trending-up" class="w-4 h-4 text-cyan-400"></i>
+                <span class="text-xs font-bold text-cyan-400">+312% em leads convertidos no 1º mês</span>
+              </div>
+            </div>
+            <!-- Author -->
+            <div class="flex items-center gap-3">
+              <img src="assets/images/avatar-carlos.png" alt="Carlos Mendonça" class="w-12 h-12 rounded-full object-cover ring-2 ring-cyan-400/30">
+              <div>
+                <div class="text-sm font-bold text-white">Carlos Mendonça</div>
+                <div class="text-xs text-slate-500">CEO — Mendonça Imóveis Premium</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonial 2 — Clínica -->
+          <div class="glass rounded-2xl p-8 hover:border-violet-400/20 transition-all duration-300 reveal-item reveal-delay-1 group">
+            <!-- Stars -->
+            <div class="flex gap-1 mb-5">
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
+            </div>
+            <!-- Quote -->
+            <p class="text-slate-300 text-sm leading-relaxed mb-6">
+              "Eu gastava <strong class="text-white">R$ 15 mil/mês em Google Ads</strong> e não sabia de onde vinham meus pacientes. 
+              A Nexo AI mostrou que <strong class="text-violet-400">73% das consultas</strong> vinham de indicação, 
+              não de anúncio. Cortei o investimento errado e <strong class="text-white">dupliquei o lucro líquido</strong> 
+              em 45 dias."
+            </p>
+            <!-- Metric highlight -->
+            <div class="bg-violet-400/5 border border-violet-400/10 rounded-xl px-4 py-3 mb-6">
+              <div class="flex items-center gap-2">
+                <i data-lucide="trending-up" class="w-4 h-4 text-violet-400"></i>
+                <span class="text-xs font-bold text-violet-400">CAC reduzido de R$ 340 para R$ 47</span>
+              </div>
+            </div>
+            <!-- Author -->
+            <div class="flex items-center gap-3">
+              <img src="assets/images/avatar-patricia.png" alt="Dra. Patrícia Almeida" class="w-12 h-12 rounded-full object-cover ring-2 ring-violet-400/30">
+              <div>
+                <div class="text-sm font-bold text-white">Dra. Patrícia Almeida</div>
+                <div class="text-xs text-slate-500">Diretora — Clínica Estética Dermavida</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonial 3 — Multi-unidade -->
+          <div class="glass rounded-2xl p-8 hover:border-cyan-400/20 transition-all duration-300 reveal-item reveal-delay-2 group">
+            <!-- Stars -->
+            <div class="flex gap-1 mb-5">
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
+            </div>
+            <!-- Quote -->
+            <p class="text-slate-300 text-sm leading-relaxed mb-6">
+              "Tenho <strong class="text-white">4 lojas</strong> e vivia olhando 4 planilhas diferentes. 
+              A Nexo AI me deu <strong class="text-cyan-400">um painel único</strong> com tudo: quanto cada loja fatura, 
+              qual vendedor converte mais, e os leads frios que a IA reativa sozinha.
+              Recuperei <strong class="text-white">R$ 210 mil</strong> em 60 dias."
+            </p>
+            <!-- Metric highlight -->
+            <div class="bg-cyan-400/5 border border-cyan-400/10 rounded-xl px-4 py-3 mb-6">
+              <div class="flex items-center gap-2">
+                <i data-lucide="trending-up" class="w-4 h-4 text-cyan-400"></i>
+                <span class="text-xs font-bold text-cyan-400">R$ 210K recuperados de leads inativos</span>
+              </div>
+            </div>
+            <!-- Author -->
+            <div class="flex items-center gap-3">
+              <img src="assets/images/avatar-ricardo.png" alt="Ricardo Bastos" class="w-12 h-12 rounded-full object-cover ring-2 ring-cyan-400/30">
+              <div>
+                <div class="text-sm font-bold text-white">Ricardo Bastos</div>
+                <div class="text-xs text-slate-500">Fundador — Grupo RB Soluções (4 unidades)</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ====== CARROSSEL DE EMPRESAS ====== -->
+        <div class="reveal-item">
+          <p class="text-center text-xs font-semibold tracking-[3px] uppercase text-slate-600 mb-8">
+            Empresas que confiam na Nexo AI
+          </p>
+
+          <!-- Infinite scroll container -->
+          <div class="relative overflow-hidden" style="mask-image: linear-gradient(90deg, transparent, black 15%, black 85%, transparent);">
+            <div class="flex gap-16 items-center animate-marquee" style="animation: marquee 30s linear infinite; width: max-content;">
+              <!-- First set -->
+              <div class="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity grayscale hover:grayscale-0">
+                <i data-lucide="building-2" class="w-6 h-6 text-cyan-400"></i>
+                <span class="text-slate-200 text-xl font-bold tracking-tight">Mendonça<span class="font-light text-slate-400">Premium</span></span>
+              </div>
+              <div class="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity grayscale hover:grayscale-0">
+                <i data-lucide="activity" class="w-6 h-6 text-violet-400"></i>
+                <span class="text-slate-200 text-xl font-black tracking-tighter">DERMAVIDA<span class="text-violet-400 text-2xl leading-none">.</span></span>
+              </div>
+              <div class="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity grayscale hover:grayscale-0">
+                <i data-lucide="box" class="w-6 h-6 text-cyan-400"></i>
+                <span class="text-slate-200 text-xl font-bold uppercase tracking-widest text-slate-300">Grupo RB</span>
+              </div>
+              <div class="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity grayscale hover:grayscale-0">
+                <i data-lucide="cpu" class="w-6 h-6 text-violet-400"></i>
+                <span class="text-slate-200 text-xl font-semibold tracking-tight"><span class="text-violet-400">avantta</span> tech</span>
+              </div>
+              <div class="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity grayscale hover:grayscale-0">
+                <i data-lucide="heart-pulse" class="w-6 h-6 text-cyan-400"></i>
+                <span class="text-slate-200 text-xl font-bold tracking-tighter">CONNECT<span class="font-normal text-slate-400">+</span></span>
+              </div>
+              <div class="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity grayscale hover:grayscale-0">
+                <i data-lucide="compass" class="w-6 h-6 text-violet-400"></i>
+                <span class="text-slate-200 text-xl font-serif italic tracking-wide">Prime Consultoria</span>
+              </div>
+              
+              <!-- Duplicate set for seamless loop -->
+              <div class="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity grayscale hover:grayscale-0">
+                <i data-lucide="building-2" class="w-6 h-6 text-cyan-400"></i>
+                <span class="text-slate-200 text-xl font-bold tracking-tight">Mendonça<span class="font-light text-slate-400">Premium</span></span>
+              </div>
+              <div class="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity grayscale hover:grayscale-0">
+                <i data-lucide="activity" class="w-6 h-6 text-violet-400"></i>
+                <span class="text-slate-200 text-xl font-black tracking-tighter">DERMAVIDA<span class="text-violet-400 text-2xl leading-none">.</span></span>
+              </div>
+              <div class="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity grayscale hover:grayscale-0">
+                <i data-lucide="box" class="w-6 h-6 text-cyan-400"></i>
+                <span class="text-slate-200 text-xl font-bold uppercase tracking-widest text-slate-300">Grupo RB</span>
+              </div>
+              <div class="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity grayscale hover:grayscale-0">
+                <i data-lucide="cpu" class="w-6 h-6 text-violet-400"></i>
+                <span class="text-slate-200 text-xl font-semibold tracking-tight"><span class="text-violet-400">avantta</span> tech</span>
+              </div>
+              <div class="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity grayscale hover:grayscale-0">
+                <i data-lucide="heart-pulse" class="w-6 h-6 text-cyan-400"></i>
+                <span class="text-slate-200 text-xl font-bold tracking-tighter">CONNECT<span class="font-normal text-slate-400">+</span></span>
+              </div>
+              <div class="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity grayscale hover:grayscale-0">
+                <i data-lucide="compass" class="w-6 h-6 text-violet-400"></i>
+                <span class="text-slate-200 text-xl font-serif italic tracking-wide">Prime Consultoria</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ====== SEPARADOR ====== -->
+    <div class="w-full h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent"></div>
+
+
+    <!-- ====== A OFERTA IRRESISTÍVEL (Ancoragem de Preço) ====== -->
+    <section id="licenca" class="relative py-24 lg:py-32 overflow-hidden">
+      <div class="orb w-[500px] h-[500px] top-0 left-1/2 -translate-x-1/2" style="background:rgba(34,211,238,0.06);"></div>
+
+      <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
+
+        <div class="text-center mb-16 reveal-item">
+          <span class="inline-flex items-center gap-2 text-xs font-bold tracking-[3px] uppercase text-emerald-400 mb-4">
+            <i data-lucide="crown" class="w-4 h-4"></i>
+            Licença Executiva
+          </span>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight mb-4">
+            Quanto Custa <span class="text-gradient-emerald">Não Ter</span> a Nexo AI?
+          </h2>
+          <p class="text-lg text-slate-400 max-w-2xl mx-auto">
+            Um estagiário custa R$ 1.200/mês e não entrega 10% do que a Nexo AI faz. 
+            Um Diretor Financeiro custa R$ 18.000/mês. A Nexo AI entrega ambos. <strong class="text-white">24 horas. 7 dias.</strong>
+          </p>
+        </div>
+
+        <!-- Pricing Cards -->
+        <div class="grid md:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto">
+
+          <!-- Plano Operação -->
+          <div class="glass rounded-3xl p-8 lg:p-10 reveal-item">
+            <div class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Licença Operação</div>
+            <div class="text-xs text-slate-500 mb-6">Para quem precisa organizar o atendimento e parar de perder leads.</div>
+
+            <div class="mb-6">
+              <div class="flex items-baseline gap-2 mb-1">
+                <span class="price-strike text-2xl font-bold">R$ 2.497</span>
+                <span class="text-xs text-slate-500">valor de mercado</span>
+              </div>
+              <div class="flex items-baseline gap-1">
+                <span class="text-5xl font-black text-white">R$ 997</span>
+                <span class="text-slate-400 text-lg">/mês</span>
+              </div>
+              <div class="text-xs text-cyan-400 font-semibold mt-2 px-2 py-1 bg-cyan-400/10 inline-block rounded border border-cyan-400/20">Setup de Implantação 100% Isento Hoje</div>
+            </div>
+
+            <div class="space-y-3 mb-8">
+              <div class="flex items-center gap-3 text-sm text-slate-300">
+                <i data-lucide="check" class="w-4 h-4 text-cyan-400 flex-shrink-0"></i>
+                WhatsApp centralizado + funil integrado
+              </div>
+              <div class="flex items-center gap-3 text-sm text-slate-300">
+                <i data-lucide="check" class="w-4 h-4 text-cyan-400 flex-shrink-0"></i>
+                Atendimento automatizado com IA
+              </div>
+              <div class="flex items-center gap-3 text-sm text-slate-300">
+                <i data-lucide="check" class="w-4 h-4 text-cyan-400 flex-shrink-0"></i>
+                Dashboard de leads e conversão
+              </div>
+              <div class="flex items-center gap-3 text-sm text-slate-300">
+                <i data-lucide="check" class="w-4 h-4 text-cyan-400 flex-shrink-0"></i>
+                Até 3 usuários simultâneos
+              </div>
+              <div class="flex items-center gap-3 text-sm text-slate-300">
+                <i data-lucide="check" class="w-4 h-4 text-cyan-400 flex-shrink-0"></i>
+                Suporte por WhatsApp em horário comercial
+              </div>
+            </div>
+
+            <a href="https://pay.kiwify.com.br/PIlSK9V" class="block w-full text-center py-4 rounded-xl border border-cyan-400/40 text-cyan-400 font-bold hover:bg-cyan-400/10 transition-all" id="btn-plan-operacao" target="_blank">
+              Ativar Licença Operação →
+            </a>
+          </div>
+
+          <!-- Plano Comando (Featured) -->
+          <div class="relative reveal-item reveal-delay-1">
+            <!-- Glow border -->
+            <div class="absolute -inset-[2px] rounded-3xl bg-gradient-to-br from-cyan-400 to-violet-500 opacity-100"></div>
+
+            <div class="relative bg-slate-950 rounded-3xl p-8 lg:p-10">
+
+              <!-- Badge -->
+              <div class="absolute -top-4 left-1/2 -translate-x-1/2">
+                <div class="bg-gradient-to-r from-cyan-400 to-violet-500 text-white text-xs font-black uppercase tracking-wider px-6 py-1.5 rounded-full shadow-lg shadow-cyan-400/25">
+                  Máximo ROI
+                </div>
+              </div>
+
+              <div class="text-sm font-bold text-white uppercase tracking-wider mb-2 mt-2">Licença Comando Total</div>
+              <div class="text-xs text-slate-400 mb-6">Inteligência completa. Para quem quer dominar os números e escalar.</div>
+
+              <div class="mb-6">
+                <div class="flex items-baseline gap-2 mb-1">
+                  <span class="price-strike text-2xl font-bold">R$ 5.997</span>
+                  <span class="text-xs text-slate-500">valor de mercado</span>
+                </div>
+                <div class="flex items-baseline gap-1">
+                  <span class="text-5xl font-black text-white">R$ 1.497</span>
+                  <span class="text-slate-400 text-lg">/mês</span>
+                </div>
+                <div class="text-xs text-cyan-400 font-semibold mt-2 px-2 py-1 bg-cyan-400/10 inline-block rounded border border-cyan-400/20">Setup VIP de R$ 1.997 100% Incluso</div>
+              </div>
+
+              <div class="space-y-3 mb-8">
+                <div class="flex items-center gap-3 text-sm text-slate-200">
+                  <i data-lucide="check" class="w-4 h-4 text-cyan-400 flex-shrink-0"></i>
+                  <strong>Tudo da Licença Operação</strong> +
+                </div>
+                <div class="flex items-center gap-3 text-sm text-slate-200">
+                  <i data-lucide="check" class="w-4 h-4 text-cyan-400 flex-shrink-0"></i>
+                  Dashboard P&L completo (Lucro, CAC, LTV, Margem)
+                </div>
+                <div class="flex items-center gap-3 text-sm text-slate-200">
+                  <i data-lucide="check" class="w-4 h-4 text-cyan-400 flex-shrink-0"></i>
+                  IA de reativação de leads frios
+                </div>
+                <div class="flex items-center gap-3 text-sm text-slate-200">
+                  <i data-lucide="check" class="w-4 h-4 text-cyan-400 flex-shrink-0"></i>
+                  Relatórios executivos semanais automatizados
+                </div>
+                <div class="flex items-center gap-3 text-sm text-slate-200">
+                  <i data-lucide="check" class="w-4 h-4 text-cyan-400 flex-shrink-0"></i>
+                  Usuários ilimitados + multi-departamento
+                </div>
+                <div class="flex items-center gap-3 text-sm text-slate-200">
+                  <i data-lucide="check" class="w-4 h-4 text-cyan-400 flex-shrink-0"></i>
+                  Gerente de Sucesso dedicado
+                </div>
+                 <div class="flex items-center gap-3 text-sm text-slate-200">
+                  <i data-lucide="check" class="w-4 h-4 text-cyan-400 flex-shrink-0"></i>
+                  Suporte prioritário 24/7
+                </div>
+              </div>
+
+              <a href="https://pay.kiwify.com.br/Ynr9hy7" class="cta-glow animate-pulse-cta block w-full text-center py-4 rounded-xl text-white font-black text-lg" id="btn-plan-comando" target="_blank">
+                <span class="flex items-center justify-center gap-2">
+                  <i data-lucide="zap" class="w-5 h-5"></i>
+                  ATIVAR COMANDO TOTAL
+                </span>
+              </a>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Urgency / Guarantee -->
+        <div class="max-w-3xl mx-auto mt-12 reveal-item">
+          <div class="glass rounded-2xl p-6 sm:p-8 text-center border-cyan-400/10">
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-cyan-400/10 flex items-center justify-center">
+                  <i data-lucide="shield-check" class="w-6 h-6 text-cyan-400"></i>
+                </div>
+                <div class="text-left">
+                  <div class="text-sm font-bold text-white">Garantia de ROI</div>
+                  <div class="text-xs text-slate-400">Se não der resultado em 60 dias, devolvemos 100%.</div>
+                </div>
+              </div>
+              <div class="hidden sm:block w-px h-12 bg-white/10"></div>
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center">
+                  <i data-lucide="clock" class="w-6 h-6 text-blue-400"></i>
+                </div>
+                <div class="text-left">
+                  <div class="text-sm font-bold text-white">Setup em 48 horas</div>
+                  <div class="text-xs text-slate-400">Sua operação no ar em 2 dias úteis.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ====== SEPARADOR ====== -->
+    <div class="w-full h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent"></div>
+
+
+    <!-- ====== FAQ (Quebra de Objeções) ====== -->
+    <section id="faq" class="relative py-24 lg:py-32">
+      <div class="relative z-10 max-w-3xl mx-auto px-6 lg:px-8">
+
+        <div class="text-center mb-16 reveal-item">
+          <span class="inline-flex items-center gap-2 text-xs font-bold tracking-[3px] uppercase text-blue-400 mb-4">
+            <i data-lucide="help-circle" class="w-4 h-4"></i>
+            Quebrando Objeções
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-black tracking-tight mb-4">
+            Suas Dúvidas. <span class="text-gradient-blue">Respostas Diretas.</span>
+          </h2>
+        </div>
+
+        <!-- FAQ Items -->
+        <div class="space-y-4">
+
+          <div class="faq-item glass rounded-2xl overflow-hidden reveal-item" id="faq-item-1">
+            <button class="w-full flex items-center justify-between px-6 py-5 text-left faq-trigger" aria-expanded="false">
+              <span class="text-base font-semibold text-white pr-4">É difícil de usar? Preciso de equipe técnica?</span>
+              <i data-lucide="chevron-down" class="faq-chevron w-5 h-5 text-slate-400 flex-shrink-0 transition-transform duration-300"></i>
+            </button>
+            <div class="faq-answer">
+              <div class="px-6 pb-5 text-sm text-slate-400 leading-relaxed">
+                <strong class="text-white">Não e não.</strong> A Nexo AI foi projetada para CEOs e gestores, não para nerds de TI. 
+                A interface é visual, intuitiva e limpa. Se você sabe usar WhatsApp, sabe usar a Nexo AI. 
+                Além disso, nosso time faz toda a implantação por você em 48h.
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item glass rounded-2xl overflow-hidden reveal-item reveal-delay-1" id="faq-item-2">
+            <button class="w-full flex items-center justify-between px-6 py-5 text-left faq-trigger" aria-expanded="false">
+              <span class="text-base font-semibold text-white pr-4">Preciso instalar algum software?</span>
+              <i data-lucide="chevron-down" class="faq-chevron w-5 h-5 text-slate-400 flex-shrink-0 transition-transform duration-300"></i>
+            </button>
+            <div class="faq-answer">
+              <div class="px-6 pb-5 text-sm text-slate-400 leading-relaxed">
+                <strong class="text-white">Zero instalação.</strong> A Nexo AI roda 100% na nuvem. 
+                Acesse pelo navegador do computador ou celular. Sem downloads, sem atualizações, sem dor de cabeça com TI.
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item glass rounded-2xl overflow-hidden reveal-item reveal-delay-2" id="faq-item-3">
+            <button class="w-full flex items-center justify-between px-6 py-5 text-left faq-trigger" aria-expanded="false">
+              <span class="text-base font-semibold text-white pr-4">Funciona para imobiliárias e clínicas?</span>
+              <i data-lucide="chevron-down" class="faq-chevron w-5 h-5 text-slate-400 flex-shrink-0 transition-transform duration-300"></i>
+            </button>
+            <div class="faq-answer">
+              <div class="px-6 pb-5 text-sm text-slate-400 leading-relaxed">
+                <strong class="text-white">Sim, foi feito para vocês.</strong> Imobiliárias perdem leads em portais. Clínicas perdem pacientes no WhatsApp. 
+                A Nexo AI captura, organiza e converte tudo que hoje está escapando. Temos fluxos pré-configurados para cada segmento.
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item glass rounded-2xl overflow-hidden reveal-item reveal-delay-3" id="faq-item-4">
+            <button class="w-full flex items-center justify-between px-6 py-5 text-left faq-trigger" aria-expanded="false">
+              <span class="text-base font-semibold text-white pr-4">E se eu não tiver resultado?</span>
+              <i data-lucide="chevron-down" class="faq-chevron w-5 h-5 text-slate-400 flex-shrink-0 transition-transform duration-300"></i>
+            </button>
+            <div class="faq-answer">
+              <div class="px-6 pb-5 text-sm text-slate-400 leading-relaxed">
+                <strong class="text-emerald-400">Garantia de ROI de 60 dias.</strong> Se nos primeiros 60 dias você não 
+                perceber resultado concreto no seu atendimento e vendas, devolvemos 100% do valor investido. 
+                Sem burocracia, sem pergunta. O risco é todo nosso.
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item glass rounded-2xl overflow-hidden reveal-item" id="faq-item-5">
+            <button class="w-full flex items-center justify-between px-6 py-5 text-left faq-trigger" aria-expanded="false">
+              <span class="text-base font-semibold text-white pr-4">Quanto tempo leva para começar a funcionar?</span>
+              <i data-lucide="chevron-down" class="faq-chevron w-5 h-5 text-slate-400 flex-shrink-0 transition-transform duration-300"></i>
+            </button>
+            <div class="faq-answer">
+              <div class="px-6 pb-5 text-sm text-slate-400 leading-relaxed">
+                <strong class="text-white">48 horas.</strong> Após a assinatura, nosso time configura tudo: integração com WhatsApp, 
+                importação de contatos, configuração dos fluxos de IA. No terceiro dia você já opera com o painel ativo.
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item glass rounded-2xl overflow-hidden reveal-item reveal-delay-1" id="faq-item-6">
+            <button class="w-full flex items-center justify-between px-6 py-5 text-left faq-trigger" aria-expanded="false">
+              <span class="text-base font-semibold text-white pr-4">Posso cancelar a qualquer momento?</span>
+              <i data-lucide="chevron-down" class="faq-chevron w-5 h-5 text-slate-400 flex-shrink-0 transition-transform duration-300"></i>
+            </button>
+            <div class="faq-answer">
+              <div class="px-6 pb-5 text-sm text-slate-400 leading-relaxed">
+                <strong class="text-white">Sim, sem fidelidade.</strong> Cancele quando quiser, direto no painel. 
+                Sem multa, sem burocracia. Mas dificilmente vai querer — nossos clientes 
+                ficam porque os números falam mais alto que qualquer contrato.
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ====== CTA FINAL ====== -->
+    <section class="relative py-24 lg:py-32 overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-900/50 to-slate-950"></div>
+      <div class="orb w-[600px] h-[600px] bg-emerald-500/8 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+
+      <div class="relative z-10 max-w-4xl mx-auto px-6 lg:px-8 text-center reveal-item">
+
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight mb-6">
+          Cada Dia Sem a Nexo AI é<br>
+          <span class="text-gradient-emerald">Dinheiro Jogado no Lixo.</span>
+        </h2>
+
+        <p class="text-lg text-slate-400 max-w-2xl mx-auto mb-10">
+          Seus concorrentes já estão automatizando. Seus leads não vão esperar. 
+          A pergunta não é <em>se</em> você vai adotar IA no atendimento, é: 
+          <strong class="text-white">quanto vai perder até tomar essa decisão?</strong>
+        </p>
+
+        <a href="#licenca" class="cta-glow animate-pulse-cta inline-flex items-center gap-3 px-12 py-6 rounded-2xl text-xl font-black text-white" id="btn-cta-final">
+          <i data-lucide="zap" class="w-6 h-6"></i>
+          QUERO MEU LUCRO PREVISÍVEL AGORA
+        </a>
+
+        <p class="flex items-center justify-center gap-2 text-sm text-slate-500 mt-6">
+          <i data-lucide="shield-check" class="w-4 h-4 text-cyan-400"></i>
+          Garantia de 60 dias. Setup em 48h. Sem contrato de fidelidade.
+        </p>
+
+      </div>
+    </section>
+
+
+  </main>
+
+
+  <!-- ====== FOOTER ====== -->
+  <footer class="border-t border-white/5 py-12">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+
+        <!-- Brand -->
+        <div class="sm:col-span-2 lg:col-span-1">
+          <a href="/" class="inline-flex mb-4">
+            <img src="assets/images/WhatsApp Image 2026-04-17 at 14.39.30 (2).jpeg" alt="Nexo AI" class="h-12 w-auto object-contain rounded-lg" style="filter: drop-shadow(0 0 10px rgba(34,211,238,0.4)) drop-shadow(0 0 20px rgba(168,85,247,0.3));">
+          </a>
+          <p class="text-sm text-slate-500 leading-relaxed">
+            Inteligência de Dados para empresas que querem lucro previsível e controle total do atendimento.
+          </p>
+        </div>
+
+        <!-- Links -->
+        <div>
+          <h4 class="text-sm font-bold text-white mb-4">Produto</h4>
+          <div class="flex flex-col gap-2.5">
+            <a href="#solucao" class="text-sm text-slate-500 hover:text-cyan-400 transition-colors">A Solução</a>
+            <a href="#dashboard" class="text-sm text-slate-500 hover:text-cyan-400 transition-colors">Dashboard</a>
+            <a href="#licenca" class="text-sm text-slate-500 hover:text-cyan-400 transition-colors">Licença Executiva</a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-sm font-bold text-white mb-4">Suporte</h4>
+          <div class="flex flex-col gap-2.5">
+            <a href="#faq" class="text-sm text-slate-500 hover:text-cyan-400 transition-colors">FAQ</a>
+            <a href="mailto:contato@nexoai.app.br" class="text-sm text-slate-500 hover:text-cyan-400 transition-colors">contato@nexoai.app.br</a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-sm font-bold text-white mb-4">Legal</h4>
+          <div class="flex flex-col gap-2.5">
+            <a href="termos.html" class="text-sm text-slate-500 hover:text-cyan-400 transition-colors">Termos de Uso</a>
+            <a href="privacidade.html" class="text-sm text-slate-500 hover:text-cyan-400 transition-colors">Política de Privacidade</a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="border-t border-white/5 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-slate-600">
+          &copy; 2024–2026 Nexo AI — Inteligência de Dados. Todos os direitos reservados.
+        </p>
+        <div class="flex items-center gap-4">
+          <a href="termos.html" class="text-xs text-slate-600 hover:text-slate-400 transition-colors">Termos</a>
+          <a href="privacidade.html" class="text-xs text-slate-600 hover:text-slate-400 transition-colors">Privacidade</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+
+  <!-- ====== SCRIPTS ====== -->
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // ---- Scroll Reveal ----
+    function initScrollReveal() {
+      const items = document.querySelectorAll('.reveal-item');
+      if (!items.length) return;
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+      items.forEach(el => observer.observe(el));
+    }
+
+    // ---- Header scroll effect ----
+    function initHeaderScroll() {
+      const header = document.getElementById('header');
+      if (!header) return;
+
+      let ticking = false;
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          requestAnimationFrame(() => {
+            if (window.scrollY > 50) {
+              header.classList.add('shadow-lg', 'shadow-black/20');
+            } else {
+              header.classList.remove('shadow-lg', 'shadow-black/20');
+            }
+            ticking = false;
+          });
+          ticking = true;
+        }
+      });
+    }
+
+    // ---- Mobile Menu ----
+    function initMobileMenu() {
+      const toggle = document.getElementById('mobile-toggle');
+      const close = document.getElementById('mobile-close');
+      const menu = document.getElementById('mobile-menu');
+      if (!toggle || !menu) return;
+
+      toggle.addEventListener('click', () => {
+        menu.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+
+      close.addEventListener('click', () => {
+        menu.classList.remove('open');
+        document.body.style.overflow = '';
+      });
+
+      menu.querySelectorAll('.mobile-link').forEach(link => {
+        link.addEventListener('click', () => {
+          menu.classList.remove('open');
+          document.body.style.overflow = '';
+        });
+      });
+    }
+
+    // ---- FAQ Accordion ----
+    function initFAQ() {
+      const items = document.querySelectorAll('.faq-item');
+      items.forEach(item => {
+        const trigger = item.querySelector('.faq-trigger');
+        trigger.addEventListener('click', () => {
+          const isActive = item.classList.contains('active');
+          items.forEach(i => i.classList.remove('active'));
+          if (!isActive) item.classList.add('active');
+        });
+      });
+    }
+
+    // ---- Smooth Scroll ----
+    function initSmoothScroll() {
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          const href = this.getAttribute('href');
+          if (href === '#') return;
+          e.preventDefault();
+          const target = document.querySelector(href);
+          if (target) {
+            const offset = 80;
+            const position = target.getBoundingClientRect().top + window.scrollY - offset;
+            window.scrollTo({ top: position, behavior: 'smooth' });
+          }
+        });
+      });
+    }
+
+    // ---- Counter Animation ----
+    function initCounterAnimation() {
+      const counters = document.querySelectorAll('[data-counter]');
+      if (!counters.length) return;
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && entry.target.getAttribute('data-animated') === 'false') {
+            entry.target.setAttribute('data-animated', 'true');
+            animateCounter(entry.target);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.5 });
+
+      counters.forEach(counter => observer.observe(counter));
+    }
+
+    function animateCounter(el) {
+      const target = parseInt(el.getAttribute('data-counter'));
+      const prefix = el.getAttribute('data-prefix') || '';
+      const suffix = el.getAttribute('data-suffix') || '';
+      const duration = 2200;
+      const start = performance.now();
+
+      function update(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = 1 - Math.pow(1 - progress, 3);
+        const current = Math.floor(target * ease);
+
+        el.textContent = prefix + current.toLocaleString('pt-BR') + suffix;
+
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        } else {
+          el.textContent = prefix + target.toLocaleString('pt-BR') + suffix;
+        }
+      }
+
+      requestAnimationFrame(update);
+    }
+
+    // ---- Dashboard hover perspective effect ----
+    function initDashboardHover() {
+      const dashboard = document.querySelector('.dashboard-card');
+      if (!dashboard || window.innerWidth < 1024) return;
+
+      dashboard.addEventListener('mousemove', (e) => {
+        const rect = dashboard.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        dashboard.style.transform = `perspective(1200px) rotateX(${y * -4}deg) rotateY(${x * 4}deg)`;
+      });
+
+      dashboard.addEventListener('mouseleave', () => {
+        dashboard.style.transform = 'perspective(1200px) rotateX(2deg) rotateY(-1deg)';
+      });
+    }
+
+    // ---- Init all ----
+    document.addEventListener('DOMContentLoaded', () => {
+      initScrollReveal();
+      initHeaderScroll();
+      initMobileMenu();
+      initFAQ();
+      initSmoothScroll();
+      initCounterAnimation();
+      initDashboardHover();
+    });
+  </script>
+
+</body>
+</html>
