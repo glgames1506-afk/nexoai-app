@@ -226,7 +226,7 @@
               <i data-lucide="trending-up" class="w-3 h-3"></i> +23%
             </span>
           </div>
-          <div class="text-3xl font-black text-white">47</div>
+          <div class="text-3xl font-black text-white" id="kpi-leads-hoje">47</div>
           <div class="text-xs text-slate-500 mt-1">Leads Hoje</div>
         </div>
 
@@ -356,7 +356,7 @@
         <div class="lg:col-span-2 glass-card p-6 fade-in fade-in-4">
           <div class="flex items-center justify-between mb-6">
             <h3 class="text-lg font-bold text-white">Leads Recentes</h3>
-            <button class="text-xs text-cyan-400 hover:text-cyan-300 font-semibold transition-colors">Ver todos →</button>
+            <button onclick="addLead()" class="text-xs text-cyan-400 hover:text-cyan-300 font-semibold transition-colors">+ Novo Lead</button>
           </div>
 
           <div class="overflow-x-auto">
@@ -370,7 +370,7 @@
                   <th class="text-right text-xs text-slate-500 font-semibold pb-3 uppercase tracking-wider">Tempo</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-slate-800/50">
+              <tbody id="leads-tbody" class="divide-y divide-slate-800/50">
                 <tr class="hover:bg-slate-800/30 transition-colors">
                   <td class="py-4 font-semibold text-white">Marina Oliveira</td>
                   <td class="py-4 text-slate-400">(11) 9●●●●-4521</td>
@@ -589,7 +589,7 @@
                           <th class="py-3 px-4 text-xs text-slate-500 font-semibold uppercase tracking-wider text-right">Ações</th>
                        </tr>
                     </thead>
-                    <tbody class="divide-y divide-white/5">
+                    <tbody id="leads-tbody" class="divide-y divide-white/5">
                         <tr class="hover:bg-white/[0.02] transition-colors">
                            <td class="py-4 px-4 text-white font-bold">Marina Oliveira</td>
                            <td class="py-4 px-4 text-slate-400">(11) 9●●●●-4521</td>
@@ -657,12 +657,12 @@
       <div id="view-whatsapp" class="view-section hidden">
          <div class="glass-card flex overflow-hidden" style="height: calc(100vh - 180px);">
             <!-- Contact List -->
-            <div class="w-1/3 border-r border-white/5 overflow-y-auto bg-slate-900/30">
+            <div id="chat-contact-list" class="w-1/3 border-r border-white/5 overflow-y-auto bg-slate-900/30">
                <div class="p-4 border-b border-white/5 font-bold text-white flex justify-between items-center">
                   <span>Conversas (47)</span>
                   <span class="bg-cyan-400/20 text-cyan-400 text-[10px] px-2 py-1 rounded-full font-bold uppercase">IA Online</span>
                </div>
-               <!-- Active chat -->
+               <!-- Active chat --> <!-- CONTACTS INJECTED BY JS -->
                <div class="p-4 border-b border-cyan-400/30 bg-cyan-400/5 cursor-pointer flex items-center gap-3">
                   <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">MO</div>
                   <div class="flex-1 min-w-0">
@@ -701,7 +701,7 @@
                </div>
             </div>
             <!-- Chat Window -->
-            <div class="w-2/3 flex flex-col bg-[#0f172a]">
+            <div class="w-2/3 flex flex-col bg-[#0f172a]" id="chat-window">
                <div class="p-4 border-b border-white/5 flex items-center justify-between">
                   <div class="flex items-center gap-3">
                      <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center text-white text-xs font-bold">MO</div>
@@ -715,8 +715,7 @@
                      <span class="text-xs font-bold text-cyan-400">IA no Controle</span>
                   </div>
                </div>
-               <div class="flex-1 p-6 overflow-y-auto space-y-4">
-                  <div class="text-center text-[10px] text-slate-600 py-2">— Hoje, 14:32 —</div>
+               <div id="chat-messages" class="flex-1 p-6 overflow-y-auto space-y-4">
                   <div class="bg-slate-800 p-3 rounded-xl rounded-tl-none w-3/4 text-sm text-slate-200 shadow-md">Olá, vi o apartamento no Vila Mariana pela internet. Ainda está disponível? Qual o valor?</div>
                   <div class="bg-cyan-900/20 p-3 rounded-xl rounded-tr-none w-3/4 ml-auto text-sm border border-cyan-400/30 shadow-[0_0_15px_rgba(34,211,238,0.08)] text-slate-200">
                      <div class="text-[10px] text-cyan-400 font-bold mb-1 flex items-center gap-1"><i data-lucide="bot" class="w-3 h-3"></i> Nexo IA</div>
@@ -756,7 +755,7 @@
                <div class="bg-slate-900/50 min-w-[260px] w-full rounded-xl p-4 flex flex-col">
                   <div class="border-b border-cyan-400/20 pb-3 mb-4 flex justify-between items-center">
                      <span class="text-xs font-bold text-cyan-400 uppercase">1. Novo Lead</span>
-                     <span class="bg-cyan-400/20 text-cyan-400 text-[10px] font-bold px-2 py-0.5 rounded">18</span>
+                     <span class="bg-cyan-400/20 text-cyan-400 text-[10px] font-bold px-2 py-0.5 rounded"><span id="funnel-count-novo">18</span></span>
                   </div>
                   <div class="space-y-2 flex-1">
                      <div class="bg-slate-800/80 p-3 rounded-lg border border-white/5 cursor-pointer hover:border-cyan-400/30 transition-colors">
@@ -777,7 +776,7 @@
                <div class="bg-slate-900/50 min-w-[260px] w-full rounded-xl p-4 flex flex-col">
                   <div class="border-b border-violet-400/20 pb-3 mb-4 flex justify-between items-center">
                      <span class="text-xs font-bold text-violet-400 uppercase">2. IA Atendendo</span>
-                     <span class="bg-violet-400/20 text-violet-400 text-[10px] font-bold px-2 py-0.5 rounded">14</span>
+                     <span class="bg-violet-400/20 text-violet-400 text-[10px] font-bold px-2 py-0.5 rounded"><span id="funnel-count-atendimento">14</span></span>
                   </div>
                   <div class="space-y-2 flex-1">
                      <div class="bg-slate-800/80 p-3 rounded-lg border border-violet-400/10 cursor-pointer hover:border-violet-400/30 transition-colors">
@@ -794,7 +793,7 @@
                <div class="bg-slate-900/50 min-w-[260px] w-full rounded-xl p-4 flex flex-col">
                   <div class="border-b border-amber-400/20 pb-3 mb-4 flex justify-between items-center">
                      <span class="text-xs font-bold text-amber-400 uppercase">3. Visita Agendada</span>
-                     <span class="bg-amber-400/20 text-amber-400 text-[10px] font-bold px-2 py-0.5 rounded">8</span>
+                     <span class="bg-amber-400/20 text-amber-400 text-[10px] font-bold px-2 py-0.5 rounded"><span id="funnel-count-frio">8</span></span>
                   </div>
                   <div class="space-y-2 flex-1">
                      <div class="bg-slate-800/80 p-3 rounded-lg border border-amber-400/20 cursor-pointer shadow-[0_0_10px_rgba(251,191,36,0.05)]">
@@ -811,7 +810,7 @@
                <div class="bg-slate-900/50 min-w-[260px] w-full rounded-xl p-4 flex flex-col">
                   <div class="border-b border-emerald-400/20 pb-3 mb-4 flex justify-between items-center">
                      <span class="text-xs font-bold text-emerald-400 uppercase">4. Convertido</span>
-                     <span class="bg-emerald-400/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded">12</span>
+                     <span class="bg-emerald-400/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded"><span id="funnel-count-convertido">12</span></span>
                   </div>
                   <div class="space-y-2 flex-1">
                      <div class="bg-slate-800/80 p-3 rounded-lg border border-emerald-400/30 cursor-pointer shadow-[0_0_15px_rgba(52,211,153,0.1)]">
@@ -1086,6 +1085,283 @@
          });
       });
     </script>
+
+    <!-- ====== NEXO AI — SUPABASE ENGINE v2.0 (LIVE) ====== -->
+    <script id="nexo-engine-v2">
+    const SUPABASE_URL = "https://tqqtjrunrimabitmersr.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxcXRqcnVucmltYWJpdG1lcnNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NjYwMjgsImV4cCI6MjA5MjA0MjAyOH0.CEJRX8rYb_5S5pN_M2KemyBRxdSPd9jf8Y-Xm3vlTDc";
+
+    // ─── CORE API ──────────────────────────────────────────────
+    async function sbFetch(table, params = "") {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${params}`, {
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Authorization": "Bearer " + SUPABASE_KEY,
+          "Content-Type": "application/json"
+        }
+      });
+      if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
+      return res.json();
+    }
+
+    async function sbInsert(table, body) {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+        method: "POST",
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Authorization": "Bearer " + SUPABASE_KEY,
+          "Content-Type": "application/json",
+          "Prefer": "return=representation"
+        },
+        body: JSON.stringify(body)
+      });
+      return res.json();
+    }
+
+    async function sbUpdate(table, id, body) {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, {
+        method: "PATCH",
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Authorization": "Bearer " + SUPABASE_KEY,
+          "Content-Type": "application/json",
+          "Prefer": "return=representation"
+        },
+        body: JSON.stringify(body)
+      });
+      return res.json();
+    }
+
+    // ─── STATUS BADGES ──────────────────────────────────────────
+    const STATUS_LABELS = {
+      novo: "Novo",
+      atendimento: "Em Atendimento",
+      convertido: "Convertido",
+      frio: "Sem Resposta"
+    };
+    const STATUS_CLASSES = {
+      novo: "badge-novo",
+      atendimento: "badge-atendimento",
+      convertido: "badge-convertido",
+      frio: "badge-frio"
+    };
+    function badge(status) {
+      const cls = STATUS_CLASSES[status] || "badge-novo";
+      const lbl = STATUS_LABELS[status] || status;
+      return `<span class="${cls} text-xs font-bold px-2.5 py-1 rounded-full">${lbl}</span>`;
+    }
+
+    // ─── KPIs ────────────────────────────────────────────────
+    async function loadKPIs() {
+      try {
+        const leads = await sbFetch("leads", "select=status");
+        const total = leads.length;
+        const hoje = leads.length; // todos como "hoje" para demo
+        const convertidos = leads.filter(l => l.status === "convertido").length;
+        const respondidos = leads.filter(l => l.status !== "frio").length;
+        const taxa = total > 0 ? Math.round((respondidos / total) * 100) : 0;
+
+        // Update KPI elements if they exist
+        const elLeads = document.getElementById("kpi-leads-hoje");
+        const elTaxa = document.getElementById("kpi-taxa-resposta");
+        const elConversoes = document.getElementById("kpi-conversoes");
+        
+        if (elLeads) elLeads.textContent = total;
+        if (elTaxa) elTaxa.textContent = taxa;
+        if (elConversoes) elConversoes.textContent = convertidos;
+      } catch(e) {
+        console.warn("KPIs offline, usando dados estáticos:", e.message);
+      }
+    }
+
+    // ─── LEADS TABLE ─────────────────────────────────────────
+    async function loadLeadsTable() {
+      const tbody = document.getElementById("leads-tbody");
+      if (!tbody) return;
+
+      tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-500 text-sm">Carregando leads...</td></tr>`;
+
+      try {
+        const leads = await sbFetch("leads", "select=*&order=created_at.desc");
+        if (!leads.length) {
+          tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-500 text-sm">Nenhum lead cadastrado ainda.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = leads.map(lead => {
+          const time = new Date(lead.created_at).toLocaleString("pt-BR", {day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit"});
+          const action = lead.status === "convertido"
+            ? `<span class="text-emerald-400 font-bold text-xs">✓ Fechado</span>`
+            : lead.status === "frio"
+              ? `<button onclick="triggerReactivation('${lead.id}')" class="text-amber-400 hover:text-amber-300 font-bold text-xs cursor-pointer">Reenviar IA →</button>`
+              : `<button onclick="openChat('${lead.id}', '${lead.name}')" class="text-cyan-400 hover:text-cyan-300 font-bold text-xs cursor-pointer">Abrir Chat →</button>`;
+          return `
+            <tr class="hover:bg-white/[0.02] transition-colors">
+              <td class="py-4 px-4 text-white font-bold">${lead.name}</td>
+              <td class="py-4 px-4 text-slate-400">${lead.phone}</td>
+              <td class="py-4 px-4">${badge(lead.status)}</td>
+              <td class="py-4 px-4 text-slate-400">${lead.source || "—"}</td>
+              <td class="py-4 px-4 text-slate-500 text-xs max-w-[200px] truncate">${lead.last_message || "—"}</td>
+              <td class="py-4 px-4 text-right">${action}</td>
+            </tr>`;
+        }).join("");
+      } catch(e) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-red-400 text-sm">Erro ao carregar leads. Verifique a conexão.</td></tr>`;
+        console.error(e);
+      }
+    }
+
+    // ─── WHATSAPP CONTACT LIST ─────────────────────────────────
+    async function loadWhatsappContacts() {
+      const list = document.getElementById("chat-contact-list");
+      if (!list) return;
+
+      try {
+        const leads = await sbFetch("leads", "select=*&order=updated_at.desc");
+        list.innerHTML = leads.map((lead, i) => {
+          const initials = lead.name.split(" ").map(w => w[0]).slice(0,2).join("").toUpperCase();
+          const colors = ["from-cyan-400 to-violet-500", "from-violet-400 to-pink-500", "from-emerald-400 to-cyan-500", "from-amber-400 to-orange-500", "from-red-400 to-pink-600"];
+          const color = colors[i % colors.length];
+          const activeClass = i === 0 ? "border-cyan-400/30 bg-cyan-400/5" : "border-white/5 hover:bg-white/[0.02]";
+          const subtext = lead.status === "convertido"
+            ? `<div class="text-xs text-emerald-400 truncate">Convertido ✓</div>`
+            : lead.status === "frio"
+              ? `<div class="text-xs text-red-400 truncate">Sem resposta</div>`
+              : `<div class="text-xs text-cyan-400 truncate">IA atendendo...</div>`;
+          return `
+            <div onclick="loadChat('${lead.id}', '${lead.name}', '${lead.phone}')"
+                 class="p-4 border-b ${activeClass} cursor-pointer flex items-center gap-3 transition-colors">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br ${color} flex items-center justify-center text-white text-xs font-bold flex-shrink-0">${initials}</div>
+              <div class="flex-1 min-w-0">
+                <div class="text-sm font-bold text-white">${lead.name}</div>
+                ${subtext}
+              </div>
+            </div>`;
+        }).join("");
+      } catch(e) {
+        console.error("Erro carregando contatos:", e);
+      }
+    }
+
+    // ─── LOAD CHAT ─────────────────────────────────────────────
+    async function loadChat(leadId, name, phone) {
+      const chatWindow = document.getElementById("chat-messages");
+      const chatHeader = document.getElementById("chat-header-name");
+      const chatSub = document.getElementById("chat-header-sub");
+      if (!chatWindow) return;
+
+      if(chatHeader) chatHeader.textContent = name;
+      if(chatSub) chatSub.textContent = `${phone} • Lead Ativo`;
+
+      chatWindow.innerHTML = `<div class="text-center text-slate-500 text-sm py-8">Carregando conversa...</div>`;
+
+      try {
+        const msgs = await sbFetch("chats", `lead_id=eq.${leadId}&order=created_at.asc`);
+        if (!msgs.length) {
+          chatWindow.innerHTML = `
+            <div class="text-center py-8">
+              <div class="text-slate-500 text-sm mb-4">Nenhuma conversa registrada ainda.</div>
+              <button onclick="sendFirstMessage('${leadId}')" class="bg-cyan-400 text-slate-900 font-bold px-4 py-2 rounded-xl text-sm hover:bg-cyan-300 transition-colors">IA Iniciar Abordagem</button>
+            </div>`;
+          return;
+        }
+        chatWindow.innerHTML = msgs.map(msg => {
+          const isIA = msg.sender === "ia";
+          const time = new Date(msg.created_at).toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"});
+          if (isIA) return `
+            <div class="flex flex-col items-end mb-4">
+              <div class="bg-cyan-900/20 p-3 rounded-xl rounded-tr-none w-3/4 ml-auto text-sm border border-cyan-400/30 text-slate-200">
+                <div class="text-[10px] text-cyan-400 font-bold mb-1 flex items-center gap-1">🤖 Nexo IA</div>
+                ${msg.message}
+              </div>
+              <div class="text-[10px] text-slate-600 mt-1">${time}</div>
+            </div>`;
+          return `
+            <div class="flex flex-col items-start mb-4">
+              <div class="bg-slate-800 p-3 rounded-xl rounded-tl-none w-3/4 text-sm text-slate-200">${msg.message}</div>
+              <div class="text-[10px] text-slate-600 mt-1">${time}</div>
+            </div>`;
+        }).join("");
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+      } catch(e) {
+        chatWindow.innerHTML = `<div class="text-center text-red-400 text-sm py-8">Erro ao carregar conversa.</div>`;
+      }
+    }
+
+    // ─── SEND MANUAL MESSAGE ───────────────────────────────────
+    async function sendMessage(leadId) {
+      const input = document.getElementById("chat-input");
+      if (!input || !input.value.trim()) return;
+      const msg = input.value.trim();
+      input.value = "";
+      await sbInsert("chats", { lead_id: leadId, sender: "humano", message: msg });
+      await loadChat(leadId, "", "");
+    }
+
+    // ─── ADD NEW LEAD ──────────────────────────────────────────
+    async function addLead() {
+      const name = prompt("Nome do lead:");
+      if (!name) return;
+      const phone = prompt("WhatsApp (com DDD):");
+      if (!phone) return;
+      const source = prompt("Origem (Meta Ads, Google, Indicação...):");
+      
+      await sbInsert("leads", {
+        name: name.trim(),
+        phone: phone.trim(),
+        status: "novo",
+        source: source || "Manual",
+        last_message: "Cadastrado manualmente"
+      });
+      
+      await loadLeadsTable();
+      alert("Lead adicionado com sucesso!");
+    }
+
+    // ─── TRIGGER REACTIVATION ─────────────────────────────────
+    async function triggerReactivation(leadId) {
+      if (!confirm("Deseja que a IA envie uma mensagem de reativação para este lead?")) return;
+      await sbUpdate("leads", leadId, { status: "atendimento", last_message: "Reativação IA disparada..." });
+      await sbInsert("chats", { lead_id: leadId, sender: "ia", message: "Olá! Percebi que você demonstrou interesse anteriormente. Ainda posso te ajudar? Temos novidades que podem te interessar. 😊" });
+      await loadLeadsTable();
+      alert("✅ Reativação disparada com sucesso!");
+    }
+
+    // ─── FUNNEL COUNTS ────────────────────────────────────────
+    async function loadFunnelCounts() {
+      try {
+        const leads = await sbFetch("leads", "select=status");
+        const count = (status) => leads.filter(l => l.status === status).length;
+        
+        const elNovo = document.getElementById("funnel-count-novo");
+        const elAtend = document.getElementById("funnel-count-atendimento");
+        const elConv = document.getElementById("funnel-count-convertido");
+        const elFrio = document.getElementById("funnel-count-frio");
+        
+        if(elNovo) elNovo.textContent = count("novo");
+        if(elAtend) elAtend.textContent = count("atendimento");
+        if(elConv) elConv.textContent = count("convertido");
+        if(elFrio) elFrio.textContent = count("frio");
+      } catch(e) { console.warn("Funnel offline", e.message); }
+    }
+
+    // ─── INIT ENGINE ─────────────────────────────────────────
+    async function initNexoEngine() {
+      console.log("🚀 Nexo AI Engine — Conectando ao Supabase...");
+      await Promise.all([
+        loadKPIs(),
+        loadLeadsTable(),
+        loadWhatsappContacts(),
+        loadFunnelCounts()
+      ]);
+      console.log("✅ Nexo AI Engine — Online e sincronizado.");
+    }
+
+    // Run on page load
+    window.addEventListener("load", initNexoEngine);
+    </script>
+    <!-- ====== FIM DO NEXO SUPABASE ENGINE ====== -->
 </body>
+
 
 </html>
