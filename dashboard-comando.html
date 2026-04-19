@@ -96,12 +96,403 @@
       background: linear-gradient(135deg, rgba(34,211,238,0.05), rgba(168,85,247,0.05));
       border: 1px solid rgba(34,211,238,0.1);
     }
+
+    /* ─── MODALS ─── */
+    .nexo-modal-overlay {
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .nexo-modal-overlay.active { opacity: 1; pointer-events: all; }
+    .nexo-modal-overlay.active .nexo-modal-content {
+      transform: scale(1); opacity: 1;
+    }
+    .nexo-modal-content {
+      background: #0f172a;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 1.5rem;
+      padding: 2.5rem;
+      max-width: 440px; width: 90%;
+      transform: scale(0.9); opacity: 0;
+      transition: all 0.3s ease;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.5);
+    }
+
+    /* ─── TOAST ─── */
+    .nexo-toast-container {
+      position: fixed; top: 1.5rem; right: 1.5rem; z-index: 200;
+      display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    .nexo-toast {
+      padding: 1rem 1.5rem;
+      border-radius: 1rem;
+      font-size: 0.875rem; font-weight: 600;
+      display: flex; align-items: center; gap: 0.75rem;
+      transform: translateX(120%);
+      animation: toastSlideIn 0.4s ease forwards;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+    .nexo-toast.success {
+      background: rgba(52,211,153,0.15);
+      border: 1px solid rgba(52,211,153,0.3);
+      color: #34d399;
+    }
+    .nexo-toast.error {
+      background: rgba(248,113,113,0.15);
+      border: 1px solid rgba(248,113,113,0.3);
+      color: #f87171;
+    }
+    @keyframes toastSlideIn {
+      to { transform: translateX(0); }
+    }
+    @keyframes toastSlideOut {
+      to { transform: translateX(120%); opacity: 0; }
+    }
+
+    /* ─── QR PULSE ─── */
+    @keyframes qrPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(52,211,153,0.3); }
+      50% { box-shadow: 0 0 0 15px rgba(52,211,153,0); }
+    }
+    .qr-pulse { animation: qrPulse 2s infinite; }
+
+    /* ─── SPINNER ─── */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .nexo-spinner {
+      width: 24px; height: 24px;
+      border: 3px solid rgba(255,255,255,0.1);
+      border-top-color: #34d399;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
   </style>
 </head>
 <body class="min-h-screen">
 
   <div class="flex min-h-screen">
 
+    <!-- ====== TOAST CONTAINER ====== -->
+    <div class="nexo-toast-container" id="nexo-toast-container"></div>
+
+    <!-- ====== WHATSAPP CONNECTION MODAL ====== -->
+    <div class="nexo-modal-overlay" id="waha-modal" onclick="if(event.target===this) closeWahaModal()">
+      <div class="nexo-modal-content">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-400/10 border border-emerald-400/20 flex items-center justify-center">
+              <i data-lucide="message-circle" class="w-6 h-6 text-emerald-400"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white">Conectar WhatsApp</h3>
+              <p class="text-[11px] text-slate-500" id="waha-session-id">Sessão: —</p>
+            </div>
+          </div>
+          <button onclick="closeWahaModal()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- QR Code Area -->
+        <div id="waha-qr-area" class="text-center">
+          <!-- State: Loading -->
+          <div id="waha-state-loading" class="py-8">
+            <div class="nexo-spinner mx-auto mb-4"></div>
+            <p class="text-sm text-slate-400">Iniciando sessão WAHA...</p>
+            <p class="text-[10px] text-slate-600 mt-1">Criando canal seguro</p>
+          </div>
+
+          <!-- State: QR Ready -->
+          <div id="waha-state-qr" class="hidden">
+            <div class="bg-white rounded-2xl p-4 w-56 h-56 mx-auto mb-5 qr-pulse flex items-center justify-center">
+              <img id="waha-qr-image" src="" alt="QR Code" class="w-full h-full object-contain" style="display:none;" />
+              <!-- Fallback SVG QR placeholder -->
+              <svg id="waha-qr-placeholder" viewBox="0 0 200 200" class="w-full h-full">
+                <rect width="200" height="200" fill="white"/>
+                <!-- Simulated QR pattern -->
+                <g fill="#1e293b">
+                  <rect x="10" y="10" width="60" height="60"/>
+                  <rect x="130" y="10" width="60" height="60"/>
+                  <rect x="10" y="130" width="60" height="60"/>
+                  <rect x="20" y="20" width="40" height="40" fill="white"/>
+                  <rect x="140" y="20" width="40" height="40" fill="white"/>
+                  <rect x="20" y="140" width="40" height="40" fill="white"/>
+                  <rect x="30" y="30" width="20" height="20"/>
+                  <rect x="150" y="30" width="20" height="20"/>
+                  <rect x="30" y="150" width="20" height="20"/>
+                  <!-- Data blocks -->
+                  <rect x="80" y="10" width="10" height="10"/>
+                  <rect x="100" y="10" width="10" height="10"/>
+                  <rect x="80" y="30" width="10" height="10"/>
+                  <rect x="110" y="30" width="10" height="10"/>
+                  <rect x="80" y="50" width="10" height="10"/>
+                  <rect x="100" y="50" width="10" height="10"/>
+                  <rect x="90" y="80" width="10" height="10"/>
+                  <rect x="110" y="80" width="10" height="10"/>
+                  <rect x="80" y="100" width="10" height="10"/>
+                  <rect x="100" y="100" width="10" height="10"/>
+                  <rect x="120" y="100" width="10" height="10"/>
+                  <rect x="90" y="120" width="10" height="10"/>
+                  <rect x="110" y="120" width="10" height="10"/>
+                  <rect x="80" y="140" width="10" height="10"/>
+                  <rect x="100" y="140" width="10" height="10"/>
+                  <rect x="120" y="140" width="10" height="10"/>
+                  <rect x="130" y="80" width="10" height="10"/>
+                  <rect x="150" y="80" width="10" height="10"/>
+                  <rect x="170" y="80" width="10" height="10"/>
+                  <rect x="140" y="100" width="10" height="10"/>
+                  <rect x="160" y="100" width="10" height="10"/>
+                  <rect x="130" y="120" width="10" height="10"/>
+                  <rect x="150" y="120" width="10" height="10"/>
+                  <rect x="170" y="120" width="10" height="10"/>
+                  <rect x="140" y="140" width="10" height="10"/>
+                  <rect x="160" y="140" width="10" height="10"/>
+                  <rect x="130" y="160" width="10" height="10"/>
+                  <rect x="150" y="160" width="10" height="10"/>
+                  <rect x="170" y="160" width="10" height="10"/>
+                  <rect x="140" y="180" width="10" height="10"/>
+                  <rect x="160" y="180" width="10" height="10"/>
+                </g>
+              </svg>
+            </div>
+            <p class="text-sm font-bold text-white mb-1">Escaneie para conectar</p>
+            <p class="text-xs text-slate-400 mb-4">Abra o WhatsApp → Menu → Aparelhos conectados → Conectar</p>
+            <div class="flex items-center justify-center gap-2">
+              <div class="nexo-spinner" style="width:16px;height:16px;border-width:2px;"></div>
+              <span class="text-[11px] text-slate-500" id="waha-poll-status">Aguardando leitura do QR Code...</span>
+            </div>
+          </div>
+
+          <!-- State: Connected -->
+          <div id="waha-state-connected" class="hidden py-6">
+            <div class="w-20 h-20 rounded-full bg-emerald-400/20 border-2 border-emerald-400 flex items-center justify-center mx-auto mb-5">
+              <i data-lucide="check" class="w-10 h-10 text-emerald-400"></i>
+            </div>
+            <h4 class="text-xl font-black text-white mb-2">WhatsApp Conectado! 🎉</h4>
+            <p class="text-sm text-slate-400">Seu agente IA já está ativo e pronto para atender.</p>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-2 h-2 rounded-full" id="waha-status-dot" style="background:#64748b;"></div>
+            <span class="text-[10px] font-bold text-slate-500" id="waha-status-text">Desconectado</span>
+          </div>
+          <span class="text-[10px] text-slate-600">Powered by WAHA</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== AI AGENT CONFIG MODAL (Prompt 3) ====== -->
+    <div class="nexo-modal-overlay" id="agent-config-modal" onclick="if(event.target===this) closeAgentConfig()">
+      <div class="nexo-modal-content" style="max-width:520px;">
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-violet-400/10 border border-violet-400/20 flex items-center justify-center">
+              <i data-lucide="brain" class="w-6 h-6 text-violet-400"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white">Configurar Agente IA</h3>
+              <p class="text-[11px] text-slate-500">Defina como a IA atende seus clientes</p>
+            </div>
+          </div>
+          <button onclick="closeAgentConfig()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <form id="agent-config-form" onsubmit="saveAgentConfig(event)">
+          <!-- Agent Name -->
+          <div class="mb-5">
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nome do Assistente</label>
+            <input type="text" id="agent-name" value="Assistente Nexo" placeholder="Ex: Sofia, Atendimento Premium..." class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors" />
+          </div>
+
+          <!-- Tone of Voice -->
+          <div class="mb-5">
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tom de Voz da IA</label>
+            <select id="agent-tone" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 cursor-pointer appearance-none">
+              <option value="formal">🎩 Formal — Profissional e polido</option>
+              <option value="amigavel" selected>😊 Amigável — Próximo e acolhedor</option>
+              <option value="persuasivo">🎯 Persuasivo — Focado em conversão</option>
+              <option value="direto">⚡ Direto — Objetividade máxima</option>
+            </select>
+          </div>
+
+          <!-- Base Instructions -->
+          <div class="mb-6">
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Instruções Base da Empresa</label>
+            <textarea id="agent-instructions" rows="5" placeholder="Descreva o endereço, preços principais, horário de funcionamento e regras de negócio para a IA aprender..." class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors resize-none"></textarea>
+            <p class="text-[10px] text-slate-600 mt-1.5">Quanto mais detalhado, melhor a IA atende. Mínimo 50 caracteres recomendado.</p>
+          </div>
+
+          <!-- Buttons -->
+          <div class="flex gap-3">
+            <button type="button" onclick="closeAgentConfig()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm py-3 rounded-xl transition-colors">Cancelar</button>
+            <button type="submit" class="flex-1 bg-violet-500 hover:bg-violet-400 text-white font-black text-sm py-3 rounded-xl transition-all hover:scale-[1.02] shadow-lg shadow-violet-500/20">Salvar Configurações</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ====== CSV IMPORT MODAL (Prompt 4) ====== -->
+    <div class="nexo-modal-overlay" id="csv-import-modal" onclick="if(event.target===this) closeCSVImport()">
+      <div class="nexo-modal-content" style="max-width:480px;">
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-cyan-400/10 border border-cyan-400/20 flex items-center justify-center">
+              <i data-lucide="upload" class="w-6 h-6 text-cyan-400"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white">Importar Contatos</h3>
+              <p class="text-[11px] text-slate-500">Envie sua planilha CSV de leads</p>
+            </div>
+          </div>
+          <button onclick="closeCSVImport()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Hidden file input -->
+        <input type="file" id="csv-file-input" accept=".csv,.xlsx" class="hidden" onchange="handleCSVFile(event)" />
+
+        <!-- Upload Zone -->
+        <div id="csv-upload-zone" onclick="document.getElementById('csv-file-input').click()" class="border-2 border-dashed border-slate-700 hover:border-cyan-400/40 rounded-2xl p-10 text-center cursor-pointer transition-colors mb-4 hover:bg-cyan-400/5">
+          <div class="w-16 h-16 rounded-2xl bg-cyan-400/10 flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="file-spreadsheet" class="w-8 h-8 text-cyan-400"></i>
+          </div>
+          <p class="text-sm font-bold text-white mb-1">Clique para selecionar arquivo</p>
+          <p class="text-xs text-slate-500">ou arraste e solte aqui</p>
+          <p class="text-[10px] text-slate-600 mt-3">Formatos: .CSV | Colunas: Nome, Telefone</p>
+        </div>
+
+        <!-- Progress Area (hidden by default) -->
+        <div id="csv-progress-area" class="hidden">
+          <div class="bg-slate-800/60 rounded-xl p-5 mb-4">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <i data-lucide="file-text" class="w-4 h-4 text-cyan-400"></i>
+                <span class="text-sm font-bold text-white" id="csv-file-name">arquivo.csv</span>
+              </div>
+              <span class="text-xs font-bold text-cyan-400" id="csv-progress-percent">0%</span>
+            </div>
+            <div class="w-full bg-slate-700 rounded-full h-2">
+              <div id="csv-progress-bar" class="bg-gradient-to-r from-cyan-400 to-violet-500 h-2 rounded-full transition-all duration-300" style="width:0%"></div>
+            </div>
+            <p class="text-[10px] text-slate-500 mt-2" id="csv-progress-text">Lendo arquivo...</p>
+          </div>
+        </div>
+
+        <!-- CSV Preview (hidden by default) -->
+        <div id="csv-preview-area" class="hidden">
+          <div class="bg-slate-800/60 rounded-xl p-4 mb-4 max-h-32 overflow-y-auto">
+            <p class="text-xs font-bold text-slate-400 mb-2">Pré-visualização:</p>
+            <table class="w-full text-xs">
+              <thead><tr class="text-slate-500"><th class="text-left pb-1">Nome</th><th class="text-left pb-1">Telefone</th></tr></thead>
+              <tbody id="csv-preview-body" class="text-slate-300"></tbody>
+            </table>
+          </div>
+          <button onclick="confirmCSVImport()" class="w-full bg-cyan-500 hover:bg-cyan-400 text-white font-black text-sm py-3 rounded-xl transition-all hover:scale-[1.02] shadow-lg shadow-cyan-500/20">
+            Confirmar Importação
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== PROFILE EDIT MODAL ====== -->
+    <div class="nexo-modal-overlay" id="profile-modal" onclick="if(event.target===this) closeProfileModal()">
+      <div class="nexo-modal-content" style="max-width:440px;">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-lg font-bold text-white">Editar Perfil</h3>
+          <button onclick="closeProfileModal()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Avatar -->
+        <div class="text-center mb-6">
+          <div class="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center text-white text-2xl font-black mx-auto mb-3 cursor-pointer hover:opacity-80 transition-opacity relative" id="profile-avatar-circle" onclick="document.getElementById('profile-photo-input').click()">
+            <span id="profile-avatar-text">LF</span>
+            <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+              <i data-lucide="camera" class="w-6 h-6 text-white"></i>
+            </div>
+          </div>
+          <input type="file" id="profile-photo-input" accept="image/*" class="hidden" onchange="handleProfilePhoto(event)" />
+          <p class="text-[10px] text-slate-500">Clique para alterar a foto</p>
+        </div>
+
+        <form id="profile-form" onsubmit="saveProfile(event)">
+          <div class="mb-4">
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nome Completo</label>
+            <input type="text" id="profile-name" placeholder="Seu nome" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-cyan-400 transition-colors" />
+          </div>
+          <div class="mb-4">
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nome da Empresa</label>
+            <input type="text" id="profile-company" placeholder="Sua empresa" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-cyan-400 transition-colors" />
+          </div>
+          <div class="mb-6">
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">E-mail</label>
+            <input type="email" id="profile-email" disabled class="w-full bg-slate-900/60 border border-slate-800 rounded-xl px-4 py-3 text-slate-500 text-sm cursor-not-allowed" />
+            <p class="text-[10px] text-slate-600 mt-1">O e-mail não pode ser alterado.</p>
+          </div>
+          <div class="flex gap-3">
+            <button type="button" onclick="closeProfileModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm py-3 rounded-xl transition-colors">Cancelar</button>
+            <button type="submit" class="flex-1 bg-cyan-500 hover:bg-cyan-400 text-white font-black text-sm py-3 rounded-xl transition-all hover:scale-[1.02] shadow-lg shadow-cyan-500/20">Salvar Perfil</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ====== NOTIFICATIONS DROPDOWN ====== -->
+    <div id="notifications-dropdown" class="hidden fixed z-50 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl shadow-black/40 w-80" style="top:70px;right:100px;">
+      <div class="p-4 border-b border-slate-800 flex items-center justify-between">
+        <h4 class="text-sm font-bold text-white">Notificações</h4>
+        <button onclick="clearNotifications()" class="text-[10px] text-cyan-400 hover:text-cyan-300 font-bold transition-colors">Limpar tudo</button>
+      </div>
+      <div id="notifications-list" class="max-h-72 overflow-y-auto">
+        <div class="p-4 hover:bg-slate-800/50 transition-colors border-b border-slate-800/50 cursor-pointer">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-emerald-400/10 flex items-center justify-center flex-shrink-0">
+              <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-xs font-bold text-white truncate">Conta criada com sucesso</p>
+              <p class="text-[10px] text-slate-500">Seu ecossistema está pronto para configurar.</p>
+            </div>
+            <span class="text-[9px] text-slate-600 flex-shrink-0">Agora</span>
+          </div>
+        </div>
+        <div class="p-4 hover:bg-slate-800/50 transition-colors border-b border-slate-800/50 cursor-pointer">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-cyan-400/10 flex items-center justify-center flex-shrink-0">
+              <i data-lucide="zap" class="w-4 h-4 text-cyan-400"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-xs font-bold text-white truncate">IA ativada no seu plano</p>
+              <p class="text-[10px] text-slate-500">Conecte o WhatsApp para começar.</p>
+            </div>
+            <span class="text-[9px] text-slate-600 flex-shrink-0">5 min</span>
+          </div>
+        </div>
+      </div>
+      <div class="p-3 text-center border-t border-slate-800">
+        <span class="text-[10px] text-slate-600">Nexo AI — Plano Operação</span>
+      </div>
+    </div>
+
+    <!-- Mobile Backdrop -->
+    <div class="sidebar-mobile-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <!-- Mobile Hamburger -->
+    <button id="sidebar-toggle" class="lg:hidden fixed top-4 left-4 z-40 w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-700 transition-colors" onclick="toggleSidebar()">
+      <i data-lucide="menu" class="w-5 h-5"></i>
+    </button>
+
+    
     <!-- ====== SIDEBAR ====== -->
     <aside class="w-64 bg-slate-950 border-r border-slate-800/50 flex flex-col p-4 fixed h-full z-30">
       
@@ -353,6 +744,154 @@
           <div class="h-52">
             <canvas id="revenueChart"></canvas>
           </div>
+        </div>
+      </div>
+
+      <!-- ═══ FUNCIONALIDADES DO PLANO COMANDO TOTAL ═══ -->
+      <div class="mb-8">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center shadow-lg shadow-cyan-400/20">
+            <i data-lucide="crown" class="w-4 h-4 text-white"></i>
+          </div>
+          <div>
+            <h2 class="text-lg font-black text-white">Módulos Inteligentes</h2>
+            <p class="text-[11px] text-slate-500">Seu ecossistema Comando Total ativo e rodando</p>
+          </div>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+          <!-- 1. Agente Automático Escalável -->
+          <div class="glass-card premium-glow p-5 hover:border-emerald-400/20 transition-all group" id="feat-agente">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-emerald-400/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <i data-lucide="bot" class="w-5 h-5 text-emerald-400"></i>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="agente-toggle" class="sr-only peer" checked onchange="toggleAgente(this)">
+                <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:bg-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-400 after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+              </label>
+            </div>
+            <h3 class="text-sm font-bold text-white mb-1">Agente de Vendas</h3>
+            <p class="text-[10px] text-slate-500 mb-3">Atende e nutre 24/7</p>
+            <div class="flex items-center gap-1.5">
+              <div class="w-1.5 h-1.5 rounded-full bg-emerald-400 ai-pulse" id="agente-status-dot"></div>
+              <span class="text-[10px] font-bold text-emerald-400" id="agente-status-label">Treinado e Ativo</span>
+            </div>
+          </div>
+
+          <!-- 2. WhatsApp + N8N -->
+          <div class="glass-card premium-glow p-5 hover:border-violet-400/20 transition-all group cursor-pointer" onclick="startWhatsAppSetup()">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-violet-400/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <i data-lucide="workflow" class="w-5 h-5 text-violet-400"></i>
+              </div>
+              <span class="text-[9px] font-bold text-violet-400 bg-violet-400/10 border border-violet-400/20 px-2 py-0.5 rounded-full">N8N</span>
+            </div>
+            <h3 class="text-sm font-bold text-white mb-1">WhatsApp WAHA</h3>
+            <p class="text-[10px] text-slate-500 mb-3">Conexão oficial da empresa</p>
+            <div class="flex items-center gap-1.5">
+              <div class="w-1.5 h-1.5 rounded-full bg-violet-400"></div>
+              <span class="text-[10px] font-bold text-violet-400" id="waha-status">4 linhas estáveis</span>
+            </div>
+          </div>
+
+          <!-- 3. Qualificação Básica (via IA) -->
+          <div class="glass-card premium-glow p-5 hover:border-cyan-400/20 transition-all group" id="feat-qualificacao">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-cyan-400/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <i data-lucide="filter" class="w-5 h-5 text-cyan-400"></i>
+              </div>
+              <span class="text-[9px] font-bold text-cyan-400 bg-cyan-400/10 border border-cyan-400/20 px-2 py-0.5 rounded-full">IA</span>
+            </div>
+            <h3 class="text-sm font-bold text-white mb-1">Qualificador Lead</h3>
+            <p class="text-[10px] text-slate-500 mb-3">Score automático de prioridade</p>
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] text-slate-500">Qualificados Hoje</span>
+              <span class="text-xs font-black text-cyan-400">114</span>
+            </div>
+          </div>
+
+          <!-- 4. Importação CSV -->
+          <div class="glass-card premium-glow p-5 hover:border-cyan-400/20 transition-all group cursor-pointer" onclick="startCSVImport()">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-cyan-400/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <i data-lucide="file-up" class="w-5 h-5 text-cyan-400"></i>
+              </div>
+              <span class="text-[9px] font-bold text-cyan-400 bg-cyan-400/10 border border-cyan-400/20 px-2 py-0.5 rounded-full">CSV</span>
+            </div>
+            <h3 class="text-sm font-bold text-white mb-1">Carga de Base</h3>
+            <p class="text-[10px] text-slate-500 mb-3">Planilhas antigas na gaveta</p>
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] text-slate-500">Base Histórica</span>
+              <span class="text-xs font-black text-cyan-400">14.050</span>
+            </div>
+          </div>
+
+          <!-- 5. Reativação IA -->
+          <div class="glass-card premium-glow p-5 hover:border-pink-400/20 transition-all group cursor-pointer" onclick="document.querySelector('.sidebar-item:nth-child(7)').click();">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-pink-400/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <i data-lucide="zap" class="w-5 h-5 text-pink-400"></i>
+              </div>
+              <span class="text-[9px] font-bold text-pink-400 bg-pink-400/10 border border-pink-400/20 px-2 py-0.5 rounded-full">IA</span>
+            </div>
+            <h3 class="text-sm font-bold text-white mb-1">Reativação Fria</h3>
+            <p class="text-[10px] text-slate-500 mb-3">Gera caixa sem Ads</p>
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] text-slate-500">Recuperados</span>
+              <span class="text-xs font-black text-pink-400">R$ 28k mês</span>
+            </div>
+          </div>
+
+          <!-- 6. P&L -->
+          <div class="glass-card premium-glow p-5 hover:border-emerald-400/20 transition-all group cursor-pointer" onclick="document.querySelector('.sidebar-item:nth-child(6)').click();">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-emerald-400/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <i data-lucide="trending-up" class="w-5 h-5 text-emerald-400"></i>
+              </div>
+              <span class="text-[9px] font-bold text-emerald-400 bg-emerald-400/10 border border-emerald-400/20 px-2 py-0.5 rounded-full">BI</span>
+            </div>
+            <h3 class="text-sm font-bold text-white mb-1">Controle de P&L</h3>
+            <p class="text-[10px] text-slate-500 mb-3">Custos e CAC em tempo real</p>
+            <div class="flex items-center gap-1.5">
+              <div class="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
+              <span class="text-[10px] font-bold text-emerald-400">Sincronizado</span>
+            </div>
+          </div>
+
+          <!-- 7. Relatórios VVIP -->
+          <div class="glass-card premium-glow p-5 hover:border-blue-400/20 transition-all group cursor-pointer" onclick="document.querySelector('.sidebar-item:nth-child(8)').click();">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-blue-400/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <i data-lucide="file-text" class="w-5 h-5 text-blue-400"></i>
+              </div>
+              <span class="text-[9px] font-bold text-blue-400 bg-blue-400/10 border border-blue-400/20 px-2 py-0.5 rounded-full">PDF</span>
+            </div>
+            <h3 class="text-sm font-bold text-white mb-1">Dossiê Semanal</h3>
+            <p class="text-[10px] text-slate-500 mb-3">Visão macro executiva</p>
+            <div class="flex items-center gap-1.5">
+              <i data-lucide="clock" class="w-3 h-3 text-slate-500"></i>
+              <span class="text-[10px] text-slate-500">Gera sexta às 18h</span>
+            </div>
+          </div>
+
+          <!-- 8. Transfer. Humano -->
+          <div class="glass-card premium-glow p-5 hover:border-amber-400/20 transition-all group">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-amber-400/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <i data-lucide="user-check" class="w-5 h-5 text-amber-400"></i>
+              </div>
+              <span class="text-[9px] font-bold text-amber-400 bg-amber-400/10 border border-amber-400/20 px-2 py-0.5 rounded-full">CHAT</span>
+            </div>
+            <h3 class="text-sm font-bold text-white mb-1">Transbordo VIP</h3>
+            <p class="text-[10px] text-slate-500 mb-3">Redireciona leads complexos</p>
+            <div class="flex items-center gap-1.5">
+              <div class="w-1.5 h-1.5 rounded-full bg-amber-400"></div>
+              <span class="text-[10px] font-bold text-amber-400">4 Atendentes Logados</span>
+            </div>
+          </div>
+
         </div>
       </div>
 
