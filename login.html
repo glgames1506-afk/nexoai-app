@@ -17,7 +17,7 @@
     .input-field:focus { border-color: #22d3ee; box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.2); }
   </style>
 </head>
-<body class="min-h-screen flex items-center justify-center relative overflow-hidden">
+<body class="min-h-screen flex items-center justify-center relative overflow-y-auto py-8">
   
   <!-- Background Elements -->
   <div class="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-cyan-500/20 rounded-full blur-[120px] pointer-events-none"></div>
@@ -89,10 +89,13 @@
   <script>
     lucide.createIcons();
     
-    // Inicialização direta do Cliente Supabase do CDN
-    const supabase = supabase.createClient('https://tqqtjrunrimabitmersr.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxcXRqcnVucmltYWJpdG1lcnNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NjYwMjgsImV4cCI6MjA5MjA0MjAyOH0.CEJRX8rYb_5S5pN_M2KemyBRxdSPd9jf8Y-Xm3vlTDc');
+    // Inicialização do Supabase — usa window.supabase do CDN para evitar conflito
+    const _sb = window.supabase.createClient(
+      'https://tqqtjrunrimabitmersr.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxcXRqcnVucmltYWJpdG1lcnNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NjYwMjgsImV4cCI6MjA5MjA0MjAyOH0.CEJRX8rYb_5S5pN_M2KemyBRxdSPd9jf8Y-Xm3vlTDc'
+    );
 
-    // Ui logic
+    // UI logic
     function switchTab(tab) {
       const formLogin = document.getElementById('form-login');
       const formReg = document.getElementById('form-register');
@@ -136,7 +139,7 @@
     }
     function hideAlert() { document.getElementById('alert-box').classList.add('hidden'); }
 
-    // Supabase interações
+    // Supabase Auth — Register
     async function handleRegister(e) {
       e.preventDefault();
       const btn = document.getElementById('btn-register');
@@ -148,51 +151,70 @@
       const company = document.getElementById('reg-company').value;
 
       try {
-        const { data, error } = await supabase.auth.signUp({
+        const { data, error } = await _sb.auth.signUp({
           email, password,
           options: {
-            data: { full_name: fullName, company_name: company }
+            data: { full_name: fullName, company_name: company, plan: 'operacao' }
           }
         });
 
         if (error) throw error;
         
-        // Sucesso
-        showAlert('Empresa criada! Entrando...', false);
-        setTimeout(() => { window.location.href = 'dashboard-comando.html'; }, 1000);
+        // Verificar se precisa de confirmação de email
+        if (data.user && !data.session) {
+          showAlert('Verifique seu e-mail para confirmar o cadastro.', false);
+        } else {
+          showAlert('Empresa criada! Entrando...', false);
+          setTimeout(() => { window.location.href = 'dashboard-operacao.html'; }, 1000);
+        }
       } catch (err) {
-        showAlert(err.message === "User already registered" ? "E-mail já está em uso." : "Erro ao cadastrar. Tente denovo.", true);
+        const msg = err.message === "User already registered" 
+          ? "E-mail já está em uso." 
+          : "Erro ao cadastrar: " + err.message;
+        showAlert(msg, true);
       } finally {
         btn.innerHTML = 'ATIVAR MINHA ÁREA <i data-lucide="zap" class="w-4 h-4"></i>'; btn.disabled = false; lucide.createIcons();
       }
     }
 
+    // Supabase Auth — Login
     async function handleLogin(e) {
       e.preventDefault();
       const btn = document.getElementById('btn-login');
-      btn.innerHTML = 'CARREGANDO...'; btn.disabled = true;
+      btn.innerHTML = 'AUTENTICANDO...'; btn.disabled = true;
 
       const email = document.getElementById('login-email').value;
       const password = document.getElementById('login-password').value;
 
       try {
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        const { data, error } = await _sb.auth.signInWithPassword({ email, password });
         if (error) throw error;
         
-        showAlert('Login autorizado!', false);
-        setTimeout(() => { window.location.href = 'dashboard-comando.html'; }, 800);
+        showAlert('Login autorizado! Acessando painel...', false);
+
+        // Determinar dashboard correto pelo plano do usuário
+        const plan = data.user?.user_metadata?.plan || 'operacao';
+        const targetDash = plan === 'comando' ? 'dashboard-comando.html' : 'dashboard-operacao.html';
+        
+        setTimeout(() => { window.location.href = targetDash; }, 800);
       } catch (err) {
-        showAlert("Credenciais inválidas.", true);
+        showAlert("Credenciais inválidas. Verifique seu e-mail e senha.", true);
       } finally {
         btn.innerHTML = 'ENTRAR NO PAINEL <i data-lucide="arrow-right" class="w-4 h-4"></i>'; btn.disabled = false; lucide.createIcons();
       }
     }
 
-    // Check auth on load
+    // Auto-redirect se já logado
     window.addEventListener('load', async () => {
-      const {data} = await supabase.auth.getSession();
-      if(data.session) {
-        window.location.replace('dashboard-comando.html');
+      try {
+        const { data } = await _sb.auth.getSession();
+        if (data.session) {
+          const plan = data.session.user?.user_metadata?.plan || 'operacao';
+          const target = plan === 'comando' ? 'dashboard-comando.html' : 'dashboard-operacao.html';
+          window.location.replace(target);
+        }
+      } catch(e) {
+        console.warn('[NEXO LOGIN] Sessão check falhou:', e);
       }
     });
   </script>

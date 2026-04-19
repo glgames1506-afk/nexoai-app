@@ -114,14 +114,427 @@
     .fade-in-4 { animation-delay: 0.4s; opacity: 0; }
     .fade-in-5 { animation-delay: 0.5s; opacity: 0; }
     .fade-in-6 { animation-delay: 0.6s; opacity: 0; }
+
+    /* Mobile sidebar */
+    .sidebar-mobile-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 25;
+    }
+    .sidebar-mobile-backdrop.active { display: block; }
+
+    @media (max-width: 1023px) {
+      .nexo-sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+      }
+      .nexo-sidebar.open {
+        transform: translateX(0);
+      }
+      .nexo-main {
+        margin-left: 0 !important;
+      }
+    }
+
+    /* ─── MODAL ─── */
+    .nexo-modal-overlay {
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .nexo-modal-overlay.active { opacity: 1; pointer-events: all; }
+    .nexo-modal-overlay.active .nexo-modal-content {
+      transform: scale(1); opacity: 1;
+    }
+    .nexo-modal-content {
+      background: #0f172a;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 1.5rem;
+      padding: 2.5rem;
+      max-width: 440px; width: 90%;
+      transform: scale(0.9); opacity: 0;
+      transition: all 0.3s ease;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.5);
+    }
+
+    /* ─── TOAST ─── */
+    .nexo-toast-container {
+      position: fixed; top: 1.5rem; right: 1.5rem; z-index: 200;
+      display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    .nexo-toast {
+      padding: 1rem 1.5rem;
+      border-radius: 1rem;
+      font-size: 0.875rem; font-weight: 600;
+      display: flex; align-items: center; gap: 0.75rem;
+      transform: translateX(120%);
+      animation: toastSlideIn 0.4s ease forwards;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+    .nexo-toast.success {
+      background: rgba(52,211,153,0.15);
+      border: 1px solid rgba(52,211,153,0.3);
+      color: #34d399;
+    }
+    .nexo-toast.error {
+      background: rgba(248,113,113,0.15);
+      border: 1px solid rgba(248,113,113,0.3);
+      color: #f87171;
+    }
+    @keyframes toastSlideIn {
+      to { transform: translateX(0); }
+    }
+    @keyframes toastSlideOut {
+      to { transform: translateX(120%); opacity: 0; }
+    }
+
+    /* ─── QR PULSE ─── */
+    @keyframes qrPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(52,211,153,0.3); }
+      50% { box-shadow: 0 0 0 15px rgba(52,211,153,0); }
+    }
+    .qr-pulse { animation: qrPulse 2s infinite; }
+
+    /* ─── SPINNER ─── */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .nexo-spinner {
+      width: 24px; height: 24px;
+      border: 3px solid rgba(255,255,255,0.1);
+      border-top-color: #34d399;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
   </style>
 </head>
-<body class="min-h-screen">
+<body class="min-h-screen" style="display:none;">
 
   <div class="flex min-h-screen">
 
+    <!-- ====== TOAST CONTAINER ====== -->
+    <div class="nexo-toast-container" id="nexo-toast-container"></div>
+
+    <!-- ====== WHATSAPP CONNECTION MODAL ====== -->
+    <div class="nexo-modal-overlay" id="waha-modal" onclick="if(event.target===this) closeWahaModal()">
+      <div class="nexo-modal-content">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-400/10 border border-emerald-400/20 flex items-center justify-center">
+              <i data-lucide="message-circle" class="w-6 h-6 text-emerald-400"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white">Conectar WhatsApp</h3>
+              <p class="text-[11px] text-slate-500" id="waha-session-id">Sessão: —</p>
+            </div>
+          </div>
+          <button onclick="closeWahaModal()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- QR Code Area -->
+        <div id="waha-qr-area" class="text-center">
+          <!-- State: Loading -->
+          <div id="waha-state-loading" class="py-8">
+            <div class="nexo-spinner mx-auto mb-4"></div>
+            <p class="text-sm text-slate-400">Iniciando sessão WAHA...</p>
+            <p class="text-[10px] text-slate-600 mt-1">Criando canal seguro</p>
+          </div>
+
+          <!-- State: QR Ready -->
+          <div id="waha-state-qr" class="hidden">
+            <div class="bg-white rounded-2xl p-4 w-56 h-56 mx-auto mb-5 qr-pulse flex items-center justify-center">
+              <img id="waha-qr-image" src="" alt="QR Code" class="w-full h-full object-contain" style="display:none;" />
+              <!-- Fallback SVG QR placeholder -->
+              <svg id="waha-qr-placeholder" viewBox="0 0 200 200" class="w-full h-full">
+                <rect width="200" height="200" fill="white"/>
+                <!-- Simulated QR pattern -->
+                <g fill="#1e293b">
+                  <rect x="10" y="10" width="60" height="60"/>
+                  <rect x="130" y="10" width="60" height="60"/>
+                  <rect x="10" y="130" width="60" height="60"/>
+                  <rect x="20" y="20" width="40" height="40" fill="white"/>
+                  <rect x="140" y="20" width="40" height="40" fill="white"/>
+                  <rect x="20" y="140" width="40" height="40" fill="white"/>
+                  <rect x="30" y="30" width="20" height="20"/>
+                  <rect x="150" y="30" width="20" height="20"/>
+                  <rect x="30" y="150" width="20" height="20"/>
+                  <!-- Data blocks -->
+                  <rect x="80" y="10" width="10" height="10"/>
+                  <rect x="100" y="10" width="10" height="10"/>
+                  <rect x="80" y="30" width="10" height="10"/>
+                  <rect x="110" y="30" width="10" height="10"/>
+                  <rect x="80" y="50" width="10" height="10"/>
+                  <rect x="100" y="50" width="10" height="10"/>
+                  <rect x="90" y="80" width="10" height="10"/>
+                  <rect x="110" y="80" width="10" height="10"/>
+                  <rect x="80" y="100" width="10" height="10"/>
+                  <rect x="100" y="100" width="10" height="10"/>
+                  <rect x="120" y="100" width="10" height="10"/>
+                  <rect x="90" y="120" width="10" height="10"/>
+                  <rect x="110" y="120" width="10" height="10"/>
+                  <rect x="80" y="140" width="10" height="10"/>
+                  <rect x="100" y="140" width="10" height="10"/>
+                  <rect x="120" y="140" width="10" height="10"/>
+                  <rect x="130" y="80" width="10" height="10"/>
+                  <rect x="150" y="80" width="10" height="10"/>
+                  <rect x="170" y="80" width="10" height="10"/>
+                  <rect x="140" y="100" width="10" height="10"/>
+                  <rect x="160" y="100" width="10" height="10"/>
+                  <rect x="130" y="120" width="10" height="10"/>
+                  <rect x="150" y="120" width="10" height="10"/>
+                  <rect x="170" y="120" width="10" height="10"/>
+                  <rect x="140" y="140" width="10" height="10"/>
+                  <rect x="160" y="140" width="10" height="10"/>
+                  <rect x="130" y="160" width="10" height="10"/>
+                  <rect x="150" y="160" width="10" height="10"/>
+                  <rect x="170" y="160" width="10" height="10"/>
+                  <rect x="140" y="180" width="10" height="10"/>
+                  <rect x="160" y="180" width="10" height="10"/>
+                </g>
+              </svg>
+            </div>
+            <p class="text-sm font-bold text-white mb-1">Escaneie para conectar</p>
+            <p class="text-xs text-slate-400 mb-4">Abra o WhatsApp → Menu → Aparelhos conectados → Conectar</p>
+            <div class="flex items-center justify-center gap-2">
+              <div class="nexo-spinner" style="width:16px;height:16px;border-width:2px;"></div>
+              <span class="text-[11px] text-slate-500" id="waha-poll-status">Aguardando leitura do QR Code...</span>
+            </div>
+          </div>
+
+          <!-- State: Connected -->
+          <div id="waha-state-connected" class="hidden py-6">
+            <div class="w-20 h-20 rounded-full bg-emerald-400/20 border-2 border-emerald-400 flex items-center justify-center mx-auto mb-5">
+              <i data-lucide="check" class="w-10 h-10 text-emerald-400"></i>
+            </div>
+            <h4 class="text-xl font-black text-white mb-2">WhatsApp Conectado! 🎉</h4>
+            <p class="text-sm text-slate-400">Seu agente IA já está ativo e pronto para atender.</p>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-2 h-2 rounded-full" id="waha-status-dot" style="background:#64748b;"></div>
+            <span class="text-[10px] font-bold text-slate-500" id="waha-status-text">Desconectado</span>
+          </div>
+          <span class="text-[10px] text-slate-600">Powered by WAHA</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== AI AGENT CONFIG MODAL (Prompt 3) ====== -->
+    <div class="nexo-modal-overlay" id="agent-config-modal" onclick="if(event.target===this) closeAgentConfig()">
+      <div class="nexo-modal-content" style="max-width:520px;">
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-violet-400/10 border border-violet-400/20 flex items-center justify-center">
+              <i data-lucide="brain" class="w-6 h-6 text-violet-400"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white">Configurar Agente IA</h3>
+              <p class="text-[11px] text-slate-500">Defina como a IA atende seus clientes</p>
+            </div>
+          </div>
+          <button onclick="closeAgentConfig()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <form id="agent-config-form" onsubmit="saveAgentConfig(event)">
+          <!-- Agent Name -->
+          <div class="mb-5">
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nome do Assistente</label>
+            <input type="text" id="agent-name" value="Assistente Nexo" placeholder="Ex: Sofia, Atendimento Premium..." class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors" />
+          </div>
+
+          <!-- Tone of Voice -->
+          <div class="mb-5">
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tom de Voz da IA</label>
+            <select id="agent-tone" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 cursor-pointer appearance-none">
+              <option value="formal">🎩 Formal — Profissional e polido</option>
+              <option value="amigavel" selected>😊 Amigável — Próximo e acolhedor</option>
+              <option value="persuasivo">🎯 Persuasivo — Focado em conversão</option>
+              <option value="direto">⚡ Direto — Objetividade máxima</option>
+            </select>
+          </div>
+
+          <!-- Base Instructions -->
+          <div class="mb-6">
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Instruções Base da Empresa</label>
+            <textarea id="agent-instructions" rows="5" placeholder="Descreva o endereço, preços principais, horário de funcionamento e regras de negócio para a IA aprender..." class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors resize-none"></textarea>
+            <p class="text-[10px] text-slate-600 mt-1.5">Quanto mais detalhado, melhor a IA atende. Mínimo 50 caracteres recomendado.</p>
+          </div>
+
+          <!-- Buttons -->
+          <div class="flex gap-3">
+            <button type="button" onclick="closeAgentConfig()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm py-3 rounded-xl transition-colors">Cancelar</button>
+            <button type="submit" class="flex-1 bg-violet-500 hover:bg-violet-400 text-white font-black text-sm py-3 rounded-xl transition-all hover:scale-[1.02] shadow-lg shadow-violet-500/20">Salvar Configurações</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ====== CSV IMPORT MODAL (Prompt 4) ====== -->
+    <div class="nexo-modal-overlay" id="csv-import-modal" onclick="if(event.target===this) closeCSVImport()">
+      <div class="nexo-modal-content" style="max-width:480px;">
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-cyan-400/10 border border-cyan-400/20 flex items-center justify-center">
+              <i data-lucide="upload" class="w-6 h-6 text-cyan-400"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white">Importar Contatos</h3>
+              <p class="text-[11px] text-slate-500">Envie sua planilha CSV de leads</p>
+            </div>
+          </div>
+          <button onclick="closeCSVImport()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Hidden file input -->
+        <input type="file" id="csv-file-input" accept=".csv,.xlsx" class="hidden" onchange="handleCSVFile(event)" />
+
+        <!-- Upload Zone -->
+        <div id="csv-upload-zone" onclick="document.getElementById('csv-file-input').click()" class="border-2 border-dashed border-slate-700 hover:border-cyan-400/40 rounded-2xl p-10 text-center cursor-pointer transition-colors mb-4 hover:bg-cyan-400/5">
+          <div class="w-16 h-16 rounded-2xl bg-cyan-400/10 flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="file-spreadsheet" class="w-8 h-8 text-cyan-400"></i>
+          </div>
+          <p class="text-sm font-bold text-white mb-1">Clique para selecionar arquivo</p>
+          <p class="text-xs text-slate-500">ou arraste e solte aqui</p>
+          <p class="text-[10px] text-slate-600 mt-3">Formatos: .CSV | Colunas: Nome, Telefone</p>
+        </div>
+
+        <!-- Progress Area (hidden by default) -->
+        <div id="csv-progress-area" class="hidden">
+          <div class="bg-slate-800/60 rounded-xl p-5 mb-4">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <i data-lucide="file-text" class="w-4 h-4 text-cyan-400"></i>
+                <span class="text-sm font-bold text-white" id="csv-file-name">arquivo.csv</span>
+              </div>
+              <span class="text-xs font-bold text-cyan-400" id="csv-progress-percent">0%</span>
+            </div>
+            <div class="w-full bg-slate-700 rounded-full h-2">
+              <div id="csv-progress-bar" class="bg-gradient-to-r from-cyan-400 to-violet-500 h-2 rounded-full transition-all duration-300" style="width:0%"></div>
+            </div>
+            <p class="text-[10px] text-slate-500 mt-2" id="csv-progress-text">Lendo arquivo...</p>
+          </div>
+        </div>
+
+        <!-- CSV Preview (hidden by default) -->
+        <div id="csv-preview-area" class="hidden">
+          <div class="bg-slate-800/60 rounded-xl p-4 mb-4 max-h-32 overflow-y-auto">
+            <p class="text-xs font-bold text-slate-400 mb-2">Pré-visualização:</p>
+            <table class="w-full text-xs">
+              <thead><tr class="text-slate-500"><th class="text-left pb-1">Nome</th><th class="text-left pb-1">Telefone</th></tr></thead>
+              <tbody id="csv-preview-body" class="text-slate-300"></tbody>
+            </table>
+          </div>
+          <button onclick="confirmCSVImport()" class="w-full bg-cyan-500 hover:bg-cyan-400 text-white font-black text-sm py-3 rounded-xl transition-all hover:scale-[1.02] shadow-lg shadow-cyan-500/20">
+            Confirmar Importação
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== PROFILE EDIT MODAL ====== -->
+    <div class="nexo-modal-overlay" id="profile-modal" onclick="if(event.target===this) closeProfileModal()">
+      <div class="nexo-modal-content" style="max-width:440px;">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-lg font-bold text-white">Editar Perfil</h3>
+          <button onclick="closeProfileModal()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Avatar -->
+        <div class="text-center mb-6">
+          <div class="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center text-white text-2xl font-black mx-auto mb-3 cursor-pointer hover:opacity-80 transition-opacity relative" id="profile-avatar-circle" onclick="document.getElementById('profile-photo-input').click()">
+            <span id="profile-avatar-text">LF</span>
+            <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+              <i data-lucide="camera" class="w-6 h-6 text-white"></i>
+            </div>
+          </div>
+          <input type="file" id="profile-photo-input" accept="image/*" class="hidden" onchange="handleProfilePhoto(event)" />
+          <p class="text-[10px] text-slate-500">Clique para alterar a foto</p>
+        </div>
+
+        <form id="profile-form" onsubmit="saveProfile(event)">
+          <div class="mb-4">
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nome Completo</label>
+            <input type="text" id="profile-name" placeholder="Seu nome" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-cyan-400 transition-colors" />
+          </div>
+          <div class="mb-4">
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nome da Empresa</label>
+            <input type="text" id="profile-company" placeholder="Sua empresa" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-cyan-400 transition-colors" />
+          </div>
+          <div class="mb-6">
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">E-mail</label>
+            <input type="email" id="profile-email" disabled class="w-full bg-slate-900/60 border border-slate-800 rounded-xl px-4 py-3 text-slate-500 text-sm cursor-not-allowed" />
+            <p class="text-[10px] text-slate-600 mt-1">O e-mail não pode ser alterado.</p>
+          </div>
+          <div class="flex gap-3">
+            <button type="button" onclick="closeProfileModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm py-3 rounded-xl transition-colors">Cancelar</button>
+            <button type="submit" class="flex-1 bg-cyan-500 hover:bg-cyan-400 text-white font-black text-sm py-3 rounded-xl transition-all hover:scale-[1.02] shadow-lg shadow-cyan-500/20">Salvar Perfil</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ====== NOTIFICATIONS DROPDOWN ====== -->
+    <div id="notifications-dropdown" class="hidden fixed z-50 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl shadow-black/40 w-80" style="top:70px;right:100px;">
+      <div class="p-4 border-b border-slate-800 flex items-center justify-between">
+        <h4 class="text-sm font-bold text-white">Notificações</h4>
+        <button onclick="clearNotifications()" class="text-[10px] text-cyan-400 hover:text-cyan-300 font-bold transition-colors">Limpar tudo</button>
+      </div>
+      <div id="notifications-list" class="max-h-72 overflow-y-auto">
+        <div class="p-4 hover:bg-slate-800/50 transition-colors border-b border-slate-800/50 cursor-pointer">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-emerald-400/10 flex items-center justify-center flex-shrink-0">
+              <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-xs font-bold text-white truncate">Conta criada com sucesso</p>
+              <p class="text-[10px] text-slate-500">Seu ecossistema está pronto para configurar.</p>
+            </div>
+            <span class="text-[9px] text-slate-600 flex-shrink-0">Agora</span>
+          </div>
+        </div>
+        <div class="p-4 hover:bg-slate-800/50 transition-colors border-b border-slate-800/50 cursor-pointer">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-cyan-400/10 flex items-center justify-center flex-shrink-0">
+              <i data-lucide="zap" class="w-4 h-4 text-cyan-400"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-xs font-bold text-white truncate">IA ativada no seu plano</p>
+              <p class="text-[10px] text-slate-500">Conecte o WhatsApp para começar.</p>
+            </div>
+            <span class="text-[9px] text-slate-600 flex-shrink-0">5 min</span>
+          </div>
+        </div>
+      </div>
+      <div class="p-3 text-center border-t border-slate-800">
+        <span class="text-[10px] text-slate-600">Nexo AI — Plano Operação</span>
+      </div>
+    </div>
+
+    <!-- Mobile Backdrop -->
+    <div class="sidebar-mobile-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <!-- Mobile Hamburger -->
+    <button id="sidebar-toggle" class="lg:hidden fixed top-4 left-4 z-40 w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-700 transition-colors" onclick="toggleSidebar()">
+      <i data-lucide="menu" class="w-5 h-5"></i>
+    </button>
+
     <!-- ====== SIDEBAR ====== -->
-    <aside class="w-64 bg-slate-950 border-r border-slate-800/50 flex flex-col p-4 fixed h-full z-30">
+    <aside class="nexo-sidebar w-64 bg-slate-950 border-r border-slate-800/50 flex flex-col p-4 fixed h-full z-30" id="nexo-sidebar">
       
       <!-- Logo -->
       <div class="flex items-center gap-3 px-2 mb-8 mt-2">
@@ -173,7 +586,7 @@
             <i data-lucide="settings" class="w-5 h-5"></i>
             Configurações
           </div>
-          <div class="sidebar-item">
+          <div class="sidebar-item" onclick="nexoLogout()" style="cursor:pointer;">
             <i data-lucide="log-out" class="w-5 h-5"></i>
             Sair
           </div>
@@ -182,13 +595,13 @@
     </aside>
 
     <!-- ====== MAIN CONTENT ====== -->
-    <main class="flex-1 ml-64 p-6 lg:p-8">
+    <main class="nexo-main flex-1 ml-64 p-4 lg:p-8">
 
       <!-- Header -->
       <header class="flex items-center justify-between mb-8 fade-in fade-in-1">
         <div>
-          <h1 class="text-2xl font-black text-white">Bom dia, Carlos 👋</h1>
-          <p class="text-sm text-slate-500 mt-1">Mendonça Imóveis Premium — Atualizado há 2 min</p>
+          <h1 class="text-2xl font-black text-white" data-nexo-greeting>Carregando...</h1>
+          <p class="text-sm text-slate-500 mt-1"><span data-nexo-company>Nexo AI</span> — <span data-nexo-last-update>Atualizado agora</span></p>
         </div>
         <div class="flex items-center gap-4">
           <!-- AI Indicator -->
@@ -197,15 +610,15 @@
             <span class="text-xs font-bold text-cyan-400">IA Ativa — 24/7</span>
           </div>
           <!-- Notifications -->
-          <button class="relative p-2 rounded-xl bg-slate-800/50 hover:bg-slate-700/50 transition-colors">
+          <button onclick="toggleNotifications()" class="relative p-2 rounded-xl bg-slate-800/50 hover:bg-slate-700/50 transition-colors">
             <i data-lucide="bell" class="w-5 h-5 text-slate-400"></i>
-            <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] font-bold text-white flex items-center justify-center">5</span>
+            <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] font-bold text-white flex items-center justify-center" id="notif-badge">2</span>
           </button>
           <!-- Avatar -->
-          <div class="flex items-center gap-3">
-            <img src="assets/images/avatar-carlos.png" alt="Carlos" class="w-10 h-10 rounded-full ring-2 ring-cyan-400/30">
+          <div class="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity" onclick="openProfileModal()">
+            <div class="w-10 h-10 rounded-full ring-2 ring-cyan-400/30 bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center text-white text-sm font-black" data-nexo-avatar-initials>—</div>
             <div class="hidden lg:block">
-              <div class="text-sm font-bold text-white">Carlos M.</div>
+              <div class="text-sm font-bold text-white" data-nexo-user-name>Usuário</div>
               <div class="text-[11px] text-slate-500">Administrador</div>
             </div>
           </div>
@@ -213,6 +626,111 @@
       </header>
 
       
+      <!-- ====== ONBOARDING OVERLAY (Primeiro Acesso) ====== -->
+      <div id="nexo-onboarding" class="hidden">
+        <div class="max-w-3xl mx-auto">
+          
+          <!-- Welcome Header -->
+          <div class="text-center mb-10 fade-in fade-in-1">
+            <div class="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-400 to-violet-500 mx-auto mb-6 flex items-center justify-center shadow-lg shadow-cyan-400/20">
+              <i data-lucide="rocket" class="w-10 h-10 text-white"></i>
+            </div>
+            <h2 class="text-3xl font-black text-white mb-3">Bem-vindo à Nexo AI! 🎉</h2>
+            <p class="text-slate-400 max-w-lg mx-auto">Seu ecossistema de vendas automatizado está pronto. Vamos configurar tudo em <strong class="text-white">3 passos simples</strong> para começar a capturar e converter leads.</p>
+          </div>
+
+          <!-- Setup Steps -->
+          <div class="space-y-4 mb-8">
+            
+            <!-- Step 1: Connect WhatsApp -->
+            <div class="glass-card p-6 fade-in fade-in-2 hover:border-emerald-400/20" id="setup-step-1">
+              <div class="flex items-center gap-5">
+                <div class="w-14 h-14 rounded-2xl bg-emerald-400/10 border border-emerald-400/20 flex items-center justify-center flex-shrink-0">
+                  <i data-lucide="message-circle" class="w-7 h-7 text-emerald-400"></i>
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-[10px] font-black text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full border border-emerald-400/20">PASSO 1</span>
+                    <span class="text-[10px] font-bold text-slate-600">~2 minutos</span>
+                  </div>
+                  <h3 class="text-lg font-bold text-white">Conectar WhatsApp Business</h3>
+                  <p class="text-sm text-slate-400 mt-1">Escaneie o QR Code para integrar seu WhatsApp. A IA começa a atender seus leads automaticamente.</p>
+                </div>
+                <button onclick="startWhatsAppSetup()" class="bg-emerald-500 hover:bg-emerald-400 text-white font-black text-sm px-6 py-3 rounded-xl transition-all hover:scale-105 shadow-lg shadow-emerald-500/20 flex-shrink-0">
+                  Conectar →
+                </button>
+              </div>
+            </div>
+
+            <!-- Step 2: Configure AI Agent -->
+            <div class="glass-card p-6 fade-in fade-in-3 hover:border-violet-400/20" id="setup-step-2">
+              <div class="flex items-center gap-5">
+                <div class="w-14 h-14 rounded-2xl bg-violet-400/10 border border-violet-400/20 flex items-center justify-center flex-shrink-0">
+                  <i data-lucide="brain" class="w-7 h-7 text-violet-400"></i>
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-[10px] font-black text-violet-400 bg-violet-400/10 px-2 py-0.5 rounded-full border border-violet-400/20">PASSO 2</span>
+                    <span class="text-[10px] font-bold text-slate-600">~3 minutos</span>
+                  </div>
+                  <h3 class="text-lg font-bold text-white">Configurar o Agente IA</h3>
+                  <p class="text-sm text-slate-400 mt-1">Defina o tom de voz, informações do seu negócio e respostas padrão da IA para seus clientes.</p>
+                </div>
+                <button onclick="startAgentConfig()" class="bg-violet-500 hover:bg-violet-400 text-white font-black text-sm px-6 py-3 rounded-xl transition-all hover:scale-105 shadow-lg shadow-violet-500/20 flex-shrink-0">
+                  Configurar →
+                </button>
+              </div>
+            </div>
+
+            <!-- Step 3: Import Contacts -->
+            <div class="glass-card p-6 fade-in fade-in-4 hover:border-cyan-400/20" id="setup-step-3">
+              <div class="flex items-center gap-5">
+                <div class="w-14 h-14 rounded-2xl bg-cyan-400/10 border border-cyan-400/20 flex items-center justify-center flex-shrink-0">
+                  <i data-lucide="upload" class="w-7 h-7 text-cyan-400"></i>
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-[10px] font-black text-cyan-400 bg-cyan-400/10 px-2 py-0.5 rounded-full border border-cyan-400/20">PASSO 3</span>
+                    <span class="text-[10px] font-bold text-slate-600">Opcional</span>
+                  </div>
+                  <h3 class="text-lg font-bold text-white">Importar Contatos Existentes</h3>
+                  <p class="text-sm text-slate-400 mt-1">Envie uma planilha CSV com seus leads atuais. A IA começa a reativar os que estão parados.</p>
+                </div>
+                <button onclick="startCSVImport()" class="bg-cyan-500 hover:bg-cyan-400 text-white font-black text-sm px-6 py-3 rounded-xl transition-all hover:scale-105 shadow-lg shadow-cyan-500/20 flex-shrink-0">
+                  Importar CSV →
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Skip / Later -->
+          <div class="text-center fade-in fade-in-5">
+            <button onclick="skipOnboarding()" class="text-sm text-slate-500 hover:text-slate-300 transition-colors underline underline-offset-4">
+              Pular configuração e ver o painel →
+            </button>
+            <p class="text-[10px] text-slate-600 mt-3">Você pode configurar tudo depois em <strong>Configurações</strong>.</p>
+          </div>
+
+          <!-- Support Card -->
+          <div class="glass-card p-5 mt-8 fade-in fade-in-6">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-xl bg-emerald-400/10 flex items-center justify-center flex-shrink-0">
+                <i data-lucide="headphones" class="w-6 h-6 text-emerald-400"></i>
+              </div>
+              <div class="flex-1">
+                <div class="text-sm font-bold text-white">Precisa de ajuda?</div>
+                <div class="text-xs text-slate-400">Nosso time faz a implantação completa por você em até 48h.</div>
+              </div>
+              <a href="https://wa.me/5511999999999?text=Ol%C3%A1%2C%20preciso%20de%20ajuda%20com%20a%20implanta%C3%A7%C3%A3o%20da%20Nexo%20AI" target="_blank" class="bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-bold text-xs px-5 py-2.5 rounded-full hover:bg-emerald-500/30 transition-colors flex-shrink-0 flex items-center gap-2">
+                <i data-lucide="message-circle" class="w-4 h-4"></i>
+                Falar com Suporte
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====== DASHBOARD REAL (Estado Limpo) ====== -->
       <div id="view-dashboard" class="view-section block">
 <!-- KPI Cards -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -222,11 +740,11 @@
             <div class="w-10 h-10 rounded-xl bg-cyan-400/10 flex items-center justify-center">
               <i data-lucide="user-plus" class="w-5 h-5 text-cyan-400"></i>
             </div>
-            <span class="text-xs font-bold text-emerald-400 flex items-center gap-1">
-              <i data-lucide="trending-up" class="w-3 h-3"></i> +23%
+            <span class="text-xs font-bold text-slate-500 flex items-center gap-1">
+              —
             </span>
           </div>
-          <div class="text-3xl font-black text-white" id="kpi-leads-hoje">47</div>
+          <div class="text-3xl font-black text-white" id="kpi-leads-hoje">0</div>
           <div class="text-xs text-slate-500 mt-1">Leads Hoje</div>
         </div>
 
@@ -235,11 +753,11 @@
             <div class="w-10 h-10 rounded-xl bg-violet-400/10 flex items-center justify-center">
               <i data-lucide="reply" class="w-5 h-5 text-violet-400"></i>
             </div>
-            <span class="text-xs font-bold text-emerald-400 flex items-center gap-1">
-              <i data-lucide="trending-up" class="w-3 h-3"></i> +8%
+            <span class="text-xs font-bold text-slate-500 flex items-center gap-1">
+              —
             </span>
           </div>
-          <div class="text-3xl font-black text-white">94<span class="text-lg text-slate-400">%</span></div>
+          <div class="text-3xl font-black text-white">0<span class="text-lg text-slate-400">%</span></div>
           <div class="text-xs text-slate-500 mt-1">Taxa de Resposta</div>
         </div>
 
@@ -248,11 +766,11 @@
             <div class="w-10 h-10 rounded-xl bg-emerald-400/10 flex items-center justify-center">
               <i data-lucide="check-circle" class="w-5 h-5 text-emerald-400"></i>
             </div>
-            <span class="text-xs font-bold text-emerald-400 flex items-center gap-1">
-              <i data-lucide="trending-up" class="w-3 h-3"></i> +31%
+            <span class="text-xs font-bold text-slate-500 flex items-center gap-1">
+              —
             </span>
           </div>
-          <div class="text-3xl font-black text-white">12</div>
+          <div class="text-3xl font-black text-white">0</div>
           <div class="text-xs text-slate-500 mt-1">Conversões (Mês)</div>
         </div>
 
@@ -261,11 +779,11 @@
             <div class="w-10 h-10 rounded-xl bg-amber-400/10 flex items-center justify-center">
               <i data-lucide="clock" class="w-5 h-5 text-amber-400"></i>
             </div>
-            <span class="text-xs font-bold text-emerald-400 flex items-center gap-1">
-              <i data-lucide="trending-up" class="w-3 h-3"></i> -45%
+            <span class="text-xs font-bold text-slate-500 flex items-center gap-1">
+              —
             </span>
           </div>
-          <div class="text-3xl font-black text-white">1<span class="text-lg text-slate-400">m</span> 23<span class="text-lg text-slate-400">s</span></div>
+          <div class="text-3xl font-black text-white">—</div>
           <div class="text-xs text-slate-500 mt-1">Tempo Médio de Resposta</div>
         </div>
       </div>
@@ -305,37 +823,37 @@
             <div>
               <div class="flex justify-between text-xs mb-1.5">
                 <span class="text-slate-400">Novo Lead</span>
-                <span class="text-cyan-400 font-bold">312</span>
+                <span class="text-cyan-400 font-bold" id="funnel-novo">0</span>
               </div>
               <div class="funnel-bar w-full bg-cyan-400/20">
-                <span class="text-cyan-400">100%</span>
+                <span class="text-cyan-400">—</span>
               </div>
             </div>
             <div>
               <div class="flex justify-between text-xs mb-1.5">
                 <span class="text-slate-400">1º Contato (IA)</span>
-                <span class="text-violet-400 font-bold">289</span>
+                <span class="text-violet-400 font-bold" id="funnel-contato">0</span>
               </div>
-              <div class="funnel-bar w-[92%] bg-violet-400/20">
-                <span class="text-violet-400">92.6%</span>
+              <div class="funnel-bar w-full bg-violet-400/20">
+                <span class="text-violet-400">—</span>
               </div>
             </div>
             <div>
               <div class="flex justify-between text-xs mb-1.5">
                 <span class="text-slate-400">Qualificado</span>
-                <span class="text-amber-400 font-bold">148</span>
+                <span class="text-amber-400 font-bold" id="funnel-qual">0</span>
               </div>
-              <div class="funnel-bar w-[47%] bg-amber-400/20">
-                <span class="text-amber-400">47.4%</span>
+              <div class="funnel-bar w-full bg-amber-400/20">
+                <span class="text-amber-400">—</span>
               </div>
             </div>
             <div>
               <div class="flex justify-between text-xs mb-1.5">
                 <span class="text-slate-400">Convertido</span>
-                <span class="text-emerald-400 font-bold">67</span>
+                <span class="text-emerald-400 font-bold" id="funnel-conv">0</span>
               </div>
-              <div class="funnel-bar w-[21%] bg-emerald-400/20">
-                <span class="text-emerald-400">21.5%</span>
+              <div class="funnel-bar w-full bg-emerald-400/20">
+                <span class="text-emerald-400">—</span>
               </div>
             </div>
           </div>
@@ -343,7 +861,7 @@
           <div class="mt-6 pt-4 border-t border-slate-800">
             <div class="flex items-center justify-between">
               <span class="text-xs text-slate-500">Taxa de Fechamento</span>
-              <span class="text-lg font-black text-emerald-400">21.5%</span>
+              <span class="text-lg font-black text-slate-500">—</span>
             </div>
           </div>
         </div>
@@ -356,7 +874,6 @@
         <div class="lg:col-span-2 glass-card p-6 fade-in fade-in-4">
           <div class="flex items-center justify-between mb-6">
             <h3 class="text-lg font-bold text-white">Leads Recentes</h3>
-            <button onclick="addLead()" class="text-xs text-cyan-400 hover:text-cyan-300 font-semibold transition-colors">+ Novo Lead</button>
           </div>
 
           <div class="overflow-x-auto">
@@ -371,43 +888,16 @@
                 </tr>
               </thead>
               <tbody id="leads-tbody" class="divide-y divide-slate-800/50">
-                <tr class="hover:bg-slate-800/30 transition-colors">
-                  <td class="py-4 font-semibold text-white">Marina Oliveira</td>
-                  <td class="py-4 text-slate-400">(11) 9●●●●-4521</td>
-                  <td class="py-4"><span class="badge-novo text-xs font-bold px-2.5 py-1 rounded-full">Novo</span></td>
-                  <td class="py-4 text-slate-400 text-xs max-w-[180px] truncate">"Olá, vi o apartamento no Vila..."</td>
-                  <td class="py-4 text-right text-slate-500 text-xs">3 min</td>
-                </tr>
-                <tr class="hover:bg-slate-800/30 transition-colors">
-                  <td class="py-4 font-semibold text-white">João Ferreira</td>
-                  <td class="py-4 text-slate-400">(21) 9●●●●-8790</td>
-                  <td class="py-4"><span class="badge-atendimento text-xs font-bold px-2.5 py-1 rounded-full">Em Atendimento</span></td>
-                  <td class="py-4 text-slate-400 text-xs max-w-[180px] truncate">"Pode agendar visita para sábado?"</td>
-                  <td class="py-4 text-right text-slate-500 text-xs">18 min</td>
-                </tr>
-                <tr class="hover:bg-slate-800/30 transition-colors">
-                  <td class="py-4 font-semibold text-white">Camila Santos</td>
-                  <td class="py-4 text-slate-400">(11) 9●●●●-3341</td>
-                  <td class="py-4"><span class="badge-convertido text-xs font-bold px-2.5 py-1 rounded-full">Convertido</span></td>
-                  <td class="py-4 text-slate-400 text-xs max-w-[180px] truncate">"Perfeito, vou assinar o contrato!"</td>
-                  <td class="py-4 text-right text-slate-500 text-xs">1h</td>
-                </tr>
-                <tr class="hover:bg-slate-800/30 transition-colors">
-                  <td class="py-4 font-semibold text-white">Roberto Almeida</td>
-                  <td class="py-4 text-slate-400">(31) 9●●●●-6677</td>
-                  <td class="py-4"><span class="badge-atendimento text-xs font-bold px-2.5 py-1 rounded-full">Em Atendimento</span></td>
-                  <td class="py-4 text-slate-400 text-xs max-w-[180px] truncate">"Qual o valor do financiamento?"</td>
-                  <td class="py-4 text-right text-slate-500 text-xs">2h</td>
-                </tr>
-                <tr class="hover:bg-slate-800/30 transition-colors">
-                  <td class="py-4 font-semibold text-white">Ana Beatriz Costa</td>
-                  <td class="py-4 text-slate-400">(19) 9●●●●-1158</td>
-                  <td class="py-4"><span class="badge-frio text-xs font-bold px-2.5 py-1 rounded-full">Sem Resposta</span></td>
-                  <td class="py-4 text-slate-400 text-xs max-w-[180px] truncate">"Boa tarde, tenho interesse..."</td>
-                  <td class="py-4 text-right text-slate-500 text-xs">5h</td>
-                </tr>
               </tbody>
             </table>
+            <!-- Empty State -->
+            <div id="leads-empty-state" class="text-center py-12">
+              <div class="w-16 h-16 rounded-2xl bg-slate-800/60 flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="users" class="w-8 h-8 text-slate-600"></i>
+              </div>
+              <p class="text-sm font-bold text-slate-400 mb-1">Nenhum lead ainda</p>
+              <p class="text-xs text-slate-600">Conecte seu WhatsApp para começar a receber leads automaticamente.</p>
+            </div>
           </div>
         </div>
 
@@ -416,65 +906,129 @@
           <div class="flex items-center justify-between mb-6">
             <h3 class="text-lg font-bold text-white">WhatsApp</h3>
             <div class="flex items-center gap-1.5">
-              <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
-              <span class="text-[10px] font-bold text-emerald-400">Online</span>
+              <div class="w-2 h-2 rounded-full bg-slate-500"></div>
+              <span class="text-[10px] font-bold text-slate-500">Desconectado</span>
             </div>
           </div>
 
-          <div class="space-y-3">
-            <!-- Chat 1 -->
-            <div class="bg-slate-800/40 rounded-xl p-4 hover:bg-slate-800/60 transition-colors cursor-pointer border border-transparent hover:border-cyan-400/10">
-              <div class="flex items-center gap-3 mb-2">
-                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center text-white text-xs font-bold">MO</div>
-                <div class="flex-1">
-                  <div class="text-sm font-bold text-white">Marina Oliveira</div>
-                  <div class="text-[10px] text-slate-500">há 3 min</div>
-                </div>
-                <span class="bg-cyan-400 text-slate-950 text-[10px] font-black px-1.5 py-0.5 rounded-full">2</span>
-              </div>
-              <p class="text-xs text-slate-400 truncate">"Vi o apartamento no Vila Mariana..."</p>
-              <div class="flex items-center gap-1.5 mt-2">
-                <i data-lucide="bot" class="w-3 h-3 text-cyan-400"></i>
-                <span class="text-[10px] font-semibold text-cyan-400">IA respondeu automaticamente</span>
-              </div>
+          <!-- Empty State: Connect WhatsApp -->
+          <div class="text-center py-8">
+            <div class="w-20 h-20 rounded-2xl bg-emerald-400/10 border border-emerald-400/20 flex items-center justify-center mx-auto mb-5">
+              <i data-lucide="message-circle" class="w-10 h-10 text-emerald-400"></i>
             </div>
-
-            <!-- Chat 2 -->
-            <div class="bg-slate-800/40 rounded-xl p-4 hover:bg-slate-800/60 transition-colors cursor-pointer border border-transparent hover:border-violet-400/10">
-              <div class="flex items-center gap-3 mb-2">
-                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-violet-400 to-pink-500 flex items-center justify-center text-white text-xs font-bold">JF</div>
-                <div class="flex-1">
-                  <div class="text-sm font-bold text-white">João Ferreira</div>
-                  <div class="text-[10px] text-slate-500">há 18 min</div>
-                </div>
-              </div>
-              <p class="text-xs text-slate-400 truncate">"Pode agendar visita para sábado?"</p>
-              <div class="flex items-center gap-1.5 mt-2">
-                <i data-lucide="bot" class="w-3 h-3 text-cyan-400"></i>
-                <span class="text-[10px] font-semibold text-cyan-400">IA agendou visita — Sáb 15h</span>
-              </div>
-            </div>
-
-            <!-- Chat 3 -->
-            <div class="bg-slate-800/40 rounded-xl p-4 hover:bg-slate-800/60 transition-colors cursor-pointer border border-transparent hover:border-emerald-400/10">
-              <div class="flex items-center gap-3 mb-2">
-                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-white text-xs font-bold">CS</div>
-                <div class="flex-1">
-                  <div class="text-sm font-bold text-white">Camila Santos</div>
-                  <div class="text-[10px] text-slate-500">há 1h</div>
-                </div>
-              </div>
-              <p class="text-xs text-slate-400 truncate">"Perfeito, vou assinar o contrato!"</p>
-              <div class="flex items-center gap-1.5 mt-2">
-                <i data-lucide="check-check" class="w-3 h-3 text-emerald-400"></i>
-                <span class="text-[10px] font-semibold text-emerald-400">Convertido ✓</span>
-              </div>
-            </div>
+            <h4 class="text-base font-bold text-white mb-2">Conecte seu WhatsApp</h4>
+            <p class="text-xs text-slate-400 mb-6 max-w-[200px] mx-auto">Integre seu número comercial para a IA começar a atender seus leads 24/7.</p>
+            <button onclick="startWhatsAppSetup()" class="bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-bold text-sm px-6 py-3 rounded-xl hover:bg-emerald-500/30 transition-colors w-full">
+              <i data-lucide="qr-code" class="w-4 h-4 inline mr-1"></i>
+              Escanear QR Code
+            </button>
           </div>
 
           <div class="mt-4 text-center">
-            <span class="text-xs text-slate-600">3 de 47 conversas ativas</span>
+            <span class="text-xs text-slate-600">0 conversas ativas</span>
           </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ FUNCIONALIDADES DO PLANO OPERAÇÃO ═══ -->
+      <div class="mb-8">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-8 h-8 rounded-lg bg-cyan-400/10 flex items-center justify-center">
+            <i data-lucide="puzzle" class="w-4 h-4 text-cyan-400"></i>
+          </div>
+          <div>
+            <h2 class="text-lg font-black text-white">Funcionalidades Ativas</h2>
+            <p class="text-[11px] text-slate-500">Plano Operação — Seus módulos prontos para usar</p>
+          </div>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+
+          <!-- 1. Agente Automático Escalável -->
+          <div class="glass-card p-5 hover:border-emerald-400/20 transition-all group" id="feat-agente">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-emerald-400/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <i data-lucide="bot" class="w-5 h-5 text-emerald-400"></i>
+              </div>
+              <!-- Toggle -->
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="agente-toggle" class="sr-only peer" checked onchange="toggleAgente(this)">
+                <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:bg-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-400 after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+              </label>
+            </div>
+            <h3 class="text-sm font-bold text-white mb-1">Agente Automático</h3>
+            <p class="text-[10px] text-slate-500 mb-3">IA escalável atendendo leads 24/7</p>
+            <div class="flex items-center gap-1.5">
+              <div class="w-1.5 h-1.5 rounded-full bg-emerald-400 ai-pulse" id="agente-status-dot"></div>
+              <span class="text-[10px] font-bold text-emerald-400" id="agente-status-label">Online</span>
+            </div>
+          </div>
+
+          <!-- 2. Configuração Zap + N8N -->
+          <div class="glass-card p-5 hover:border-violet-400/20 transition-all group" id="feat-zap-n8n">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-violet-400/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <i data-lucide="workflow" class="w-5 h-5 text-violet-400"></i>
+              </div>
+              <span class="text-[9px] font-bold text-violet-400 bg-violet-400/10 border border-violet-400/20 px-2 py-0.5 rounded-full">N8N</span>
+            </div>
+            <h3 class="text-sm font-bold text-white mb-1">Zap + N8N</h3>
+            <p class="text-[10px] text-slate-500 mb-3">Automação de fluxos conectada</p>
+            <div class="flex items-center gap-1.5">
+              <div class="w-1.5 h-1.5 rounded-full bg-violet-400"></div>
+              <span class="text-[10px] font-bold text-violet-400" id="n8n-status">Configurado</span>
+            </div>
+          </div>
+
+          <!-- 3. Qualificação Básica (via IA) -->
+          <div class="glass-card p-5 hover:border-cyan-400/20 transition-all group" id="feat-qualificacao">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-cyan-400/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <i data-lucide="filter" class="w-5 h-5 text-cyan-400"></i>
+              </div>
+              <span class="text-[9px] font-bold text-cyan-400 bg-cyan-400/10 border border-cyan-400/20 px-2 py-0.5 rounded-full">IA</span>
+            </div>
+            <h3 class="text-sm font-bold text-white mb-1">Qualificação IA</h3>
+            <p class="text-[10px] text-slate-500 mb-3">Classifica leads automaticamente</p>
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] text-slate-500">Qualificados hoje</span>
+              <span class="text-xs font-black text-cyan-400" id="quali-count">0</span>
+            </div>
+          </div>
+
+          <!-- 4. Transferência Humano (via chat) -->
+          <div class="glass-card p-5 hover:border-amber-400/20 transition-all group" id="feat-transfer">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-amber-400/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <i data-lucide="user-check" class="w-5 h-5 text-amber-400"></i>
+              </div>
+              <span class="text-[9px] font-bold text-amber-400 bg-amber-400/10 border border-amber-400/20 px-2 py-0.5 rounded-full">CHAT</span>
+            </div>
+            <h3 class="text-sm font-bold text-white mb-1">Transfer. Humano</h3>
+            <p class="text-[10px] text-slate-500 mb-3">Escala para atendente quando necessário</p>
+            <div class="flex items-center gap-1.5">
+              <div class="w-1.5 h-1.5 rounded-full bg-amber-400"></div>
+              <span class="text-[10px] font-bold text-amber-400">Pronto</span>
+            </div>
+          </div>
+
+          <!-- 5. Importação de Leads CSV -->
+          <div class="glass-card p-5 hover:border-cyan-400/20 transition-all group cursor-pointer" id="feat-csv" onclick="startCSVImport()">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-cyan-400/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <i data-lucide="file-up" class="w-5 h-5 text-cyan-400"></i>
+              </div>
+              <span class="text-[9px] font-bold text-cyan-400 bg-cyan-400/10 border border-cyan-400/20 px-2 py-0.5 rounded-full">CSV</span>
+            </div>
+            <h3 class="text-sm font-bold text-white mb-1">Importar Leads</h3>
+            <p class="text-[10px] text-slate-500 mb-3">Upload de planilha CSV</p>
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] text-slate-500">Importados</span>
+              <span class="text-xs font-black text-cyan-400" id="csv-imported-count">0</span>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -1345,8 +1899,109 @@
       } catch(e) { console.warn("Funnel offline", e.message); }
     }
 
+    // ─── AUTH GUARD ──────────────────────────────────────────
+    function nexoAuthCheck() {
+      const localSess = localStorage.getItem('sb-tqqtjrunrimabitmersr-auth-token');
+      if(!localSess) {
+        window.location.replace('login.html');
+        return null;
+      }
+      try {
+        return JSON.parse(localSess);
+      } catch(e) {
+        window.location.replace('login.html');
+        return null;
+      }
+    }
+
+    function nexoLogout() {
+      localStorage.removeItem('sb-tqqtjrunrimabitmersr-auth-token');
+      window.location.replace('login.html');
+    }
+
+    // ─── MOBILE SIDEBAR TOGGLE ───────────────────────────────
+    function toggleSidebar() {
+      const sidebar = document.getElementById('nexo-sidebar');
+      const backdrop = document.getElementById('sidebar-backdrop');
+      if(sidebar) sidebar.classList.toggle('open');
+      if(backdrop) backdrop.classList.toggle('active');
+    }
+
+    // Close sidebar on nav click (mobile)
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.sidebar-item').forEach(item => {
+        item.addEventListener('click', () => {
+          if(window.innerWidth < 1024) {
+            const sidebar = document.getElementById('nexo-sidebar');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            if(sidebar) sidebar.classList.remove('open');
+            if(backdrop) backdrop.classList.remove('active');
+          }
+        });
+      });
+    });
+
+    function nexoUpdateGreeting(session) {
+      if(!session || !session.user) return;
+      const meta = session.user.user_metadata || {};
+      const name = meta.full_name || session.user.email.split('@')[0];
+      const company = meta.company_name || 'Minha Empresa';
+      const hour = new Date().getHours();
+      let greet = 'Boa noite';
+      if(hour >= 5 && hour < 12) greet = 'Bom dia';
+      else if(hour >= 12 && hour < 18) greet = 'Boa tarde';
+
+      const greetEl = document.querySelector('[data-nexo-greeting]');
+      if(greetEl) greetEl.textContent = `${greet}, ${name.split(' ')[0]} 👋`;
+      const compEl = document.querySelector('[data-nexo-company]');
+      if(compEl) compEl.textContent = company;
+
+      // Avatar initials
+      const avatarEl = document.querySelector('[data-nexo-avatar-initials]');
+      if(avatarEl) {
+        const parts = name.split(' ');
+        const initials = parts.length >= 2 
+          ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+          : name.substring(0, 2).toUpperCase();
+        avatarEl.textContent = initials;
+      }
+
+      // Display name
+      const nameEl = document.querySelector('[data-nexo-user-name]');
+      if(nameEl) {
+        const parts = name.split(' ');
+        nameEl.textContent = parts.length >= 2 ? `${parts[0]} ${parts[1][0]}.` : name;
+      }
+    }
+
     // ─── INIT ENGINE ─────────────────────────────────────────
     async function initNexoEngine() {
+      const session = nexoAuthCheck();
+      if(!session) return;
+
+      document.body.style.display = 'block';
+      nexoUpdateGreeting(session);
+
+      // Check if user completed onboarding
+      const userId = session.user?.id || 'default';
+      const onboardingDone = localStorage.getItem(`nexo_onboarding_${userId}`);
+      
+      const onboardingEl = document.getElementById('nexo-onboarding');
+      const dashboardEl = document.getElementById('view-dashboard');
+      
+      if(!onboardingDone && onboardingEl) {
+        // First time: show onboarding, hide dashboard
+        onboardingEl.classList.remove('hidden');
+        if(dashboardEl) dashboardEl.classList.add('hidden');
+        if(window.lucide) lucide.createIcons();
+        console.log("🎯 Nexo AI — Modo Onboarding (primeiro acesso)");
+        return;
+      }
+
+      // User already completed onboarding - show dashboard
+      if(onboardingEl) onboardingEl.classList.add('hidden');
+      if(dashboardEl) { dashboardEl.classList.remove('hidden'); dashboardEl.classList.add('block'); }
+
       console.log("🚀 Nexo AI Engine — Conectando ao Supabase...");
       await Promise.all([
         loadKPIs(),
@@ -1354,11 +2009,607 @@
         loadWhatsappContacts(),
         loadFunnelCounts()
       ]);
+      checkWahaStatus();
       console.log("✅ Nexo AI Engine — Online e sincronizado.");
     }
 
+    // ─── ONBOARDING FUNCTIONS ────────────────────────────────
+    function skipOnboarding() {
+      const session = nexoAuthCheck();
+      const userId = session?.user?.id || 'default';
+      localStorage.setItem(`nexo_onboarding_${userId}`, 'done');
+
+      const onboardingEl = document.getElementById('nexo-onboarding');
+      const dashboardEl = document.getElementById('view-dashboard');
+      
+      if(onboardingEl) {
+        onboardingEl.style.transition = 'opacity 0.4s ease';
+        onboardingEl.style.opacity = '0';
+        setTimeout(() => {
+          onboardingEl.classList.add('hidden');
+          if(dashboardEl) { 
+            dashboardEl.classList.remove('hidden'); 
+            dashboardEl.classList.add('block');
+            dashboardEl.style.opacity = '0';
+            setTimeout(() => {
+              dashboardEl.style.transition = 'opacity 0.4s ease';
+              dashboardEl.style.opacity = '1';
+            }, 50);
+          }
+          if(window.lucide) lucide.createIcons();
+          // Load data
+          Promise.all([loadKPIs(), loadLeadsTable(), loadWhatsappContacts(), loadFunnelCounts()]);
+        }, 400);
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // ─── TOAST SYSTEM ────────────────────────────────────────
+    // ═══════════════════════════════════════════════════════════
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('nexo-toast-container');
+      if(!container) return;
+      const toast = document.createElement('div');
+      toast.className = `nexo-toast ${type}`;
+      const icon = type === 'success' ? '✅' : '❌';
+      toast.innerHTML = `<span>${icon}</span><span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.animation = 'toastSlideOut 0.4s ease forwards';
+        setTimeout(() => toast.remove(), 400);
+      }, 4000);
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // ─── WAHA WHATSAPP INTEGRATION ───────────────────────────
+    // ═══════════════════════════════════════════════════════════
+    const WAHA_BASE = 'http://localhost:3000'; // WAHA Docker endpoint
+    let wahaSessionId = null;
+    let wahaPollInterval = null;
+    let wahaPollCount = 0;
+    let wahaConnected = false;
+
+    function startWhatsAppSetup() {
+      if(wahaConnected) return; // Already connected
+      const modal = document.getElementById('waha-modal');
+      if(modal) {
+        modal.classList.add('active');
+        if(window.lucide) lucide.createIcons();
+      }
+      initWahaSession();
+    }
+
+    function closeWahaModal() {
+      const modal = document.getElementById('waha-modal');
+      if(modal) modal.classList.remove('active');
+      if(wahaPollInterval && !wahaConnected) {
+        clearInterval(wahaPollInterval);
+        wahaPollInterval = null;
+      }
+    }
+
+    async function initWahaSession() {
+      // Reset states
+      showWahaState('loading');
+      wahaPollCount = 0;
+
+      // Generate session ID from user
+      const session = nexoAuthCheck();
+      const userId = session?.user?.id || 'default';
+      wahaSessionId = `nexo_${userId.substring(0, 8)}`;
+      
+      const sessionIdEl = document.getElementById('waha-session-id');
+      if(sessionIdEl) sessionIdEl.textContent = `Sessão: ${wahaSessionId}`;
+
+      // Step 1: Create WAHA Session (simulated)
+      try {
+        console.log(`📡 WAHA: POST ${WAHA_BASE}/api/sessions/start`);
+        console.log(`📡 Payload: { name: "${wahaSessionId}" }`);
+        
+        // === REAL WAHA CALL (uncomment when Docker is running) ===
+        // const res = await fetch(`${WAHA_BASE}/api/sessions/start`, {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   body: JSON.stringify({ name: wahaSessionId })
+        // });
+        // const data = await res.json();
+        // console.log('WAHA session created:', data);
+
+        // Simulated delay for session creation
+        await new Promise(r => setTimeout(r, 1500));
+        
+        updateWahaFooter('connecting', 'Criando sessão...');
+
+      } catch(err) {
+        console.error('WAHA session error:', err);
+        showToast('Erro ao conectar com WAHA. Verifique o Docker.', 'error');
+        return;
+      }
+
+      // Step 2: Fetch QR Code
+      try {
+        console.log(`📡 WAHA: GET ${WAHA_BASE}/api/${wahaSessionId}/auth/qr`);
+        
+        // === REAL WAHA CALL (uncomment when Docker is running) ===
+        // const qrRes = await fetch(`${WAHA_BASE}/api/${wahaSessionId}/auth/qr`);
+        // const qrBlob = await qrRes.blob();
+        // const qrUrl = URL.createObjectURL(qrBlob);
+        // const qrImg = document.getElementById('waha-qr-image');
+        // if(qrImg) { qrImg.src = qrUrl; qrImg.style.display = 'block'; }
+        // document.getElementById('waha-qr-placeholder').style.display = 'none';
+
+        // Simulated delay for QR generation
+        await new Promise(r => setTimeout(r, 1000));
+        
+        // Show QR state
+        showWahaState('qr');
+        updateWahaFooter('scanning', 'Aguardando escaneamento...');
+
+      } catch(err) {
+        console.error('WAHA QR error:', err);
+        showToast('Erro ao gerar QR Code. Tente novamente.', 'error');
+        return;
+      }
+
+      // Step 3: Start polling for connection status
+      startWahaPolling();
+    }
+
+    function startWahaPolling() {
+      wahaPollCount = 0;
+      
+      wahaPollInterval = setInterval(async () => {
+        wahaPollCount++;
+        
+        const statusEl = document.getElementById('waha-poll-status');
+        
+        // === REAL WAHA POLLING (uncomment when Docker is running) ===
+        // try {
+        //   const res = await fetch(`${WAHA_BASE}/api/sessions/${wahaSessionId}`);
+        //   const data = await res.json();
+        //   if(data.status === 'WORKING') {
+        //     onWahaConnected();
+        //     return;
+        //   }
+        // } catch(err) { console.warn('Poll error:', err); }
+
+        // Simulated polling feedback
+        if(wahaPollCount === 1 && statusEl) {
+          statusEl.textContent = 'Aguardando leitura do QR Code...';
+        } else if(wahaPollCount === 2 && statusEl) {
+          statusEl.textContent = 'QR Code detectado, verificando...';
+          updateWahaFooter('verifying', 'Verificando conexão...');
+        } else if(wahaPollCount >= 3) {
+          // After 9 seconds (3 polls × 3s), simulate success
+          onWahaConnected();
+          return;
+        }
+
+        console.log(`📡 WAHA Poll #${wahaPollCount}: checking session ${wahaSessionId}...`);
+      }, 3000);
+    }
+
+    function onWahaConnected() {
+      // Stop polling
+      if(wahaPollInterval) {
+        clearInterval(wahaPollInterval);
+        wahaPollInterval = null;
+      }
+      
+      wahaConnected = true;
+
+      // Show connected state in modal
+      showWahaState('connected');
+      updateWahaFooter('connected', 'Conectado');
+      if(window.lucide) lucide.createIcons();
+
+      // Save connection state
+      const session = nexoAuthCheck();
+      const userId = session?.user?.id || 'default';
+      localStorage.setItem(`nexo_whatsapp_${userId}`, 'connected');
+
+      // Auto-close modal after 2 seconds
+      setTimeout(() => {
+        closeWahaModal();
+        showToast('WhatsApp conectado com sucesso! Seu agente IA está ativo.');
+        updateWhatsAppUI();
+      }, 2000);
+    }
+
+    function showWahaState(state) {
+      const loading = document.getElementById('waha-state-loading');
+      const qr = document.getElementById('waha-state-qr');
+      const connected = document.getElementById('waha-state-connected');
+      
+      if(loading) loading.classList.toggle('hidden', state !== 'loading');
+      if(qr) qr.classList.toggle('hidden', state !== 'qr');
+      if(connected) connected.classList.toggle('hidden', state !== 'connected');
+    }
+
+    function updateWahaFooter(status, text) {
+      const dot = document.getElementById('waha-status-dot');
+      const label = document.getElementById('waha-status-text');
+      
+      const colors = {
+        connecting: '#f59e0b',
+        scanning: '#22d3ee',
+        verifying: '#a78bfa',
+        connected: '#34d399'
+      };
+      
+      if(dot) dot.style.background = colors[status] || '#64748b';
+      if(label) { label.textContent = text; label.style.color = colors[status] || '#64748b'; }
+    }
+
+    function updateWhatsAppUI() {
+      // Update all "Conectar" buttons to "Conectado ✓"
+      document.querySelectorAll('button').forEach(btn => {
+        if(btn.textContent.trim().startsWith('Conectar')) {
+          btn.textContent = 'Conectado ✓';
+          btn.className = 'bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-bold text-sm px-6 py-3 rounded-xl cursor-default flex-shrink-0';
+          btn.onclick = null;
+          btn.disabled = true;
+        }
+      });
+
+      // Update "Escanear QR Code" button
+      document.querySelectorAll('button').forEach(btn => {
+        if(btn.textContent.includes('Escanear QR')) {
+          btn.innerHTML = '<i data-lucide="check-circle" class="w-4 h-4 inline mr-1"></i> WhatsApp Ativo';
+          btn.className = 'bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-bold text-sm px-6 py-3 rounded-xl cursor-default w-full';
+          btn.onclick = null;
+          btn.disabled = true;
+        }
+      });
+
+      // Update WhatsApp panel status
+      const statusDots = document.querySelectorAll('.w-2.h-2.rounded-full.bg-slate-500');
+      statusDots.forEach(dot => {
+        dot.className = dot.className.replace('bg-slate-500', 'bg-emerald-400');
+      });
+      const statusLabels = document.querySelectorAll('span');
+      statusLabels.forEach(span => {
+        if(span.textContent.trim() === 'Desconectado') {
+          span.textContent = 'Online';
+          span.className = span.className.replace('text-slate-500', 'text-emerald-400');
+        }
+      });
+
+      if(window.lucide) lucide.createIcons();
+    }
+
+    // Check if already connected on page load
+    function checkWahaStatus() {
+      const session = nexoAuthCheck();
+      if(!session) return;
+      const userId = session?.user?.id || 'default';
+      const connected = localStorage.getItem(`nexo_whatsapp_${userId}`);
+      if(connected === 'connected') {
+        wahaConnected = true;
+        updateWhatsAppUI();
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // ─── AGENT CONFIG (Prompt 3) ─────────────────────────────
+    // ═══════════════════════════════════════════════════════════
+    let agentConfigured = false;
+
+    function startAgentConfig() {
+      if(agentConfigured) return;
+      const modal = document.getElementById('agent-config-modal');
+      if(modal) { modal.classList.add('active'); if(window.lucide) lucide.createIcons(); }
+
+      // Load saved config if exists
+      const session = nexoAuthCheck();
+      const userId = session?.user?.id || 'default';
+      const saved = localStorage.getItem(`nexo_agent_config_${userId}`);
+      if(saved) {
+        try {
+          const cfg = JSON.parse(saved);
+          document.getElementById('agent-name').value = cfg.name || '';
+          document.getElementById('agent-tone').value = cfg.tone || 'amigavel';
+          document.getElementById('agent-instructions').value = cfg.instructions || '';
+        } catch(e) {}
+      }
+    }
+
+    function closeAgentConfig() {
+      const modal = document.getElementById('agent-config-modal');
+      if(modal) modal.classList.remove('active');
+    }
+
+    function saveAgentConfig(e) {
+      e.preventDefault();
+      const name = document.getElementById('agent-name').value.trim();
+      const tone = document.getElementById('agent-tone').value;
+      const instructions = document.getElementById('agent-instructions').value.trim();
+
+      if(!name) { showToast('Preencha o nome do assistente.', 'error'); return; }
+      if(instructions.length < 20) { showToast('Instruções muito curtas. Detalhe mais para a IA funcionar bem.', 'error'); return; }
+
+      // Save to localStorage (simulated POST)
+      const session = nexoAuthCheck();
+      const userId = session?.user?.id || 'default';
+      const config = { name, tone, instructions, saved_at: new Date().toISOString() };
+      localStorage.setItem(`nexo_agent_config_${userId}`, JSON.stringify(config));
+
+      console.log('📡 POST /api/agent/config:', config);
+
+      agentConfigured = true;
+      closeAgentConfig();
+      showToast(`Agente "${name}" configurado com sucesso!`);
+
+      // Update button
+      document.querySelectorAll('button').forEach(btn => {
+        if(btn.textContent.trim() === 'Configurar →') {
+          btn.textContent = 'Configurado ✓';
+          btn.className = 'bg-violet-500/20 border border-violet-500/30 text-violet-400 font-bold text-sm px-6 py-3 rounded-xl cursor-default flex-shrink-0';
+          btn.onclick = null;
+          btn.disabled = true;
+        }
+      });
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // ─── CSV IMPORT (Prompt 4) ───────────────────────────────
+    // ═══════════════════════════════════════════════════════════
+    let csvImported = false;
+    let parsedContacts = [];
+
+    function startCSVImport() {
+      if(csvImported) return;
+      const modal = document.getElementById('csv-import-modal');
+      if(modal) { modal.classList.add('active'); if(window.lucide) lucide.createIcons(); }
+      // Reset states
+      document.getElementById('csv-upload-zone').classList.remove('hidden');
+      document.getElementById('csv-progress-area').classList.add('hidden');
+      document.getElementById('csv-preview-area').classList.add('hidden');
+      document.getElementById('csv-file-input').value = '';
+    }
+
+    function closeCSVImport() {
+      const modal = document.getElementById('csv-import-modal');
+      if(modal) modal.classList.remove('active');
+    }
+
+    function handleCSVFile(e) {
+      const file = e.target.files[0];
+      if(!file) return;
+
+      document.getElementById('csv-upload-zone').classList.add('hidden');
+      document.getElementById('csv-progress-area').classList.remove('hidden');
+      document.getElementById('csv-file-name').textContent = file.name;
+
+      const reader = new FileReader();
+      let progress = 0;
+
+      // Animate progress bar
+      const progressInterval = setInterval(() => {
+        progress += Math.random() * 25;
+        if(progress > 90) progress = 90;
+        updateCSVProgress(progress, 'Lendo arquivo...');
+      }, 200);
+
+      reader.onload = function(ev) {
+        clearInterval(progressInterval);
+        updateCSVProgress(95, 'Parseando colunas...');
+
+        const text = ev.target.result;
+        const lines = text.split('\n').filter(l => l.trim());
+        parsedContacts = [];
+
+        for(let i = 1; i < lines.length; i++) {
+          const cols = lines[i].split(/[,;\t]/);
+          if(cols.length >= 2) {
+            parsedContacts.push({
+              name: cols[0].trim().replace(/"/g, ''),
+              phone: cols[1].trim().replace(/"/g, '')
+            });
+          }
+        }
+
+        setTimeout(() => {
+          updateCSVProgress(100, `${parsedContacts.length} contatos encontrados`);
+
+          setTimeout(() => {
+            document.getElementById('csv-progress-area').classList.add('hidden');
+
+            // Show preview
+            const previewBody = document.getElementById('csv-preview-body');
+            previewBody.innerHTML = '';
+            const preview = parsedContacts.slice(0, 5);
+            preview.forEach(c => {
+              previewBody.innerHTML += `<tr><td class="py-1">${c.name}</td><td class="py-1">${c.phone}</td></tr>`;
+            });
+            if(parsedContacts.length > 5) {
+              previewBody.innerHTML += `<tr><td class="py-1 text-slate-500" colspan="2">... e mais ${parsedContacts.length - 5} contatos</td></tr>`;
+            }
+
+            document.getElementById('csv-preview-area').classList.remove('hidden');
+            if(window.lucide) lucide.createIcons();
+          }, 500);
+        }, 300);
+      };
+
+      reader.readAsText(file);
+    }
+
+    function updateCSVProgress(percent, text) {
+      const bar = document.getElementById('csv-progress-bar');
+      const pct = document.getElementById('csv-progress-percent');
+      const txt = document.getElementById('csv-progress-text');
+      if(bar) bar.style.width = `${Math.min(percent, 100)}%`;
+      if(pct) pct.textContent = `${Math.round(percent)}%`;
+      if(txt) txt.textContent = text;
+    }
+
+    function confirmCSVImport() {
+      if(!parsedContacts.length) { showToast('Nenhum contato válido encontrado.', 'error'); return; }
+
+      console.log('📡 POST /api/leads/import:', parsedContacts);
+
+      csvImported = true;
+      const count = parsedContacts.length;
+
+      closeCSVImport();
+      showToast(`${count} contatos importados com sucesso!`);
+
+      // Update button
+      document.querySelectorAll('button').forEach(btn => {
+        if(btn.textContent.trim() === 'Importar CSV →') {
+          btn.textContent = 'Importado ✓';
+          btn.className = 'bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 font-bold text-sm px-6 py-3 rounded-xl cursor-default flex-shrink-0';
+          btn.onclick = null;
+          btn.disabled = true;
+        }
+      });
+
+      // Save state
+      const session = nexoAuthCheck();
+      const userId = session?.user?.id || 'default';
+      localStorage.setItem(`nexo_csv_imported_${userId}`, count.toString());
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // ─── PROFILE MODAL ───────────────────────────────────────
+    // ═══════════════════════════════════════════════════════════
+    function openProfileModal() {
+      const modal = document.getElementById('profile-modal');
+      if(modal) { modal.classList.add('active'); if(window.lucide) lucide.createIcons(); }
+
+      // Populate from session
+      const session = nexoAuthCheck();
+      if(session && session.user) {
+        const meta = session.user.user_metadata || {};
+        document.getElementById('profile-name').value = meta.full_name || '';
+        document.getElementById('profile-company').value = meta.company_name || '';
+        document.getElementById('profile-email').value = session.user.email || '';
+
+        const avatarText = document.getElementById('profile-avatar-text');
+        if(avatarText) {
+          const name = meta.full_name || session.user.email.split('@')[0];
+          const parts = name.split(' ');
+          avatarText.textContent = parts.length >= 2
+            ? (parts[0][0] + parts[parts.length-1][0]).toUpperCase()
+            : name.substring(0,2).toUpperCase();
+        }
+      }
+    }
+
+    function closeProfileModal() {
+      const modal = document.getElementById('profile-modal');
+      if(modal) modal.classList.remove('active');
+    }
+
+    function handleProfilePhoto(e) {
+      const file = e.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        const circle = document.getElementById('profile-avatar-circle');
+        if(circle) {
+          circle.style.backgroundImage = `url(${ev.target.result})`;
+          circle.style.backgroundSize = 'cover';
+          circle.style.backgroundPosition = 'center';
+          document.getElementById('profile-avatar-text').style.display = 'none';
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function saveProfile(e) {
+      e.preventDefault();
+      const name = document.getElementById('profile-name').value.trim();
+      const company = document.getElementById('profile-company').value.trim();
+
+      if(!name) { showToast('Preencha seu nome.', 'error'); return; }
+
+      // Update localStorage session with new metadata
+      const session = nexoAuthCheck();
+      if(session && session.user) {
+        if(!session.user.user_metadata) session.user.user_metadata = {};
+        session.user.user_metadata.full_name = name;
+        session.user.user_metadata.company_name = company;
+        localStorage.setItem('sb-tqqtjrunrimabitmersr-auth-token', JSON.stringify(session));
+      }
+
+      // Update UI
+      nexoUpdateGreeting(session);
+      closeProfileModal();
+      showToast('Perfil atualizado com sucesso!');
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // ─── NOTIFICATIONS ───────────────────────────────────────
+    // ═══════════════════════════════════════════════════════════
+    function toggleNotifications() {
+      const dropdown = document.getElementById('notifications-dropdown');
+      if(dropdown) {
+        dropdown.classList.toggle('hidden');
+        if(window.lucide) lucide.createIcons();
+      }
+    }
+
+    function clearNotifications() {
+      const list = document.getElementById('notifications-list');
+      if(list) list.innerHTML = '<div class="p-6 text-center"><p class="text-xs text-slate-500">Nenhuma notificação</p></div>';
+      const badge = document.getElementById('notif-badge');
+      if(badge) badge.style.display = 'none';
+    }
+
+    // Close notifications when clicking outside
+    document.addEventListener('click', (e) => {
+      const dropdown = document.getElementById('notifications-dropdown');
+      if(dropdown && !dropdown.classList.contains('hidden')) {
+        if(!e.target.closest('#notifications-dropdown') && !e.target.closest('[onclick*="toggleNotifications"]')) {
+          dropdown.classList.add('hidden');
+        }
+      }
+    });
+
+    // ═══════════════════════════════════════════════════════════
+    // ─── FEATURE CARDS LOGIC ─────────────────────────────────
+    // ═══════════════════════════════════════════════════════════
+    function toggleAgente(checkbox) {
+      const dot = document.getElementById('agente-status-dot');
+      const label = document.getElementById('agente-status-label');
+      if(checkbox.checked) {
+        dot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400 ai-pulse';
+        label.textContent = 'Online';
+        label.className = 'text-[10px] font-bold text-emerald-400';
+        showToast('Agente IA ativado!');
+      } else {
+        dot.className = 'w-1.5 h-1.5 rounded-full bg-slate-500';
+        label.textContent = 'Offline';
+        label.className = 'text-[10px] font-bold text-slate-500';
+        showToast('Agente IA desativado.', 'error');
+      }
+    }
+
+    function restoreFeatureStates() {
+      const session = nexoAuthCheck();
+      if(!session) return;
+      const userId = session?.user?.id || 'default';
+
+      // Restore CSV count
+      const csvCount = localStorage.getItem(`nexo_csv_imported_${userId}`);
+      if(csvCount) {
+        const el = document.getElementById('csv-imported-count');
+        if(el) el.textContent = csvCount;
+      }
+
+      // Restore agent config status
+      const agentCfg = localStorage.getItem(`nexo_agent_config_${userId}`);
+      if(agentCfg) {
+        agentConfigured = true;
+        const n8nStatus = document.getElementById('n8n-status');
+        if(n8nStatus) { n8nStatus.textContent = 'Ativo'; n8nStatus.className = 'text-[10px] font-bold text-emerald-400'; }
+      }
+    }
+
     // Run on page load
-    window.addEventListener("load", initNexoEngine);
+    window.addEventListener("load", () => { initNexoEngine().then(() => restoreFeatureStates()); });
     </script>
     <!-- ====== FIM DO NEXO SUPABASE ENGINE ====== -->
 </body>

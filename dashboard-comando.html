@@ -159,7 +159,7 @@
             <i data-lucide="settings" class="w-5 h-5"></i>
             Configurações
           </div>
-          <div class="sidebar-item">
+          <div class="sidebar-item" onclick="sbLogout()" style="cursor:pointer;">
             <i data-lucide="log-out" class="w-5 h-5"></i>
             Sair
           </div>
@@ -173,8 +173,8 @@
       <!-- Header -->
       <header class="flex items-center justify-between mb-8 fade-in fade-in-1">
         <div>
-          <h1 class="text-2xl font-black text-white">Bom dia, Ricardo 👋</h1>
-          <p class="text-sm text-slate-500 mt-1">Grupo RB — 4 unidades • Atualizado há 1 min</p>
+          <h1 class="text-2xl font-black text-white" data-nexo-greeting>Carregando...</h1>
+          <p class="text-sm text-slate-500 mt-1"><span data-nexo-company>Nexo AI</span> — <span data-nexo-last-update>Atualizado agora</span></p>
         </div>
         <div class="flex items-center gap-4">
           <!-- Department Selector -->
@@ -1192,7 +1192,23 @@
     async function nexoInit(){
       const isAuth = await sbAuthCheck();
       if(!isAuth) return;
-      document.body.style.display = 'block'; // Mostra body so apos auth
+      document.body.style.display = 'block';
+
+      // Dynamic greeting from session
+      if(nexoUser) {
+        const meta = nexoUser.user_metadata || {};
+        const name = meta.full_name || nexoUser.email.split('@')[0];
+        const company = meta.company_name || 'Nexo AI';
+        const hour = new Date().getHours();
+        let greet = 'Boa noite';
+        if(hour >= 5 && hour < 12) greet = 'Bom dia';
+        else if(hour >= 12 && hour < 18) greet = 'Boa tarde';
+        const greetEl = document.querySelector('[data-nexo-greeting]');
+        if(greetEl) greetEl.textContent = `${greet}, ${name.split(' ')[0]} 👋`;
+        const compEl = document.querySelector('[data-nexo-company]');
+        if(compEl) compEl.textContent = company;
+      }
+
       await Promise.all([loadKPIs(),loadLeadsTable(),loadContacts()]);
     }
 
