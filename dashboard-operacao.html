@@ -138,6 +138,38 @@
       }
     }
 
+    /* ─── SIDEBAR COLLAPSE (Desktop) ─── */
+    .nexo-sidebar {
+      transition: width 0.28s cubic-bezier(0.4,0,0.2,1), transform 0.3s ease;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .nexo-sidebar.collapsed {
+      width: 68px !important;
+    }
+    .nexo-sidebar.collapsed .sidebar-label,
+    .nexo-sidebar.collapsed .sidebar-section-label,
+    .nexo-sidebar.collapsed [data-nexo-company],
+    .nexo-sidebar.collapsed .sidebar-badge {
+      opacity: 0;
+      pointer-events: none;
+      width: 0;
+      overflow: hidden;
+    }
+    .nexo-sidebar.collapsed .sidebar-item {
+      justify-content: center;
+      padding-left: 0;
+      padding-right: 0;
+    }
+    .nexo-sidebar.collapsed .logo-text { display: none; }
+    .nexo-sidebar.collapsed .logo-area { justify-content: center; }
+    .nexo-main {
+      transition: margin-left 0.28s cubic-bezier(0.4,0,0.2,1);
+    }
+    .nexo-main.sidebar-collapsed {
+      margin-left: 68px !important;
+    }
+
     /* ─── MODAL ─── */
     .nexo-modal-overlay {
       position: fixed; inset: 0; z-index: 100;
@@ -347,34 +379,56 @@
         </div>
 
         <form id="agent-config-form" onsubmit="saveAgentConfig(event)">
-          <!-- Agent Name -->
-          <div class="mb-5">
-            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nome do Assistente</label>
-            <input type="text" id="agent-name" value="Assistente Nexo" placeholder="Ex: Sofia, Atendimento Premium..." class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors" />
+          <!-- Agent Name & Tone in one row -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nome do Assistente</label>
+              <input type="text" id="agent-name" value="Assistente Nexo" placeholder="Ex: Sofia..." class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tom de Voz</label>
+              <select id="agent-tone" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 cursor-pointer appearance-none">
+                <option value="formal">🎩 Formal — Profissional e polido</option>
+                <option value="amigavel" selected>😊 Amigável — Próximo e acolhedor</option>
+                <option value="persuasivo">🎯 Persuasivo — Focado em conversão</option>
+                <option value="direto">⚡ Direto — Objetividade máxima</option>
+              </select>
+            </div>
           </div>
 
-          <!-- Tone of Voice -->
-          <div class="mb-5">
-            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tom de Voz da IA</label>
-            <select id="agent-tone" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 cursor-pointer appearance-none">
-              <option value="formal">🎩 Formal — Profissional e polido</option>
-              <option value="amigavel" selected>😊 Amigável — Próximo e acolhedor</option>
-              <option value="persuasivo">🎯 Persuasivo — Focado em conversão</option>
-              <option value="direto">⚡ Direto — Objetividade máxima</option>
-            </select>
+          <!-- Objetivo da IA & Link CTA -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Objetivo Principal</label>
+              <select id="agent-goal" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 cursor-pointer appearance-none">
+                <option value="agendamento">📅 Agendar Visita/Reunião</option>
+                <option value="venda" selected>💰 Realizar Venda Direta</option>
+                <option value="qualificacao">📋 Qualificar Lead</option>
+                <option value="suporte">🛠️ Suporte e Dúvidas</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Link de Ação (CTA)</label>
+              <input type="text" id="agent-link" placeholder="Ex: link do checkout ou agenda..." class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors" />
+            </div>
           </div>
 
           <!-- Base Instructions -->
+          <div class="mb-4">
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Base de Conhecimento da Empresa</label>
+            <textarea id="agent-instructions" rows="4" placeholder="Descreva os produtos, preços, endereço, e regras de negócio essenciais para a IA aprender e usar nas respostas..." class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors resize-none"></textarea>
+          </div>
+
+          <!-- Transferência Humana -->
           <div class="mb-6">
-            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Instruções Base da Empresa</label>
-            <textarea id="agent-instructions" rows="5" placeholder="Descreva o endereço, preços principais, horário de funcionamento e regras de negócio para a IA aprender..." class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors resize-none"></textarea>
-            <p class="text-[10px] text-slate-600 mt-1.5">Quanto mais detalhado, melhor a IA atende. Mínimo 50 caracteres recomendado.</p>
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Gatilho de Transferência Humana</label>
+            <input type="text" id="agent-transfer" placeholder="Ex: Quando pedir desconto > 10% ou falar com humano" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors" />
           </div>
 
           <!-- Buttons -->
           <div class="flex gap-3">
             <button type="button" onclick="closeAgentConfig()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm py-3 rounded-xl transition-colors">Cancelar</button>
-            <button type="submit" class="flex-1 bg-violet-500 hover:bg-violet-400 text-white font-black text-sm py-3 rounded-xl transition-all hover:scale-[1.02] shadow-lg shadow-violet-500/20">Salvar Configurações</button>
+            <button type="submit" id="btn-save-agent" class="flex-1 bg-violet-500 hover:bg-violet-400 text-white font-black text-sm py-3 rounded-xl transition-all hover:scale-[1.02] shadow-lg shadow-violet-500/20">Salvar Inteligência</button>
           </div>
         </form>
       </div>
@@ -475,14 +529,24 @@
             <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nome da Empresa</label>
             <input type="text" id="profile-company" placeholder="Sua empresa" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-cyan-400 transition-colors" />
           </div>
-          <div class="mb-6">
+          <div class="mb-4">
             <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">E-mail</label>
             <input type="email" id="profile-email" disabled class="w-full bg-slate-900/60 border border-slate-800 rounded-xl px-4 py-3 text-slate-500 text-sm cursor-not-allowed" />
-            <p class="text-[10px] text-slate-600 mt-1">O e-mail não pode ser alterado.</p>
+            <p class="text-[10px] text-slate-600 mt-1">O e-mail principal não pode ser alterado por segurança.</p>
+          </div>
+          <div class="grid grid-cols-2 gap-4 mb-6 border-t border-slate-800/50 pt-4 mt-2">
+            <div>
+              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nova Senha</label>
+              <input type="password" id="profile-password" placeholder="Mín. 6 caracteres" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-cyan-400 transition-colors" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Confirmar Senha</label>
+              <input type="password" id="profile-password-confirm" placeholder="Repita a senha" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-cyan-400 transition-colors" />
+            </div>
           </div>
           <div class="flex gap-3">
             <button type="button" onclick="closeProfileModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm py-3 rounded-xl transition-colors">Cancelar</button>
-            <button type="submit" class="flex-1 bg-cyan-500 hover:bg-cyan-400 text-white font-black text-sm py-3 rounded-xl transition-all hover:scale-[1.02] shadow-lg shadow-cyan-500/20">Salvar Perfil</button>
+            <button type="submit" class="flex-1 bg-cyan-500 hover:bg-cyan-400 text-white font-black text-sm py-3 rounded-xl transition-all hover:scale-[1.02] shadow-lg shadow-cyan-500/20">Salvar Alterações</button>
           </div>
         </form>
       </div>
@@ -536,59 +600,64 @@
     <!-- ====== SIDEBAR ====== -->
     <aside class="nexo-sidebar w-64 bg-slate-950 border-r border-slate-800/50 flex flex-col p-4 fixed h-full z-30" id="nexo-sidebar">
       
-      <!-- Logo -->
-      <div class="flex items-center gap-3 px-2 mb-8 mt-2">
-        <img src="assets/images/WhatsApp Image 2026-04-17 at 14.39.30 (2).jpeg" alt="Nexo AI" class="w-10 h-10 rounded-xl object-cover" style="filter: drop-shadow(0 0 8px rgba(34,211,238,0.4));">
-        <div>
+      <!-- Logo + Collapse Button -->
+      <div class="logo-area flex items-center gap-3 px-2 mb-8 mt-2 relative" id="sidebar-logo-area">
+        <img src="assets/images/WhatsApp Image 2026-04-17 at 14.39.30 (2).jpeg" alt="Nexo AI" class="w-10 h-10 rounded-xl object-cover flex-shrink-0" style="filter: drop-shadow(0 0 8px rgba(34,211,238,0.4));">
+        <div class="logo-text">
           <div class="text-lg font-black text-white tracking-tight">Nexo AI</div>
           <div class="text-[10px] font-semibold text-cyan-400 uppercase tracking-widest">Operação</div>
         </div>
+        <!-- Collapse Toggle -->
+        <button id="sidebar-collapse-btn" onclick="collapseSidebar()" title="Recolher menu"
+          class="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-slate-700 border border-slate-600 flex items-center justify-center text-slate-400 hover:text-white hover:bg-cyan-500 hover:border-cyan-500 transition-all shadow-lg z-50">
+          <i data-lucide="chevron-left" class="w-3 h-3" id="collapse-icon"></i>
+        </button>
       </div>
 
       <!-- Navigation -->
       <nav class="flex flex-col gap-1 flex-1">
         <div class="sidebar-item active">
-          <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-          Visão Geral
+          <i data-lucide="layout-dashboard" class="w-5 h-5 flex-shrink-0"></i>
+          <span class="sidebar-label">Visão Geral</span>
         </div>
         <div class="sidebar-item">
-          <i data-lucide="users" class="w-5 h-5"></i>
-          Leads
+          <i data-lucide="users" class="w-5 h-5 flex-shrink-0"></i>
+          <span class="sidebar-label">Leads</span>
         </div>
         <div class="sidebar-item">
-          <i data-lucide="message-circle" class="w-5 h-5"></i>
-          WhatsApp
-          <span class="ml-auto bg-cyan-400/20 text-cyan-400 text-[10px] font-bold px-2 py-0.5 rounded-full">3</span>
+          <i data-lucide="message-circle" class="w-5 h-5 flex-shrink-0"></i>
+          <span class="sidebar-label">WhatsApp</span>
+          <span class="sidebar-badge ml-auto bg-cyan-400/20 text-cyan-400 text-[10px] font-bold px-2 py-0.5 rounded-full">3</span>
         </div>
         <div class="sidebar-item">
-          <i data-lucide="filter" class="w-5 h-5"></i>
-          Funil
+          <i data-lucide="filter" class="w-5 h-5 flex-shrink-0"></i>
+          <span class="sidebar-label">Funil</span>
         </div>
         
-        <div class="mt-4 mb-2 px-3">
+        <div class="mt-4 mb-2 px-3 sidebar-section-label">
           <div class="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Premium</div>
         </div>
         <div class="sidebar-item opacity-40 cursor-not-allowed">
-          <i data-lucide="lock" class="w-4 h-4"></i>
-          <span class="line-through">P&L Financeiro</span>
+          <i data-lucide="lock" class="w-4 h-4 flex-shrink-0"></i>
+          <span class="sidebar-label line-through">P&L Financeiro</span>
         </div>
         <div class="sidebar-item opacity-40 cursor-not-allowed">
-          <i data-lucide="lock" class="w-4 h-4"></i>
-          <span class="line-through">Reativação IA</span>
+          <i data-lucide="lock" class="w-4 h-4 flex-shrink-0"></i>
+          <span class="sidebar-label line-through">Reativação IA</span>
         </div>
         <div class="sidebar-item opacity-40 cursor-not-allowed">
-          <i data-lucide="lock" class="w-4 h-4"></i>
-          <span class="line-through">Relatórios</span>
+          <i data-lucide="lock" class="w-4 h-4 flex-shrink-0"></i>
+          <span class="sidebar-label line-through">Relatórios</span>
         </div>
 
         <div class="mt-auto">
           <div class="sidebar-item">
-            <i data-lucide="settings" class="w-5 h-5"></i>
-            Configurações
+            <i data-lucide="settings" class="w-5 h-5 flex-shrink-0"></i>
+            <span class="sidebar-label">Configurações</span>
           </div>
           <div class="sidebar-item" onclick="nexoLogout()" style="cursor:pointer;">
-            <i data-lucide="log-out" class="w-5 h-5"></i>
-            Sair
+            <i data-lucide="log-out" class="w-5 h-5 flex-shrink-0"></i>
+            <span class="sidebar-label">Sair</span>
           </div>
         </div>
       </nav>
@@ -694,7 +763,7 @@
                     <span class="text-[10px] font-bold text-slate-600">Opcional</span>
                   </div>
                   <h3 class="text-lg font-bold text-white">Importar Contatos Existentes</h3>
-                  <p class="text-sm text-slate-400 mt-1">Envie uma planilha CSV com seus leads atuais. A IA começa a reativar os que estão parados.</p>
+                  <p class="text-sm text-slate-400 mt-1">Envie uma planilha CSV com seus leads atuais. O painel organizará seus leads para você ter controle total e previsibilidade da operação.</p>
                 </div>
                 <button onclick="startCSVImport()" class="bg-cyan-500 hover:bg-cyan-400 text-white font-black text-sm px-6 py-3 rounded-xl transition-all hover:scale-105 shadow-lg shadow-cyan-500/20 flex-shrink-0">
                   Importar CSV →
@@ -721,7 +790,7 @@
                 <div class="text-sm font-bold text-white">Precisa de ajuda?</div>
                 <div class="text-xs text-slate-400">Nosso time faz a implantação completa por você em até 48h.</div>
               </div>
-              <a href="https://wa.me/5511999999999?text=Ol%C3%A1%2C%20preciso%20de%20ajuda%20com%20a%20implanta%C3%A7%C3%A3o%20da%20Nexo%20AI" target="_blank" class="bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-bold text-xs px-5 py-2.5 rounded-full hover:bg-emerald-500/30 transition-colors flex-shrink-0 flex items-center gap-2">
+              <a href="https://wa.me/5585997546957?text=Ol%C3%A1%2C%20preciso%20de%20ajuda%20com%20o%20painel%20Nexo%20AI" target="_blank" class="bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-bold text-xs px-5 py-2.5 rounded-full hover:bg-emerald-500/30 transition-colors flex-shrink-0 flex items-center gap-2">
                 <i data-lucide="message-circle" class="w-4 h-4"></i>
                 Falar com Suporte
               </a>
@@ -1452,52 +1521,130 @@
 
       <!-- ========= VIEW: CONFIGURAÇÕES ========= -->
       <div id="view-config" class="view-section hidden">
+         <form id="settings-form" onsubmit="saveSettings(event)">
          <div class="glass-card p-8" style="min-height: calc(100vh - 180px);">
-            <h2 class="text-2xl font-black text-white mb-8 border-b border-white/5 pb-4">Configurações do Atendimento IA</h2>
-            <div class="space-y-6 max-w-3xl">
-                <div class="flex justify-between items-center p-5 bg-slate-900/60 rounded-xl border border-white/5">
-                    <div>
-                        <div class="text-white font-bold text-lg">Tom de Voz da IA</div>
-                        <div class="text-sm text-slate-500">Como a IA conversa com seus leads.</div>
-                    </div>
-                    <select class="bg-slate-800 text-cyan-400 rounded-lg p-3 outline-none font-bold cursor-pointer border border-cyan-400/20 hover:border-cyan-400/50">
-                        <option>Consultor Profissional</option>
-                        <option>Amigável e Casual</option>
-                        <option>Direto e Objetivo</option>
-                    </select>
-                </div>
-                <div class="flex justify-between items-center p-5 bg-slate-900/60 rounded-xl border border-white/5">
-                    <div>
-                        <div class="text-white font-bold text-lg">Agendamento Automático</div>
-                        <div class="text-sm text-slate-500">A IA pode agendar visitas sozinha?</div>
-                    </div>
-                    <input type="checkbox" checked class="accent-cyan-400 w-6 h-6 cursor-pointer">
-                </div>
-                <div class="flex justify-between items-center p-5 bg-slate-900/60 rounded-xl border border-white/5">
-                    <div>
-                        <div class="text-white font-bold text-lg">Lembrete Pré-Visita</div>
-                        <div class="text-sm text-slate-500">Enviar lembrete 1h antes da visita agendada?</div>
-                    </div>
-                    <input type="checkbox" checked class="accent-cyan-400 w-6 h-6 cursor-pointer">
-                </div>
-                <div class="flex justify-between items-center p-5 bg-slate-900/60 rounded-xl border border-white/5">
-                    <div>
-                        <div class="text-white font-bold text-lg">Transferir para Humano</div>
-                        <div class="text-sm text-slate-500">Quando o lead pedir explicitamente um corretor?</div>
-                    </div>
-                    <input type="checkbox" checked class="accent-cyan-400 w-6 h-6 cursor-pointer">
-                </div>
-                <div class="p-5 bg-slate-900/60 rounded-xl border border-white/5">
-                    <div class="text-white font-bold text-lg mb-2">Horário de Atendimento Humano</div>
-                    <div class="text-sm text-slate-500 mb-4">Fora desse horário, a IA assume 100%.</div>
-                    <div class="flex gap-4 items-center">
-                       <input type="time" value="08:00" class="bg-slate-800 text-white rounded-lg p-2 border border-slate-700">
-                       <span class="text-slate-500">até</span>
-                       <input type="time" value="18:00" class="bg-slate-800 text-white rounded-lg p-2 border border-slate-700">
-                    </div>
-                </div>
+            <div class="flex items-center justify-between mb-8 border-b border-white/5 pb-5">
+               <div>
+                  <h2 class="text-2xl font-black text-white">Configurações do Atendimento IA</h2>
+                  <p class="text-sm text-slate-500 mt-1">Controle o comportamento do seu agente inteligente</p>
+               </div>
+               <button type="submit" id="btn-save-settings" class="bg-cyan-500 hover:bg-cyan-400 text-white font-black text-sm px-6 py-3 rounded-xl transition-all hover:scale-105 shadow-lg shadow-cyan-500/20 flex items-center gap-2">
+                  <i data-lucide="save" class="w-4 h-4"></i>
+                  Salvar Configurações
+               </button>
             </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-5xl">
+
+               <!-- Bloco: Comportamento da IA -->
+               <div class="space-y-4">
+                  <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">🤖 Comportamento da IA</h3>
+
+                  <div class="flex justify-between items-center p-5 bg-slate-900/60 rounded-xl border border-white/5 hover:border-cyan-400/10 transition-colors">
+                     <div>
+                        <div class="text-white font-bold">Tom de Voz</div>
+                        <div class="text-sm text-slate-500">Como a IA conversa com seus leads.</div>
+                     </div>
+                     <select id="cfg-tone" class="bg-slate-800 text-cyan-400 rounded-lg p-2.5 outline-none font-bold cursor-pointer border border-cyan-400/20 hover:border-cyan-400/50 text-sm">
+                        <option value="formal">🎩 Formal</option>
+                        <option value="amigavel" selected>😊 Amigável</option>
+                        <option value="persuasivo">🎯 Persuasivo</option>
+                        <option value="direto">⚡ Direto</option>
+                     </select>
+                  </div>
+
+                  <div class="flex justify-between items-center p-5 bg-slate-900/60 rounded-xl border border-white/5 hover:border-cyan-400/10 transition-colors">
+                     <div>
+                        <div class="text-white font-bold">Objetivo Principal</div>
+                        <div class="text-sm text-slate-500">Meta final do agente com cada lead.</div>
+                     </div>
+                     <select id="cfg-goal" class="bg-slate-800 text-cyan-400 rounded-lg p-2.5 outline-none font-bold cursor-pointer border border-cyan-400/20 hover:border-cyan-400/50 text-sm">
+                        <option value="agendamento">📅 Agendar Visita</option>
+                        <option value="venda" selected>💰 Venda Direta</option>
+                        <option value="qualificacao">📋 Qualificar Lead</option>
+                        <option value="suporte">🛠️ Suporte</option>
+                     </select>
+                  </div>
+
+                  <div class="flex justify-between items-center p-5 bg-slate-900/60 rounded-xl border border-white/5 hover:border-cyan-400/10 transition-colors">
+                     <div>
+                        <div class="text-white font-bold">Resposta Imediata</div>
+                        <div class="text-sm text-slate-500">IA responde no mesmo segundo que o lead manda mensagem.</div>
+                     </div>
+                     <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="cfg-immediate" checked class="sr-only peer">
+                        <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-500"></div>
+                     </label>
+                  </div>
+
+                  <div class="flex justify-between items-center p-5 bg-slate-900/60 rounded-xl border border-white/5 hover:border-cyan-400/10 transition-colors">
+                     <div>
+                        <div class="text-white font-bold">Agendamento Automático</div>
+                        <div class="text-sm text-slate-500">A IA pode agendar visitas sozinha.</div>
+                     </div>
+                     <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="cfg-autoschedule" checked class="sr-only peer">
+                        <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-500"></div>
+                     </label>
+                  </div>
+               </div>
+
+               <!-- Bloco: Atendimento Humano -->
+               <div class="space-y-4">
+                  <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">👤 Atendimento Humano</h3>
+
+                  <div class="flex justify-between items-center p-5 bg-slate-900/60 rounded-xl border border-white/5 hover:border-cyan-400/10 transition-colors">
+                     <div>
+                        <div class="text-white font-bold">Lembrete Pré-Visita</div>
+                        <div class="text-sm text-slate-500">Enviar mensagem 1h antes da visita agendada.</div>
+                     </div>
+                     <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="cfg-reminder" checked class="sr-only peer">
+                        <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-500"></div>
+                     </label>
+                  </div>
+
+                  <div class="flex justify-between items-center p-5 bg-slate-900/60 rounded-xl border border-white/5 hover:border-cyan-400/10 transition-colors">
+                     <div>
+                        <div class="text-white font-bold">Transferir para Humano</div>
+                        <div class="text-sm text-slate-500">Quando o lead pedir explicitamente um atendente.</div>
+                     </div>
+                     <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="cfg-transfer" checked class="sr-only peer">
+                        <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-500"></div>
+                     </label>
+                  </div>
+
+                  <div class="p-5 bg-slate-900/60 rounded-xl border border-white/5 hover:border-cyan-400/10 transition-colors">
+                     <div class="text-white font-bold mb-1">Horário de Atendimento Humano</div>
+                     <div class="text-sm text-slate-500 mb-4">Fora desse horário, a IA assume 100%.</div>
+                     <div class="flex gap-3 items-center">
+                        <input type="time" id="cfg-hour-start" value="08:00" class="flex-1 bg-slate-800 text-white rounded-lg p-2.5 border border-slate-700 outline-none focus:border-cyan-400 text-sm">
+                        <span class="text-slate-500 text-sm font-bold">até</span>
+                        <input type="time" id="cfg-hour-end" value="18:00" class="flex-1 bg-slate-800 text-white rounded-lg p-2.5 border border-slate-700 outline-none focus:border-cyan-400 text-sm">
+                     </div>
+                  </div>
+
+                  <div class="p-5 bg-slate-900/60 rounded-xl border border-white/5 hover:border-cyan-400/10 transition-colors">
+                     <div class="text-white font-bold mb-1">Gatilho de Transferência</div>
+                     <div class="text-sm text-slate-500 mb-3">Palavras-chave que ativam o atendente humano.</div>
+                     <input type="text" id="cfg-trigger" placeholder="Ex: falar com humano, quero desconto, gerente..." class="w-full bg-slate-800 text-white rounded-lg p-2.5 border border-slate-700 outline-none focus:border-cyan-400 text-sm">
+                  </div>
+               </div>
+
+            </div>
+
+            <!-- Bloco: Base de Conhecimento -->
+            <div class="mt-6 max-w-5xl">
+               <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">📚 Base de Conhecimento da Empresa</h3>
+               <div class="p-5 bg-slate-900/60 rounded-xl border border-white/5">
+                  <div class="text-sm text-slate-500 mb-3">Essas são as instruções que a IA usa para responder. Mantenha sempre atualizado.</div>
+                  <textarea id="cfg-instructions" rows="5" placeholder="Ex: Somos uma imobiliária em Fortaleza. Trabalhamos com apartamentos de 2 e 3 quartos entre R$ 280mil e R$ 650mil. Nosso horário de atendimento é de seg-sáb 8h-18h..." class="w-full bg-slate-800 text-white rounded-lg p-3.5 border border-slate-700 outline-none focus:border-cyan-400 text-sm resize-none"></textarea>
+               </div>
+            </div>
+
          </div>
+         </form>
       </div>
 </main>
   </div>
@@ -1507,82 +1654,92 @@
     // Initialize Lucide
     lucide.createIcons();
 
-    // Leads Chart
-    const ctx = document.getElementById('leadsChart').getContext('2d');
-    
-    const labels = [];
-    const received = [];
-    const responded = [];
-    
+    // Build chart skeleton with empty data first
+    const chartLabels = [];
+    const chartReceived = [];
+    const chartResponded = [];
     for (let i = 29; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
-      labels.push(d.getDate() + '/' + (d.getMonth() + 1));
-      const r = Math.floor(Math.random() * 20) + 25;
-      received.push(r);
-      responded.push(Math.floor(r * (0.85 + Math.random() * 0.12)));
+      chartLabels.push(d.getDate() + '/' + (d.getMonth() + 1));
+      chartReceived.push(0);
+      chartResponded.push(0);
     }
 
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels,
-        datasets: [
-          {
-            label: 'Recebidos',
-            data: received,
-            borderColor: '#22d3ee',
-            backgroundColor: 'rgba(34,211,238,0.08)',
-            fill: true,
-            tension: 0.4,
-            pointRadius: 0,
-            pointHoverRadius: 6,
-            pointHoverBackgroundColor: '#22d3ee',
-            borderWidth: 2,
-          },
-          {
-            label: 'Respondidos (IA)',
-            data: responded,
-            borderColor: '#a855f7',
-            backgroundColor: 'rgba(168,85,247,0.05)',
-            fill: true,
-            tension: 0.4,
-            pointRadius: 0,
-            pointHoverRadius: 6,
-            pointHoverBackgroundColor: '#a855f7',
-            borderWidth: 2,
-          }
-        ]
+    const chartOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1e293b', titleColor: '#e2e8f0', bodyColor: '#94a3b8',
+          borderColor: '#334155', borderWidth: 1, cornerRadius: 12, padding: 12,
+        }
       },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            backgroundColor: '#1e293b',
-            titleColor: '#e2e8f0',
-            bodyColor: '#94a3b8',
-            borderColor: '#334155',
-            borderWidth: 1,
-            cornerRadius: 12,
-            padding: 12,
-          }
+      scales: {
+        x: { grid: { color: 'rgba(51,65,85,0.3)', drawBorder: false }, ticks: { color: '#475569', font: { size: 10 }, maxTicksLimit: 10 } },
+        y: { grid: { color: 'rgba(51,65,85,0.3)', drawBorder: false }, ticks: { color: '#475569', font: { size: 10 } }, beginAtZero: true, min: 0 }
+      },
+      interaction: { intersect: false, mode: 'index' }
+    };
+
+    let nexoChart = null;
+    const ctxEl = document.getElementById('leadsChart');
+    if(ctxEl) {
+      nexoChart = new Chart(ctxEl.getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: chartLabels,
+          datasets: [
+            {
+              label: 'Recebidos',
+              data: chartReceived,
+              borderColor: '#22d3ee', backgroundColor: 'rgba(34,211,238,0.08)',
+              fill: true, tension: 0.4, pointRadius: 0, pointHoverRadius: 6,
+              pointHoverBackgroundColor: '#22d3ee', borderWidth: 2,
+            },
+            {
+              label: 'Respondidos (IA)',
+              data: chartResponded,
+              borderColor: '#a855f7', backgroundColor: 'rgba(168,85,247,0.05)',
+              fill: true, tension: 0.4, pointRadius: 0, pointHoverRadius: 6,
+              pointHoverBackgroundColor: '#a855f7', borderWidth: 2,
+            }
+          ]
         },
-        scales: {
-          x: {
-            grid: { color: 'rgba(51,65,85,0.3)', drawBorder: false },
-            ticks: { color: '#475569', font: { size: 10 }, maxTicksLimit: 10 }
-          },
-          y: {
-            grid: { color: 'rgba(51,65,85,0.3)', drawBorder: false },
-            ticks: { color: '#475569', font: { size: 10 } },
-            beginAtZero: true
+        options: chartOptions
+      });
+    }
+
+    // Called by initNexoEngine after data is ready
+    async function loadLeadsChart() {
+      if(!nexoChart) return;
+      try {
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        const leads = await sbFetch("leads", `select=created_at,status&created_at=gte.${thirtyDaysAgo.toISOString()}&order=created_at.asc`);
+
+        if(!leads || !leads.length) return; // Stay at zero if no leads
+
+        // Reset to zero
+        const newReceived = new Array(30).fill(0);
+        const newResponded = new Array(30).fill(0);
+
+        leads.forEach(lead => {
+          const d = new Date(lead.created_at);
+          const dayLabel = d.getDate() + '/' + (d.getMonth() + 1);
+          const idx = chartLabels.indexOf(dayLabel);
+          if(idx >= 0) {
+            newReceived[idx]++;
+            if(lead.status !== 'frio') newResponded[idx]++;
           }
-        },
-        interaction: { intersect: false, mode: 'index' }
-      }
-    });
+        });
+
+        nexoChart.data.datasets[0].data = newReceived;
+        nexoChart.data.datasets[1].data = newResponded;
+        nexoChart.update('active');
+      } catch(e) { console.warn('Chart sem dados reais:', e.message); }
+    }
   </script>
 
     <!-- View Switcher Logic -->
@@ -1646,11 +1803,23 @@
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxcXRqcnVucmltYWJpdG1lcnNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NjYwMjgsImV4cCI6MjA5MjA0MjAyOH0.CEJRX8rYb_5S5pN_M2KemyBRxdSPd9jf8Y-Xm3vlTDc";
 
     // ─── CORE API ──────────────────────────────────────────────
+    function getAuthToken() {
+      try {
+        const raw = JSON.parse(localStorage.getItem('sb-tqqtjrunrimabitmersr-auth-token'));
+        // Handle multiple Supabase session storage formats
+        const token = raw?.access_token 
+          || raw?.currentSession?.access_token 
+          || raw?.session?.access_token
+          || raw?.data?.session?.access_token;
+        return token ? `Bearer ${token}` : `Bearer ${SUPABASE_KEY}`;
+      } catch(e) { return `Bearer ${SUPABASE_KEY}`; }
+    }
+
     async function sbFetch(table, params = "") {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${params}`, {
         headers: {
           "apikey": SUPABASE_KEY,
-          "Authorization": "Bearer " + SUPABASE_KEY,
+          "Authorization": getAuthToken(),
           "Content-Type": "application/json"
         }
       });
@@ -1663,12 +1832,13 @@
         method: "POST",
         headers: {
           "apikey": SUPABASE_KEY,
-          "Authorization": "Bearer " + SUPABASE_KEY,
+          "Authorization": getAuthToken(),
           "Content-Type": "application/json",
           "Prefer": "return=representation"
         },
         body: JSON.stringify(body)
       });
+      if (!res.ok) throw new Error(`Supabase error na inserção: ${res.status}`);
       return res.json();
     }
 
@@ -1677,7 +1847,7 @@
         method: "PATCH",
         headers: {
           "apikey": SUPABASE_KEY,
-          "Authorization": "Bearer " + SUPABASE_KEY,
+          "Authorization": getAuthToken(),
           "Content-Type": "application/json",
           "Prefer": "return=representation"
         },
@@ -1927,6 +2097,42 @@
       if(backdrop) backdrop.classList.toggle('active');
     }
 
+    // ─── DESKTOP SIDEBAR COLLAPSE ─────────────────────────────
+    let sidebarCollapsed = localStorage.getItem('nexo_sidebar_collapsed') === 'true';
+
+    function collapseSidebar() {
+      const sidebar = document.getElementById('nexo-sidebar');
+      const main = document.querySelector('.nexo-main');
+      const icon = document.getElementById('collapse-icon');
+      if(!sidebar) return;
+
+      sidebarCollapsed = !sidebarCollapsed;
+      sidebar.classList.toggle('collapsed', sidebarCollapsed);
+      if(main) main.classList.toggle('sidebar-collapsed', sidebarCollapsed);
+
+      // Rotate icon: left arrow when expanded, right arrow when collapsed
+      if(icon) {
+        icon.style.transform = sidebarCollapsed ? 'rotate(180deg)' : 'rotate(0deg)';
+        icon.style.transition = 'transform 0.28s ease';
+      }
+
+      localStorage.setItem('nexo_sidebar_collapsed', sidebarCollapsed);
+      // Re-render lucide icons after transition
+      setTimeout(() => { if(window.lucide) lucide.createIcons(); }, 300);
+    }
+
+    // Restore collapse state on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      if(sidebarCollapsed) {
+        const sidebar = document.getElementById('nexo-sidebar');
+        const main = document.querySelector('.nexo-main');
+        const icon = document.getElementById('collapse-icon');
+        if(sidebar) sidebar.classList.add('collapsed');
+        if(main) main.classList.add('sidebar-collapsed');
+        if(icon) icon.style.transform = 'rotate(180deg)';
+      }
+    });
+
     // Close sidebar on nav click (mobile)
     document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.sidebar-item').forEach(item => {
@@ -2007,7 +2213,8 @@
         loadKPIs(),
         loadLeadsTable(),
         loadWhatsappContacts(),
-        loadFunnelCounts()
+        loadFunnelCounts(),
+        loadLeadsChart()
       ]);
       checkWahaStatus();
       console.log("✅ Nexo AI Engine — Online e sincronizado.");
@@ -2295,23 +2502,27 @@
     // ═══════════════════════════════════════════════════════════
     let agentConfigured = false;
 
-    function startAgentConfig() {
+    async function startAgentConfig() {
       if(agentConfigured) return;
       const modal = document.getElementById('agent-config-modal');
       if(modal) { modal.classList.add('active'); if(window.lucide) lucide.createIcons(); }
 
-      // Load saved config if exists
       const session = nexoAuthCheck();
-      const userId = session?.user?.id || 'default';
-      const saved = localStorage.getItem(`nexo_agent_config_${userId}`);
-      if(saved) {
-        try {
-          const cfg = JSON.parse(saved);
-          document.getElementById('agent-name').value = cfg.name || '';
+      const userId = session?.user?.id;
+      if(!userId) return;
+
+      try {
+        const data = await sbFetch("agent_configs", `select=*`);
+        if(data && data.length > 0) {
+          const cfg = data[0];
+          document.getElementById('agent-name').value = cfg.name || 'Assistente Nexo';
           document.getElementById('agent-tone').value = cfg.tone || 'amigavel';
+          document.getElementById('agent-goal').value = cfg.goal || 'venda';
+          document.getElementById('agent-link').value = cfg.action_link || '';
           document.getElementById('agent-instructions').value = cfg.instructions || '';
-        } catch(e) {}
-      }
+          document.getElementById('agent-transfer').value = cfg.human_transfer_trigger || '';
+        }
+      } catch(e) { console.warn("Configurações da IA ainda não existem:", e); }
     }
 
     function closeAgentConfig() {
@@ -2319,36 +2530,55 @@
       if(modal) modal.classList.remove('active');
     }
 
-    function saveAgentConfig(e) {
+    async function saveAgentConfig(e) {
       e.preventDefault();
       const name = document.getElementById('agent-name').value.trim();
       const tone = document.getElementById('agent-tone').value;
+      const goal = document.getElementById('agent-goal').value;
+      const action_link = document.getElementById('agent-link').value.trim();
       const instructions = document.getElementById('agent-instructions').value.trim();
+      const human_transfer_trigger = document.getElementById('agent-transfer').value.trim();
 
       if(!name) { showToast('Preencha o nome do assistente.', 'error'); return; }
-      if(instructions.length < 20) { showToast('Instruções muito curtas. Detalhe mais para a IA funcionar bem.', 'error'); return; }
+      if(instructions.length < 20) { showToast('Instruções curtas. Detalhe mais a Base de Conhecimento.', 'error'); return; }
 
-      // Save to localStorage (simulated POST)
-      const session = nexoAuthCheck();
-      const userId = session?.user?.id || 'default';
-      const config = { name, tone, instructions, saved_at: new Date().toISOString() };
-      localStorage.setItem(`nexo_agent_config_${userId}`, JSON.stringify(config));
+      const btn = document.getElementById('btn-save-agent');
+      if(btn) { btn.textContent = 'Salvando...'; btn.disabled = true; }
 
-      console.log('📡 POST /api/agent/config:', config);
+      try {
+        const session = nexoAuthCheck();
+        const userId = session?.user?.id;
 
-      agentConfigured = true;
-      closeAgentConfig();
-      showToast(`Agente "${name}" configurado com sucesso!`);
+        const payload = {
+          user_id: userId,
+          name, tone, goal, action_link, instructions, human_transfer_trigger
+        };
 
-      // Update button
-      document.querySelectorAll('button').forEach(btn => {
-        if(btn.textContent.trim() === 'Configurar →') {
-          btn.textContent = 'Configurado ✓';
-          btn.className = 'bg-violet-500/20 border border-violet-500/30 text-violet-400 font-bold text-sm px-6 py-3 rounded-xl cursor-default flex-shrink-0';
-          btn.onclick = null;
-          btn.disabled = true;
+        const existing = await sbFetch("agent_configs", `select=id`);
+        if(existing && existing.length > 0) {
+          await sbUpdate("agent_configs", existing[0].id, payload);
+        } else {
+          await sbInsert("agent_configs", payload);
         }
-      });
+
+        agentConfigured = true;
+        closeAgentConfig();
+        showToast(`Inteligência de IA salva na nuvem!`);
+        addNotification('Inteligência Salva', `O agente "${name}" foi configurado e salvo na nuvem.`, 'brain', 'violet');
+
+        document.querySelectorAll('button').forEach(b => {
+          if(b.textContent.trim().includes('Configurar')) {
+            b.innerHTML = 'Configurado ✓';
+            b.className = 'bg-violet-500/20 border border-violet-500/30 text-violet-400 font-bold text-sm px-6 py-3 rounded-xl cursor-default flex-shrink-0';
+            b.onclick = null;
+            b.disabled = true;
+          }
+        });
+      } catch(err) {
+        console.error('Erro IA:', err);
+        showToast('Erro Supabase: ' + err.message, 'error');
+        if(btn) { btn.textContent = 'Salvar Inteligência'; btn.disabled = false; }
+      }
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -2444,31 +2674,57 @@
       if(txt) txt.textContent = text;
     }
 
-    function confirmCSVImport() {
+    async function confirmCSVImport() {
       if(!parsedContacts.length) { showToast('Nenhum contato válido encontrado.', 'error'); return; }
 
-      console.log('📡 POST /api/leads/import:', parsedContacts);
+      const btn = document.querySelector('button[onclick="confirmCSVImport()"]');
+      if(btn) { btn.textContent = 'Importando...'; btn.disabled = true; }
 
-      csvImported = true;
-      const count = parsedContacts.length;
+      try {
+        const session = nexoAuthCheck();
+        const userId = session?.user?.id;
+        
+        // Map contacts to Supabase schema (Bulk format)
+        const payload = parsedContacts.map(c => ({
+          user_id: userId,
+          name: c.name,
+          phone: c.phone,
+          status: 'novo',
+          source: 'Importação CSV'
+        }));
 
-      closeCSVImport();
-      showToast(`${count} contatos importados com sucesso!`);
+        console.log('📡 Gravando no Supabase (Bulk Insert)...', payload);
+        await sbInsert('leads', payload);
 
-      // Update button
-      document.querySelectorAll('button').forEach(btn => {
-        if(btn.textContent.trim() === 'Importar CSV →') {
-          btn.textContent = 'Importado ✓';
-          btn.className = 'bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 font-bold text-sm px-6 py-3 rounded-xl cursor-default flex-shrink-0';
-          btn.onclick = null;
-          btn.disabled = true;
-        }
-      });
+        csvImported = true;
+        const count = parsedContacts.length;
 
-      // Save state
-      const session = nexoAuthCheck();
-      const userId = session?.user?.id || 'default';
-      localStorage.setItem(`nexo_csv_imported_${userId}`, count.toString());
+        closeCSVImport();
+        showToast(`${count} contatos importados com sucesso para a base de dados!`);
+        addNotification('Leads Importados', `Upload de ${count} contatos processado com sucesso.`, 'upload', 'cyan');
+
+        // Update onboarding button
+        document.querySelectorAll('button').forEach(b => {
+          if(b.textContent.trim().includes('Importar CSV')) {
+            b.innerHTML = 'Importado ✓';
+            b.className = 'bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 font-bold text-sm px-6 py-3 rounded-xl cursor-default flex-shrink-0';
+            b.onclick = null;
+            b.disabled = true;
+          }
+        });
+
+        localStorage.setItem(`nexo_csv_imported_${userId || 'default'}`, count.toString());
+
+        // Refresh Data Tables Live!
+        loadKPIs();
+        loadLeadsTable();
+        loadFunnelCounts();
+
+      } catch(err) {
+        console.error('Erro na importação:', err);
+        showToast('Erro Supabase: ' + err.message, 'error');
+        if(btn) { btn.textContent = 'Confirmar Importação'; btn.disabled = false; }
+      }
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -2518,26 +2774,60 @@
       reader.readAsDataURL(file);
     }
 
-    function saveProfile(e) {
+    async function saveProfile(e) {
       e.preventDefault();
       const name = document.getElementById('profile-name').value.trim();
       const company = document.getElementById('profile-company').value.trim();
+      const pass = document.getElementById('profile-password')?.value;
+      const passConfirm = document.getElementById('profile-password-confirm')?.value;
 
       if(!name) { showToast('Preencha seu nome.', 'error'); return; }
 
-      // Update localStorage session with new metadata
       const session = nexoAuthCheck();
-      if(session && session.user) {
-        if(!session.user.user_metadata) session.user.user_metadata = {};
-        session.user.user_metadata.full_name = name;
-        session.user.user_metadata.company_name = company;
-        localStorage.setItem('sb-tqqtjrunrimabitmersr-auth-token', JSON.stringify(session));
+      if(!session || !session.access_token) return;
+
+      let payload = { data: { full_name: name, company_name: company } };
+
+      if(pass || passConfirm) {
+        if(pass !== passConfirm) { showToast('As senhas não conferem.', 'error'); return; }
+        if(pass.length < 6) { showToast('A senha deve ter no mínimo 6 caracteres.', 'error'); return; }
+        payload.password = pass;
       }
 
-      // Update UI
-      nexoUpdateGreeting(session);
-      closeProfileModal();
-      showToast('Perfil atualizado com sucesso!');
+      const btn = e.target.querySelector('button[type="submit"]');
+      const originalText = btn.textContent;
+      btn.textContent = 'Salvando...'; btn.disabled = true;
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+          method: "PUT",
+          headers: {
+            "apikey": SUPABASE_KEY,
+            "Authorization": `Bearer ${session.access_token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if(!res.ok) {
+          const errData = await res.json();
+          throw new Error(errData.msg || "Erro na atualização");
+        }
+        
+        const updatedUser = await res.json();
+        session.user = updatedUser;
+        localStorage.setItem('sb-tqqtjrunrimabitmersr-auth-token', JSON.stringify(session));
+
+        nexoUpdateGreeting(session);
+        closeProfileModal();
+        showToast('Perfil atualizado com sucesso!');
+        addNotification('Perfil Atualizado', 'Suas informações de conta foram salvas na nuvem.', 'user-check', 'emerald');
+      } catch(err) {
+        console.error("Erro profile:", err);
+        showToast(`Erro Supabase: ${err.message}`, 'error');
+      } finally {
+        btn.textContent = originalText; btn.disabled = false;
+      }
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -2551,11 +2841,55 @@
       }
     }
 
+    function addNotification(title, message, icon = 'bell', colorBase = 'cyan') {
+      const list = document.getElementById('notifications-list');
+      const badge = document.getElementById('notif-badge');
+      if(!list) return;
+
+      if(list.innerHTML.includes('Nenhuma notificação')) {
+        list.innerHTML = '';
+      }
+
+      const notifHtml = `
+        <div class="p-4 hover:bg-slate-800/50 transition-colors border-b border-slate-800/50 cursor-pointer relative group">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-${colorBase}-400/10 flex items-center justify-center flex-shrink-0">
+              <i data-lucide="${icon}" class="w-4 h-4 text-${colorBase}-400"></i>
+            </div>
+            <div class="flex-1 min-w-0 pr-6">
+              <p class="text-xs font-bold text-white truncate">${title}</p>
+              <p class="text-[10px] text-slate-500 line-clamp-2">${message}</p>
+            </div>
+            <span class="text-[9px] text-slate-600 flex-shrink-0 absolute right-4 top-4">Agora</span>
+            <button onclick="this.closest('.cursor-pointer').remove(); updateNotifBadge();" class="absolute right-4 bottom-4 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-red-400 transition-opacity" title="Excluir notificação">
+              <i data-lucide="trash-2" class="w-3 h-3"></i>
+            </button>
+          </div>
+        </div>
+      `;
+      list.insertAdjacentHTML('afterbegin', notifHtml);
+      updateNotifBadge();
+      if(window.lucide) lucide.createIcons();
+    }
+
+    function updateNotifBadge() {
+      const list = document.getElementById('notifications-list');
+      const badge = document.getElementById('notif-badge');
+      if(!list || !badge) return;
+      const items = list.querySelectorAll('.p-4');
+      if(items.length === 0) {
+        badge.style.display = 'none';
+        list.innerHTML = '<div class="p-6 text-center"><p class="text-xs text-slate-500">Nenhuma notificação</p></div>';
+      } else {
+        badge.style.display = 'flex';
+        badge.textContent = items.length;
+      }
+    }
+
     function clearNotifications() {
       const list = document.getElementById('notifications-list');
       if(list) list.innerHTML = '<div class="p-6 text-center"><p class="text-xs text-slate-500">Nenhuma notificação</p></div>';
-      const badge = document.getElementById('notif-badge');
-      if(badge) badge.style.display = 'none';
+      updateNotifBadge();
     }
 
     // Close notifications when clicking outside
@@ -2608,8 +2942,84 @@
       }
     }
 
+    // ═══════════════════════════════════════════════════════════
+    // ─── SETTINGS PAGE ───────────────────────────────────────
+    // ═══════════════════════════════════════════════════════════
+    async function loadSettings() {
+      try {
+        const data = await sbFetch("agent_configs", "select=*&limit=1");
+        if(!data || !data.length) return;
+        const cfg = data[0];
+
+        const tone = document.getElementById('cfg-tone');
+        const goal = document.getElementById('cfg-goal');
+        const immediate = document.getElementById('cfg-immediate');
+        const autoschedule = document.getElementById('cfg-autoschedule');
+        const reminder = document.getElementById('cfg-reminder');
+        const transfer = document.getElementById('cfg-transfer');
+        const hourStart = document.getElementById('cfg-hour-start');
+        const hourEnd = document.getElementById('cfg-hour-end');
+        const trigger = document.getElementById('cfg-trigger');
+        const instructions = document.getElementById('cfg-instructions');
+
+        if(tone && cfg.tone) tone.value = cfg.tone;
+        if(goal && cfg.goal) goal.value = cfg.goal;
+        if(cfg.settings) {
+          const s = typeof cfg.settings === 'string' ? JSON.parse(cfg.settings) : cfg.settings;
+          if(immediate) immediate.checked = s.immediate !== false;
+          if(autoschedule) autoschedule.checked = s.autoschedule !== false;
+          if(reminder) reminder.checked = s.reminder !== false;
+          if(transfer) transfer.checked = s.transfer !== false;
+          if(hourStart && s.hour_start) hourStart.value = s.hour_start;
+          if(hourEnd && s.hour_end) hourEnd.value = s.hour_end;
+        }
+        if(trigger && cfg.human_transfer_trigger) trigger.value = cfg.human_transfer_trigger;
+        if(instructions && cfg.instructions) instructions.value = cfg.instructions;
+      } catch(e) { console.warn("Settings não carregadas:", e.message); }
+    }
+
+    async function saveSettings(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-save-settings');
+      if(btn) { btn.textContent = 'Salvando...'; btn.disabled = true; }
+
+      try {
+        const tone = document.getElementById('cfg-tone')?.value || 'amigavel';
+        const goal = document.getElementById('cfg-goal')?.value || 'venda';
+        const instructions = document.getElementById('cfg-instructions')?.value?.trim() || '';
+        const human_transfer_trigger = document.getElementById('cfg-trigger')?.value?.trim() || '';
+
+        const settings = {
+          immediate: document.getElementById('cfg-immediate')?.checked !== false,
+          autoschedule: document.getElementById('cfg-autoschedule')?.checked !== false,
+          reminder: document.getElementById('cfg-reminder')?.checked !== false,
+          transfer: document.getElementById('cfg-transfer')?.checked !== false,
+          hour_start: document.getElementById('cfg-hour-start')?.value || '08:00',
+          hour_end: document.getElementById('cfg-hour-end')?.value || '18:00',
+        };
+
+        const payload = { tone, goal, instructions, human_transfer_trigger, settings: JSON.stringify(settings) };
+
+        const existing = await sbFetch("agent_configs", "select=id&limit=1");
+        if(existing && existing.length > 0) {
+          await sbUpdate("agent_configs", existing[0].id, payload);
+        } else {
+          const session = nexoAuthCheck();
+          await sbInsert("agent_configs", { ...payload, user_id: session?.user?.id, name: 'Assistente Nexo' });
+        }
+
+        showToast('Configurações salvas na nuvem com sucesso!');
+        addNotification('Configurações Salvas', 'As preferências do agente IA foram atualizadas.', 'settings', 'cyan');
+      } catch(err) {
+        console.error("Erro settings:", err);
+        showToast('Erro ao salvar: ' + err.message, 'error');
+      } finally {
+        if(btn) { btn.innerHTML = '<i data-lucide="save" class="w-4 h-4 inline mr-1"></i>Salvar Configurações'; btn.disabled = false; if(window.lucide) lucide.createIcons(); }
+      }
+    }
+
     // Run on page load
-    window.addEventListener("load", () => { initNexoEngine().then(() => restoreFeatureStates()); });
+    window.addEventListener("load", () => { initNexoEngine().then(() => { restoreFeatureStates(); loadSettings(); }); });
     </script>
     <!-- ====== FIM DO NEXO SUPABASE ENGINE ====== -->
 </body>
