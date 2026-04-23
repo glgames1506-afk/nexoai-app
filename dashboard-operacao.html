@@ -1282,45 +1282,16 @@
             <!-- Contact List -->
             <div id="chat-contact-list" class="w-1/3 border-r border-white/5 overflow-y-auto bg-slate-900/30">
                <div class="p-4 border-b border-white/5 font-bold text-white flex justify-between items-center">
-                  <span>Conversas (47)</span>
+                  <span id="chat-conv-count">Conversas</span>
                   <span class="bg-cyan-400/20 text-cyan-400 text-[10px] px-2 py-1 rounded-full font-bold uppercase">IA Online</span>
                </div>
-               <!-- Active chat --> <!-- CONTACTS INJECTED BY JS -->
-               <div class="p-4 border-b border-cyan-400/30 bg-cyan-400/5 cursor-pointer flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">MO</div>
-                  <div class="flex-1 min-w-0">
-                     <div class="text-sm font-bold text-white">Marina Oliveira</div>
-                     <div class="text-xs text-cyan-400 font-semibold truncate">IA respondeu automaticamente</div>
-                  </div>
-                  <span class="bg-cyan-400 text-slate-950 text-[10px] font-black px-1.5 py-0.5 rounded-full flex-shrink-0">2</span>
-               </div>
-               <div class="p-4 border-b border-white/5 cursor-pointer flex items-center gap-3 hover:bg-white/[0.02] transition-colors">
-                  <div class="w-10 h-10 rounded-full bg-gradient-to-br from-violet-400 to-pink-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">JF</div>
-                  <div class="flex-1 min-w-0">
-                     <div class="text-sm font-bold text-white">João Ferreira</div>
-                     <div class="text-xs text-violet-400 truncate">IA agendou visita — Sáb 15h</div>
-                  </div>
-               </div>
-               <div class="p-4 border-b border-white/5 cursor-pointer flex items-center gap-3 hover:bg-white/[0.02] transition-colors">
-                  <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">CS</div>
-                  <div class="flex-1 min-w-0">
-                     <div class="text-sm font-bold text-white">Camila Santos</div>
-                     <div class="text-xs text-emerald-400 truncate">Convertido ✓</div>
-                  </div>
-               </div>
-               <div class="p-4 border-b border-white/5 cursor-pointer flex items-center gap-3 opacity-50 hover:bg-white/[0.02] transition-colors">
-                  <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">RA</div>
-                  <div class="flex-1 min-w-0">
-                     <div class="text-sm font-bold text-white">Roberto Almeida</div>
-                     <div class="text-xs text-slate-500 truncate">Aguardando resposta...</div>
-                  </div>
-               </div>
-               <div class="p-4 border-b border-white/5 cursor-pointer flex items-center gap-3 opacity-50 hover:bg-white/[0.02] transition-colors">
-                  <div class="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center text-red-400 text-xs font-bold flex-shrink-0">AB</div>
-                  <div class="flex-1 min-w-0">
-                     <div class="text-sm font-bold text-white">Ana Beatriz Costa</div>
-                     <div class="text-xs text-red-400 truncate">Sem resposta há 5h</div>
-                  </div>
+               <!-- Contacts injected by JS -->
+               <div id="chat-contacts-body">
+                 <div class="p-6 flex flex-col items-center justify-center gap-3 mt-4">
+                   <div class="w-10 h-10 rounded-full bg-slate-800 animate-pulse"></div>
+                   <div class="h-3 w-32 bg-slate-800 rounded-full animate-pulse"></div>
+                   <div class="h-2 w-24 bg-slate-800/60 rounded-full animate-pulse"></div>
+                 </div>
                </div>
             </div>
             <!-- Chat Window -->
@@ -1366,80 +1337,52 @@
             <div class="flex justify-between items-center mb-6">
                <div>
                   <h2 class="text-xl font-bold text-white">Pipeline de Vendas</h2>
-                  <p class="text-xs text-slate-500 mt-1">Arraste os cards entre as etapas (simulação)</p>
+                  <p class="text-xs text-slate-500 mt-1">Leads organizados por etapa automaticamente</p>
                </div>
                <div class="flex gap-3 text-xs">
-                  <div class="bg-slate-800 text-slate-300 px-3 py-2 rounded-lg">Total: <strong class="text-white">47 leads</strong></div>
-                  <div class="bg-emerald-400/10 text-emerald-400 px-3 py-2 rounded-lg font-bold">12 convertidos este mês</div>
+                  <div class="bg-slate-800 text-slate-300 px-3 py-2 rounded-lg">Total: <strong id="funnel-total-count" class="text-white">0 leads</strong></div>
+                  <div class="bg-emerald-400/10 text-emerald-400 px-3 py-2 rounded-lg font-bold"><span id="funnel-converted-count">0</span> convertidos</div>
                </div>
             </div>
             <div class="flex gap-4 overflow-x-auto pb-4">
                <!-- Col 1 -->
-               <div class="bg-slate-900/50 min-w-[260px] w-full rounded-xl p-4 flex flex-col">
+               <div class="bg-slate-900/50 min-w-[240px] w-full rounded-xl p-4 flex flex-col">
                   <div class="border-b border-cyan-400/20 pb-3 mb-4 flex justify-between items-center">
                      <span class="text-xs font-bold text-cyan-400 uppercase">1. Novo Lead</span>
-                     <span class="bg-cyan-400/20 text-cyan-400 text-[10px] font-bold px-2 py-0.5 rounded"><span id="funnel-count-novo">18</span></span>
+                     <span class="bg-cyan-400/20 text-cyan-400 text-[10px] font-bold px-2 py-0.5 rounded"><span id="funnel-count-novo">0</span></span>
                   </div>
-                  <div class="space-y-2 flex-1">
-                     <div class="bg-slate-800/80 p-3 rounded-lg border border-white/5 cursor-pointer hover:border-cyan-400/30 transition-colors">
-                        <div class="text-sm font-bold text-white">Marina Oliveira</div>
-                        <div class="text-[10px] text-slate-500 mt-1">Meta Ads • há 3 min</div>
-                     </div>
-                     <div class="bg-slate-800/80 p-3 rounded-lg border border-white/5 cursor-pointer hover:border-cyan-400/30 transition-colors">
-                        <div class="text-sm font-bold text-white">Marcos Tavares</div>
-                        <div class="text-[10px] text-slate-500 mt-1">Google Ads • há 15 min</div>
-                     </div>
-                     <div class="bg-slate-800/80 p-3 rounded-lg border border-white/5 cursor-pointer hover:border-cyan-400/30 transition-colors">
-                        <div class="text-sm font-bold text-white">Luiza Mendes</div>
-                        <div class="text-[10px] text-slate-500 mt-1">Instagram • há 42 min</div>
-                     </div>
+                  <div class="space-y-2 flex-1" id="funnel-col-novo">
+                     <div class="text-center text-slate-600 text-xs py-4">Carregando...</div>
                   </div>
                </div>
                <!-- Col 2 -->
-               <div class="bg-slate-900/50 min-w-[260px] w-full rounded-xl p-4 flex flex-col">
+               <div class="bg-slate-900/50 min-w-[240px] w-full rounded-xl p-4 flex flex-col">
                   <div class="border-b border-violet-400/20 pb-3 mb-4 flex justify-between items-center">
-                     <span class="text-xs font-bold text-violet-400 uppercase">2. IA Atendendo</span>
-                     <span class="bg-violet-400/20 text-violet-400 text-[10px] font-bold px-2 py-0.5 rounded"><span id="funnel-count-atendimento">14</span></span>
+                     <span class="text-xs font-bold text-violet-400 uppercase">2. Em Atendimento</span>
+                     <span class="bg-violet-400/20 text-violet-400 text-[10px] font-bold px-2 py-0.5 rounded"><span id="funnel-count-atendimento">0</span></span>
                   </div>
-                  <div class="space-y-2 flex-1">
-                     <div class="bg-slate-800/80 p-3 rounded-lg border border-violet-400/10 cursor-pointer hover:border-violet-400/30 transition-colors">
-                        <div class="text-sm font-bold text-white">Roberto Almeida</div>
-                        <div class="text-[10px] text-violet-400 mt-1">Perguntando financiamento</div>
-                     </div>
-                     <div class="bg-slate-800/80 p-3 rounded-lg border border-violet-400/10 cursor-pointer hover:border-violet-400/30 transition-colors">
-                        <div class="text-sm font-bold text-white">João Ferreira</div>
-                        <div class="text-[10px] text-violet-400 mt-1">Agendamento em andamento</div>
-                     </div>
+                  <div class="space-y-2 flex-1" id="funnel-col-atendimento">
+                     <div class="text-center text-slate-600 text-xs py-4">Carregando...</div>
                   </div>
                </div>
                <!-- Col 3 -->
-               <div class="bg-slate-900/50 min-w-[260px] w-full rounded-xl p-4 flex flex-col">
+               <div class="bg-slate-900/50 min-w-[240px] w-full rounded-xl p-4 flex flex-col">
                   <div class="border-b border-amber-400/20 pb-3 mb-4 flex justify-between items-center">
-                     <span class="text-xs font-bold text-amber-400 uppercase">3. Visita Agendada</span>
-                     <span class="bg-amber-400/20 text-amber-400 text-[10px] font-bold px-2 py-0.5 rounded"><span id="funnel-count-frio">8</span></span>
+                     <span class="text-xs font-bold text-amber-400 uppercase">3. Frio / Inativo</span>
+                     <span class="bg-amber-400/20 text-amber-400 text-[10px] font-bold px-2 py-0.5 rounded"><span id="funnel-count-frio">0</span></span>
                   </div>
-                  <div class="space-y-2 flex-1">
-                     <div class="bg-slate-800/80 p-3 rounded-lg border border-amber-400/20 cursor-pointer shadow-[0_0_10px_rgba(251,191,36,0.05)]">
-                        <div class="text-sm font-bold text-white">Patrícia Lima</div>
-                        <div class="text-[10px] text-amber-400 mt-1">Amanhã, 10:00</div>
-                     </div>
-                     <div class="bg-slate-800/80 p-3 rounded-lg border border-amber-400/20 cursor-pointer shadow-[0_0_10px_rgba(251,191,36,0.05)]">
-                        <div class="text-sm font-bold text-white">Fernando Costa</div>
-                        <div class="text-[10px] text-amber-400 mt-1">Sábado, 15:00</div>
-                     </div>
+                  <div class="space-y-2 flex-1" id="funnel-col-frio">
+                     <div class="text-center text-slate-600 text-xs py-4">Carregando...</div>
                   </div>
                </div>
                <!-- Col 4 -->
-               <div class="bg-slate-900/50 min-w-[260px] w-full rounded-xl p-4 flex flex-col">
+               <div class="bg-slate-900/50 min-w-[240px] w-full rounded-xl p-4 flex flex-col">
                   <div class="border-b border-emerald-400/20 pb-3 mb-4 flex justify-between items-center">
                      <span class="text-xs font-bold text-emerald-400 uppercase">4. Convertido</span>
-                     <span class="bg-emerald-400/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded"><span id="funnel-count-convertido">12</span></span>
+                     <span class="bg-emerald-400/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded"><span id="funnel-count-convertido">0</span></span>
                   </div>
-                  <div class="space-y-2 flex-1">
-                     <div class="bg-slate-800/80 p-3 rounded-lg border border-emerald-400/30 cursor-pointer shadow-[0_0_15px_rgba(52,211,153,0.1)]">
-                        <div class="text-sm font-bold text-white">Camila Santos</div>
-                        <div class="text-[10px] text-emerald-400 font-bold mt-1">Contrato Assinado ✓</div>
-                     </div>
+                  <div class="space-y-2 flex-1" id="funnel-col-convertido">
+                     <div class="text-center text-slate-600 text-xs py-4">Carregando...</div>
                   </div>
                </div>
             </div>
@@ -2054,30 +1997,117 @@
     // ─── FUNNEL COUNTS ────────────────────────────────────────
     async function loadFunnelCounts() {
       try {
-        const leads = await sbFetch("leads", "select=status");
-        const count = (status) => leads.filter(l => l.status === status).length;
-        
-        const elNovo = document.getElementById("funnel-count-novo");
-        const elAtend = document.getElementById("funnel-count-atendimento");
-        const elConv = document.getElementById("funnel-count-convertido");
-        const elFrio = document.getElementById("funnel-count-frio");
-        
-        if(elNovo) elNovo.textContent = count("novo");
-        if(elAtend) elAtend.textContent = count("atendimento");
-        if(elConv) elConv.textContent = count("convertido");
-        if(elFrio) elFrio.textContent = count("frio");
-      } catch(e) { console.warn("Funnel offline", e.message); }
+        const leads = await sbFetch("leads", "select=id,name,source,status,created_at&order=created_at.desc");
+        if(!leads) return;
+
+        const groups = { novo: [], atendimento: [], frio: [], convertido: [] };
+        leads.forEach(l => {
+          const s = l.status || 'novo';
+          if(groups[s]) groups[s].push(l);
+          else groups.novo.push(l);
+        });
+
+        // Update counts
+        const set = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
+        set('funnel-count-novo', groups.novo.length);
+        set('funnel-count-atendimento', groups.atendimento.length);
+        set('funnel-count-frio', groups.frio.length);
+        set('funnel-count-convertido', groups.convertido.length);
+        set('funnel-total-count', leads.length + ' leads');
+        set('funnel-converted-count', groups.convertido.length);
+
+        // Render cards per column
+        const colColors = { novo: 'cyan', atendimento: 'violet', frio: 'amber', convertido: 'emerald' };
+        const colBorders = { novo: 'border-white/5 hover:border-cyan-400/30', atendimento: 'border-violet-400/10 hover:border-violet-400/30', frio: 'border-amber-400/20', convertido: 'border-emerald-400/30' };
+        const colSubColors = { novo: 'text-slate-500', atendimento: 'text-violet-400', frio: 'text-amber-400', convertido: 'text-emerald-400 font-bold' };
+        const colSubText = { novo: lead => `${lead.source || 'Direto'} • ${timeAgo(lead.created_at)}`, atendimento: () => 'Em atendimento', frio: () => 'Lead frio', convertido: () => 'Convertido ✓' };
+
+        Object.keys(groups).forEach(status => {
+          const col = document.getElementById(`funnel-col-${status}`);
+          if(!col) return;
+          const list = groups[status];
+          if(list.length === 0) {
+            col.innerHTML = `<div class="text-center text-slate-600 text-xs py-6">Nenhum lead</div>`;
+            return;
+          }
+          col.innerHTML = list.slice(0, 8).map(lead => {
+            const initials = (lead.name || '?').split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+            return `<div class="bg-slate-800/80 p-3 rounded-lg border ${colBorders[status]} cursor-pointer transition-colors">
+              <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-full bg-${colColors[status]}-400/20 flex items-center justify-center text-${colColors[status]}-400 text-[10px] font-black flex-shrink-0">${initials}</div>
+                <div class="text-sm font-bold text-white truncate">${lead.name || 'Lead'}</div>
+              </div>
+              <div class="text-[10px] ${colSubColors[status]} mt-1.5">${colSubText[status](lead)}</div>
+            </div>`;
+          }).join('');
+        });
+
+        // Also populate WhatsApp contacts panel
+        const contactsBody = document.getElementById('chat-contacts-body');
+        const convCount = document.getElementById('chat-conv-count');
+        if(contactsBody && leads.length > 0) {
+          if(convCount) convCount.textContent = `Conversas (${leads.length})`;
+          const gradients = ['from-cyan-400 to-violet-500','from-violet-400 to-pink-500','from-emerald-400 to-cyan-500','from-amber-400 to-orange-500','from-blue-400 to-cyan-500'];
+          contactsBody.innerHTML = leads.slice(0, 20).map((lead, i) => {
+            const initials = (lead.name || '?').split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+            const gradient = gradients[i % gradients.length];
+            const statusText = { novo: 'Aguardando atendimento', atendimento: 'IA respondendo...', frio: 'Lead frio', convertido: 'Convertido ✓' }[lead.status] || 'Novo lead';
+            const statusColor = { novo: 'text-slate-400', atendimento: 'text-cyan-400', frio: 'text-amber-400', convertido: 'text-emerald-400' }[lead.status] || 'text-slate-400';
+            return `<div class="p-4 border-b border-white/5 cursor-pointer flex items-center gap-3 hover:bg-white/[0.02] transition-colors" onclick="openChatContact('${lead.name}','${initials}','${gradient}')">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center text-white text-xs font-bold flex-shrink-0">${initials}</div>
+              <div class="flex-1 min-w-0">
+                <div class="text-sm font-bold text-white truncate">${lead.name || 'Lead'}</div>
+                <div class="text-xs ${statusColor} truncate">${statusText}</div>
+              </div>
+            </div>`;
+          }).join('');
+        } else if(contactsBody) {
+          if(convCount) convCount.textContent = 'Conversas';
+          contactsBody.innerHTML = `<div class="p-6 text-center"><p class="text-xs text-slate-500 mt-4">Nenhum lead importado ainda.<br>Importe sua planilha na Visão Geral.</p></div>`;
+        }
+
+      } catch(e) { 
+        console.warn("Funnel/Contacts offline", e.message);
+        // Clear loading state
+        ['novo','atendimento','frio','convertido'].forEach(s => {
+          const col = document.getElementById(`funnel-col-${s}`);
+          if(col) col.innerHTML = '<div class="text-center text-slate-600 text-xs py-4">Sem dados</div>';
+        });
+      }
+    }
+
+    function timeAgo(dateStr) {
+      if(!dateStr) return '';
+      const diff = Math.floor((Date.now() - new Date(dateStr)) / 60000);
+      if(diff < 1) return 'agora';
+      if(diff < 60) return `há ${diff} min`;
+      if(diff < 1440) return `há ${Math.floor(diff/60)}h`;
+      return `há ${Math.floor(diff/1440)} dias`;
+    }
+
+    function openChatContact(name, initials, gradient) {
+      const header = document.getElementById('chat-window')?.querySelector('.p-4.border-b');
+      if(header) {
+        header.querySelector('.text-sm.font-bold')?.textContent && (header.querySelector('.text-sm.font-bold').textContent = name);
+        const av = header.querySelector('.w-10.h-10');
+        if(av) { av.className = `w-10 h-10 rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center text-white text-xs font-bold`; av.textContent = initials; }
+      }
     }
 
     // ─── AUTH GUARD ──────────────────────────────────────────
     function nexoAuthCheck() {
       const localSess = localStorage.getItem('sb-tqqtjrunrimabitmersr-auth-token');
-      if(!localSess) {
-        window.location.replace('login.html');
-        return null;
-      }
+      if(!localSess) { window.location.replace('login.html'); return null; }
       try {
-        return JSON.parse(localSess);
+        const raw = JSON.parse(localSess);
+        // Normalize: handle all Supabase session storage formats
+        const normalized = raw?.user ? raw 
+          : raw?.currentSession ? raw.currentSession
+          : raw?.session ? raw.session
+          : raw?.data?.session ? raw.data.session
+          : raw;
+        if(!normalized?.user) { window.location.replace('login.html'); return null; }
+        return normalized;
       } catch(e) {
         window.location.replace('login.html');
         return null;
