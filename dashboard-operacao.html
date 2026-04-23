@@ -1708,27 +1708,47 @@
     // ─── CORE API ──────────────────────────────────────────────
     function getAuthToken() {
       try {
-        const raw = JSON.parse(localStorage.getItem('sb-tqqtjrunrimabitmersr-auth-token'));
-        // Handle multiple Supabase session storage formats
-        const token = raw?.access_token 
-          || raw?.currentSession?.access_token 
-          || raw?.session?.access_token
-          || raw?.data?.session?.access_token;
-        return token ? `Bearer ${token}` : `Bearer ${SUPABASE_KEY}`;
+        // Scan ALL localStorage keys — find any Supabase session regardless of key name
+        for(let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if(!key || !key.startsWith('sb-')) continue;
+          try {
+            const raw = JSON.parse(localStorage.getItem(key));
+            // Check all known Supabase session formats
+            const token = raw?.access_token
+              || raw?.currentSession?.access_token
+              || raw?.session?.access_token
+              || raw?.data?.session?.access_token;
+            if(token) {
+              console.log(`[NexoAuth] Token found in key: ${key}`);
+              return `Bearer ${token}`;
+            }
+          } catch(_) {}
+        }
+        console.warn('[NexoAuth] No JWT found in localStorage — using anon key (RLS may block)');
+        return `Bearer ${SUPABASE_KEY}`;
       } catch(e) { return `Bearer ${SUPABASE_KEY}`; }
     }
 
     async function sbFetch(table, params = "") {
+      const authHeader = getAuthToken();
       const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${params}`, {
         headers: {
           "apikey": SUPABASE_KEY,
-          "Authorization": getAuthToken(),
+          "Authorization": authHeader,
           "Content-Type": "application/json"
         }
       });
-      if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
+      if (!res.ok) {
+        let errBody = '';
+        try { errBody = JSON.stringify(await res.json()); } catch(_) {}
+        const msg = `Supabase ${table} error ${res.status}: ${errBody}`;
+        console.error('[sbFetch]', msg);
+        throw new Error(msg);
+      }
       return res.json();
     }
+
 
     async function sbInsert(table, body) {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
@@ -1823,9 +1843,16 @@
           renderLeadsPage();
         });
       } catch(e) {
-        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-red-400 text-sm">Erro ao carregar leads.</td></tr>`;
+        const isAuth = e.message?.includes('401') || e.message?.includes('403');
+        const hint = isAuth
+          ? '<br><span class="text-slate-500 text-xs">Dica: sessão expirada. <a href="login.html" class="text-cyan-400 underline">Fazer login novamente</a></span>'
+          : '';
+        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-red-400 text-sm">
+          Erro ao carregar leads: <code class="text-xs text-red-300">${e.message||'Desconhecido'}</code>${hint}
+        </td></tr>`;
         const lbl = document.getElementById('leads-count-label');
         if(lbl) lbl.textContent = 'Erro ao carregar';
+        console.error('[loadLeadsTable]', e);
       }
     }
 
