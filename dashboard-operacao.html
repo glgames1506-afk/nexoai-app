@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -3140,7 +3140,55 @@
     window.addEventListener("load", () => { initNexoEngine().then(() => { restoreFeatureStates(); loadSettings(); }); });
     </script>
     <!-- ====== FIM DO NEXO SUPABASE ENGINE ====== -->
+    <!-- ====== DEMO UPGRADE BANNER ====== -->
+    <div id="demo-upgrade-banner" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-2xl px-4">
+      <div style="background:linear-gradient(135deg,rgba(15,23,42,0.97) 0%,rgba(15,23,42,0.97) 100%);border:1px solid rgba(34,211,238,0.3);box-shadow:0 0 40px rgba(34,211,238,0.15),0 20px 60px rgba(0,0,0,0.5);" class="rounded-2xl p-4 flex items-center gap-4">
+        <!-- Ícone -->
+        <div class="w-12 h-12 rounded-xl flex-shrink-0 flex items-center justify-center" style="background:linear-gradient(135deg,#22d3ee,#a855f7);">
+          <i data-lucide="zap" class="w-6 h-6 text-white"></i>
+        </div>
+        <!-- Texto -->
+        <div class="flex-1 min-w-0">
+          <p class="text-white font-black text-sm">Você está no modo Demo</p>
+          <p class="text-slate-400 text-xs mt-0.5">Adquira sua licença e conecte seus leads reais agora.</p>
+        </div>
+        <!-- CTA -->
+        <a href="https://pay.kiwify.com.br/nexoai" target="_blank"
+           style="background:linear-gradient(135deg,#22d3ee,#a855f7);box-shadow:0 0 20px rgba(34,211,238,0.3);"
+           class="flex-shrink-0 px-5 py-2.5 rounded-xl text-white font-black text-sm whitespace-nowrap hover:opacity-90 transition-opacity">
+          Ativar Licença →
+        </a>
+        <!-- Fechar -->
+        <button onclick="document.getElementById('demo-upgrade-banner').remove();" class="flex-shrink-0 w-7 h-7 rounded-lg bg-slate-800 flex items-center justify-center text-slate-500 hover:text-white transition-colors">
+          <i data-lucide="x" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // Exibe banner APENAS para conta demo
+      (function() {
+        var isDemo = false;
+        try {
+          var keys = Object.keys(localStorage);
+          for (var k of keys) {
+            var v = localStorage.getItem(k);
+            if (v && v.includes('demo@nexoai')) { isDemo = true; break; }
+          }
+        } catch(e){}
+        // Fallback: checa sessão via cookie/sessionStorage
+        if (!isDemo && document.cookie.includes('demo@nexoai')) isDemo = true;
+        if (!isDemo && sessionStorage.getItem('nexo_demo')) isDemo = true;
+
+        if (isDemo) {
+          var banner = document.getElementById('demo-upgrade-banner');
+          if (banner) banner.classList.remove('hidden');
+        }
+      })();
+    </script>
+    <!-- ====== FIM DEMO UPGRADE BANNER ====== -->
 </body>
 
 
 </html>
+
