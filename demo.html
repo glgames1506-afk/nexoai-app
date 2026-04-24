@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo Guiada — Veja a Nexo AI em Ação | Nexo AI</title>
+  <meta name="description" content="Acesse a demonstração guiada da Nexo AI. Veja o painel executivo funcionando com dados reais de uma empresa de exemplo.">
+  <meta name="robots" content="noindex, nofollow">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/images/logo-nexo.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { 'inter': ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            'nexo-dark': '#0d1117',
+            'nexo-cyan': '#22d3ee',
+            'nexo-violet': '#a855f7',
+          },
+        },
+      },
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; background: #020617; }
+
+    .glass {
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .cta-glow {
+      background: linear-gradient(135deg, #22d3ee, #a855f7);
+      box-shadow: 0 0 30px rgba(34,211,238,0.3), 0 0 60px rgba(168,85,247,0.15);
+      transition: all 0.3s;
+    }
+    .cta-glow:hover {
+      box-shadow: 0 0 50px rgba(34,211,238,0.5), 0 0 100px rgba(168,85,247,0.25);
+      transform: translateY(-2px);
+    }
+
+    .step-active { border-color: rgba(34,211,238,0.5); background: rgba(34,211,238,0.05); }
+    .step-done { border-color: rgba(16,185,129,0.4); background: rgba(16,185,129,0.05); }
+    .step-pending { border-color: rgba(255,255,255,0.06); }
+
+    .field-input {
+      background: rgba(15,23,42,0.8);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 0.75rem;
+      color: white;
+      padding: 0.75rem 1rem;
+      width: 100%;
+      font-size: 0.875rem;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+    .field-input:focus { border-color: rgba(34,211,238,0.5); }
+    .field-input::placeholder { color: #475569; }
+
+    select.field-input option { background: #0f172a; color: white; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+
+    .orb { position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none; }
+  </style>
+</head>
+
+<body class="text-slate-100 antialiased overflow-x-hidden min-h-screen">
+
+  <!-- Background -->
+  <div class="orb w-[500px] h-[500px] bg-cyan-500/6 top-0 -left-40 fixed"></div>
+  <div class="orb w-[400px] h-[400px] bg-violet-500/6 bottom-0 -right-40 fixed"></div>
+
+  <!-- Header -->
+  <header class="fixed top-0 left-0 right-0 z-50 glass border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <img src="logo.png" alt="Nexo AI" class="h-9 w-auto object-contain" onerror="this.src='assets/images/logo-nexo.png'">
+        <span class="text-sm text-slate-400 font-medium hidden sm:block">/ Demo Guiada</span>
+      </a>
+      <div class="flex items-center gap-3">
+        <span class="hidden sm:flex items-center gap-2 text-xs text-emerald-400 font-semibold">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          Ambiente de demonstração
+        </span>
+        <a href="index.html#licenca" class="cta-glow px-5 py-2.5 rounded-xl text-sm font-bold text-white" id="btn-header-cta">
+          Ativar Agora →
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="pt-16 min-h-screen">
+
+    <!-- QUALIFICAÇÃO (Passo 1) -->
+    <div id="step-qualificacao" class="fade-in">
+      <div class="max-w-2xl mx-auto px-6 py-20 text-center">
+
+        <!-- Badge -->
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-cyan-400/20 mb-8 text-xs font-semibold text-cyan-400 uppercase tracking-wide">
+          <i data-lucide="monitor-play" class="w-4 h-4"></i>
+          Demo Guiada — Exclusivo para Empresas
+        </div>
+
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight mb-6">
+          Veja a Nexo AI<br>
+          <span style="background: linear-gradient(135deg, #22d3ee, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Funcionando de Verdade.</span>
+        </h1>
+        <p class="text-slate-400 text-lg mb-10 leading-relaxed">
+          Em 2 minutos você vai ver o painel executivo com os dados de uma empresa real.
+          <strong class="text-white">Preencha abaixo para personalizar a demo ao seu negócio.</strong>
+        </p>
+
+        <!-- Formulário de Qualificação -->
+        <div class="glass rounded-3xl p-8 text-left" id="form-qualificacao">
+
+          <div class="grid sm:grid-cols-2 gap-5 mb-5">
+            <div>
+              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-2">Seu Nome</label>
+              <input type="text" id="input-nome" class="field-input" placeholder="Ex: Ricardo Gomes">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-2">WhatsApp / Contato</label>
+              <input type="tel" id="input-whatsapp" class="field-input" placeholder="(11) 99999-9999">
+            </div>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-5 mb-5">
+            <div>
+              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-2">Segmento da Empresa</label>
+              <select id="input-segmento" class="field-input">
+                <option value="">Selecione...</option>
+                <option value="imoveis">Imobiliária / Construtora</option>
+                <option value="clinica">Clínica / Odontologia / Saúde</option>
+                <option value="servicos">Serviços B2B</option>
+                <option value="educacao">Educação / Infoprodutos</option>
+                <option value="varejo">Varejo / E-commerce</option>
+                <option value="outro">Outro segmento</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-2">Faturamento Mensal Aproximado</label>
+              <select id="input-faturamento" class="field-input">
+                <option value="">Selecione...</option>
+                <option value="ate50k">Até R$ 50.000</option>
+                <option value="50k-200k">R$ 50.000 a R$ 200.000</option>
+                <option value="200k-500k">R$ 200.000 a R$ 500.000</option>
+                <option value="acima500k">Acima de R$ 500.000</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-2">Maior Dor Hoje</label>
+            <select id="input-dor" class="field-input">
+              <option value="">Selecione sua maior dor...</option>
+              <option value="leads">Leads sumindo sem resposta</option>
+              <option value="followup">Falta de follow-up da equipe</option>
+              <option value="dados">Não sei meus números reais (CAC, LTV, Margem)</option>
+              <option value="atendimento">Atendimento lento / WhatsApp caótico</option>
+              <option value="gestao">Gestão de vendedores sem visibilidade</option>
+            </select>
+          </div>
+
+          <!-- Erro -->
+          <p id="form-erro" class="text-red-400 text-sm mb-4 hidden">Preencha todos os campos para continuar.</p>
+
+          <button onclick="acessarDemo()" class="cta-glow w-full py-4 rounded-2xl text-white font-black text-lg flex items-center justify-center gap-3" id="btn-acessar-demo">
+            <i data-lucide="play" class="w-5 h-5 fill-white"></i>
+            ACESSAR MINHA DEMO PERSONALIZADA
+          </button>
+
+          <p class="text-center text-xs text-slate-600 mt-4">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 inline text-cyan-400 mr-1"></i>
+            Sem spam. Sem compromisso. Dados seguros. Seu consultor pode entrar em contato para entender seu cenário.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- DEMO DO DASHBOARD (Passo 2 — Oculto inicialmente) -->
+    <div id="step-dashboard" class="hidden">
+
+      <!-- Barra de contexto personalizada -->
+      <div id="demo-context-bar" class="bg-slate-900 border-b border-white/5 px-6 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-3">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center">
+              <i data-lucide="building-2" class="w-4 h-4 text-cyan-400"></i>
+            </div>
+            <div>
+              <p class="text-xs text-slate-500">Demo personalizada para</p>
+              <p class="text-sm font-bold text-white" id="demo-empresa-label">sua empresa</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="text-xs text-emerald-400 font-semibold flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              Ambiente de demonstração
+            </span>
+            <a href="index.html#licenca" class="cta-glow px-4 py-2 rounded-xl text-xs font-bold text-white" id="btn-demo-cta-bar">
+              Ativar para minha empresa →
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard Iframe -->
+      <div class="fade-in">
+        <div class="max-w-7xl mx-auto px-4 py-8">
+
+          <!-- Call to action personalizado contextual -->
+          <div id="demo-cta-contextual" class="glass rounded-2xl p-5 mb-6 border border-cyan-400/20 flex flex-col sm:flex-row items-center gap-4">
+            <div class="flex-1">
+              <p class="text-white font-bold text-sm mb-1">Você está vendo o painel de uma <span id="demo-segmento-label" class="text-cyan-400">empresa exemplo</span>.</p>
+              <p class="text-slate-400 text-xs">Este painel seria configurado com os dados da <strong class="text-white">sua</strong> empresa em 48 horas. Resultado: <strong class="text-emerald-400">visibilidade total do seu lucro em tempo real.</strong></p>
+            </div>
+            <a href="index.html#licenca" class="cta-glow px-6 py-3 rounded-xl text-white font-bold text-sm whitespace-nowrap flex-shrink-0" id="btn-demo-contextual">
+              Quero para minha empresa →
+            </a>
+          </div>
+
+          <!-- Dashboard Embed -->
+          <div class="glass rounded-3xl overflow-hidden border border-white/5 shadow-2xl">
+            <!-- Tab bar -->
+            <div class="flex items-center gap-4 px-6 py-4 border-b border-white/5 bg-slate-900/50">
+              <button onclick="trocarAba('operacao')" id="tab-operacao" class="text-xs font-bold text-cyan-400 border-b-2 border-cyan-400 pb-1 transition-all">
+                Dashboard Operação
+              </button>
+              <button onclick="trocarAba('comando')" id="tab-comando" class="text-xs font-semibold text-slate-500 hover:text-white pb-1 transition-all">
+                Dashboard Comando Total
+              </button>
+              <div class="ml-auto flex items-center gap-2 text-xs text-emerald-400">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                Ao vivo
+              </div>
+            </div>
+
+            <!-- Iframe do dashboard -->
+            <div style="height: 80vh; min-height: 600px;">
+              <iframe id="dashboard-frame" src="dashboard-operacao.html" class="w-full h-full border-0" title="Nexo AI — Dashboard de Demonstração" sandbox="allow-scripts allow-same-origin"></iframe>
+            </div>
+          </div>
+
+          <!-- CTA Final -->
+          <div class="mt-10 text-center glass rounded-3xl p-10 border border-cyan-400/10">
+            <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 flex items-center justify-center mx-auto mb-4">
+              <i data-lucide="rocket" class="w-8 h-8 text-cyan-400"></i>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-black text-white mb-3">Quer Isso Funcionando<br><span style="background: linear-gradient(135deg, #22d3ee, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">na Sua Empresa?</span></h2>
+            <p class="text-slate-400 mb-8 max-w-md mx-auto text-sm leading-relaxed">Setup completo em 48 horas. Seu time treinado. Seu WhatsApp integrado. Seus números no painel. <strong class="text-white">ROI garantido ou 100% do dinheiro de volta.</strong></p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+              <a href="index.html#licenca" class="cta-glow px-10 py-5 rounded-2xl text-white font-black text-lg flex items-center justify-center gap-3" id="btn-demo-final-cta">
+                <i data-lucide="zap" class="w-6 h-6"></i>
+                ATIVAR NEXO AI AGORA
+              </a>
+              <a href="https://wa.me/5511999999999?text=Acessei%20a%20demo%20da%20Nexo%20AI%20e%20quero%20saber%20mais" target="_blank" class="px-8 py-5 rounded-2xl border border-white/10 text-slate-300 font-bold hover:border-white/30 hover:text-white transition-all flex items-center justify-center gap-3" id="btn-demo-whatsapp">
+                <i data-lucide="message-circle" class="w-5 h-5 text-emerald-400"></i>
+                Falar com Consultor
+              </a>
+            </div>
+            <p class="text-xs text-slate-600 mt-5 flex items-center justify-center gap-1.5">
+              <i data-lucide="shield-check" class="w-3.5 h-3.5 text-cyan-400"></i>
+              Garantia de ROI de 60 dias. Setup em 48h. Sem fidelidade.
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+    lucide.createIcons();
+
+    const segmentos = {
+      imoveis: 'Imobiliária / Construtora',
+      clinica: 'Clínica / Saúde',
+      servicos: 'Serviços B2B',
+      educacao: 'Educação / Infoprodutos',
+      varejo: 'Varejo / E-commerce',
+      outro: 'Empresa'
+    };
+
+    function acessarDemo() {
+      const nome = document.getElementById('input-nome').value.trim();
+      const whatsapp = document.getElementById('input-whatsapp').value.trim();
+      const segmento = document.getElementById('input-segmento').value;
+      const faturamento = document.getElementById('input-faturamento').value;
+      const dor = document.getElementById('input-dor').value;
+      const erro = document.getElementById('form-erro');
+
+      if (!nome || !whatsapp || !segmento || !faturamento || !dor) {
+        erro.classList.remove('hidden');
+        return;
+      }
+      erro.classList.add('hidden');
+
+      // Personalizar labels
+      const primeiroNome = nome.split(' ')[0];
+      document.getElementById('demo-empresa-label').textContent = primeiroNome + ' — ' + (segmentos[segmento] || 'Empresa');
+      document.getElementById('demo-segmento-label').textContent = segmentos[segmento] || 'empresa';
+
+      // Ocultar formulário e mostrar dashboard
+      document.getElementById('step-qualificacao').classList.add('hidden');
+      const stepDash = document.getElementById('step-dashboard');
+      stepDash.classList.remove('hidden');
+      stepDash.classList.add('fade-in');
+
+      // Re-iniciar ícones
+      lucide.createIcons();
+    }
+
+    function trocarAba(aba) {
+      const frame = document.getElementById('dashboard-frame');
+      const tabOp = document.getElementById('tab-operacao');
+      const tabCmd = document.getElementById('tab-comando');
+
+      if (aba === 'operacao') {
+        frame.src = 'dashboard-operacao.html';
+        tabOp.classList.add('text-cyan-400', 'border-b-2', 'border-cyan-400');
+        tabOp.classList.remove('text-slate-500');
+        tabCmd.classList.remove('text-cyan-400', 'border-b-2', 'border-cyan-400');
+        tabCmd.classList.add('text-slate-500');
+      } else {
+        frame.src = 'dashboard-comando.html';
+        tabCmd.classList.add('text-cyan-400', 'border-b-2', 'border-cyan-400');
+        tabCmd.classList.remove('text-slate-500');
+        tabOp.classList.remove('text-cyan-400', 'border-b-2', 'border-cyan-400');
+        tabOp.classList.add('text-slate-500');
+      }
+    }
+
+    // Enter no form
+    document.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') acessarDemo();
+    });
+  </script>
+
+</body>
+</html>
