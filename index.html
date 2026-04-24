@@ -290,6 +290,19 @@
       0% { transform: translateX(0); }
       100% { transform: translateX(-50%); }
     }
+    /* Animação Marquee para Integrações */
+    @keyframes infinite-scroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    .animate-infinite-scroll {
+      animation: infinite-scroll 40s linear infinite;
+      display: flex;
+      width: max-content;
+    }
+    .marquee-container:hover .animate-infinite-scroll {
+      animation-play-state: paused;
+    }
   </style>
 </head>
 
@@ -315,6 +328,10 @@
 
         <!-- Desktop CTA -->
         <div class="hidden lg:flex items-center gap-4">
+          <a href="login.html" class="text-sm font-semibold text-slate-400 hover:text-white transition-all px-4 py-2 flex items-center gap-2" id="btn-header-login">
+            <i data-lucide="user-circle" class="w-4 h-4"></i>
+            Login Cliente
+          </a>
           <a href="#licenca" class="cta-glow px-6 py-2.5 rounded-xl text-sm font-bold text-white" id="btn-header-cta">
             Quero Parar de Perder Vendas →
           </a>
@@ -338,7 +355,15 @@
     <a href="#dashboard" class="text-2xl font-semibold text-white mobile-link">Dashboard</a>
     <a href="#licenca" class="text-2xl font-semibold text-white mobile-link">Licença</a>
     <a href="#faq" class="text-2xl font-semibold text-white mobile-link">FAQ</a>
-    <a href="#licenca" class="cta-glow px-8 py-4 rounded-xl text-lg font-bold text-white mt-4 mobile-link">Quero Parar de Perder Vendas →</a>
+    <div class="mt-8 flex flex-col items-center gap-4 w-full px-6">
+      <a href="login.html" class="w-full text-center py-4 rounded-xl border border-white/10 text-white font-bold text-lg flex items-center justify-center gap-2">
+        <i data-lucide="user-circle" class="w-5 h-5 text-cyan-400"></i>
+        Login Cliente
+      </a>
+      <a href="#licenca" class="cta-glow w-full text-center py-4 rounded-xl text-white font-black text-lg">
+        QUERO ESTANCAR PERDAS →
+      </a>
+    </div>
   </nav>
 
 
@@ -1204,68 +1229,97 @@
     <div class="w-full h-px bg-gradient-to-r from-transparent via-slate-700/50 to-transparent"></div>
 
 
-    <!-- ====== INTEGRAÇÕES NATIVAS ====== -->
-    <section id="integracoes" class="relative py-20 bg-slate-950">
-      <div class="max-w-7xl mx-auto px-6 lg:px-8">
-        <div class="text-center mb-12 reveal-item">
-          <p class="text-xs font-bold tracking-[3px] uppercase text-slate-500 mb-3">Integra nativamente com o que você já usa</p>
-          <h3 class="text-2xl sm:text-3xl font-black text-white">Zero Migração. <span class="text-gradient-blue">Zero Dor de Cabeça.</span></h3>
-          <p class="text-slate-400 text-sm mt-3 max-w-xl mx-auto">A Nexo AI se encaixa na sua operação atual em 48 horas. Sem trocar sistema, sem retreinar equipe.</p>
+    <!-- ====== INTEGRAÇÕES NATIVAS (Carrossel Infinito) ====== -->
+    <section id="integracoes" class="relative py-24 bg-slate-950 overflow-hidden">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 mb-12">
+        <div class="text-center reveal-item">
+          <p class="text-xs font-bold tracking-[3px] uppercase text-slate-500 mb-3">Conecta nativamente com seu ecossistema</p>
+          <h3 class="text-2xl sm:text-3xl font-black text-white">Integração Total. <span class="text-gradient-blue">Zero Atrito.</span></h3>
         </div>
+      </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 reveal-item">
-
-          <!-- WhatsApp Business API -->
-          <div class="glass rounded-2xl p-5 flex flex-col items-center gap-3 hover:border-emerald-500/30 transition-all group">
-            <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center group-hover:bg-emerald-500/20 transition-colors">
-              <svg viewBox="0 0 24 24" class="w-7 h-7" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-            </div>
-            <span class="text-xs font-bold text-slate-300 text-center">WhatsApp<br>Business API</span>
+      <!-- Marquee Container -->
+      <div class="marquee-container relative flex overflow-hidden py-4 border-y border-white/5 bg-slate-900/30">
+        <div class="animate-infinite-scroll flex items-center gap-16 px-8">
+          <!-- WhatsApp -->
+          <div class="flex items-center gap-3 opacity-40 hover:opacity-100 transition-all grayscale hover:grayscale-0 cursor-default">
+            <svg viewBox="0 0 24 24" class="w-8 h-8" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+            <span class="text-xl font-bold text-white tracking-tight">WhatsApp</span>
           </div>
-
-          <!-- Meta Ads -->
-          <div class="glass rounded-2xl p-5 flex flex-col items-center gap-3 hover:border-blue-500/30 transition-all group">
-            <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
-              <svg viewBox="0 0 24 24" class="w-7 h-7" fill="#0082FB"><path d="M6.915 4.03c-1.968 0-3.683 1.28-4.871 3.113C.704 9.208 0 11.883 0 14.449c0 .706.07 1.369.21 1.973a6.624 6.624 0 0 0 .265.86 5.297 5.297 0 0 0 .371.761c.696 1.159 1.818 1.927 3.593 1.927 1.497 0 2.633-.671 3.965-2.444.76-1.012 1.144-1.626 2.663-4.32l.756-1.339.186-.325c.061.1.121.196.183.3l2.152 3.595c.724 1.21 1.665 2.556 2.47 3.314 1.046.987 1.992 1.22 3.06 1.22 1.075 0 1.876-.355 2.455-.843a3.743 3.743 0 0 0 .81-.973c.542-.939.861-2.127.861-3.745 0-2.72-.681-5.357-2.084-7.45-1.282-1.912-2.957-2.93-4.716-2.93-1.047 0-2.088.467-2.754 1.02a7.125 7.125 0 0 0-.88.883c-.092-.189-.179-.387-.282-.57C9.366 4.749 8.343 4.03 6.915 4.03zm9.703 3.563c1.199 0 2.208.844 2.861 2.235.716 1.529 1.019 3.463 1.019 5.197 0 1.603-.396 2.38-.87 2.38-.195 0-.419-.06-.749-.364-.378-.352-1.089-1.348-1.62-2.229l-1.02-1.71-.428-.716c.073-.132.147-.261.221-.398.63-1.144 1.01-2.086 1.01-2.786 0-.682-.167-.984-.444-1.293-.21-.234-.457-.316-.98-.316zm-9.703.048c.45 0 .75.181.988.555.238.373.374.912.374 1.564 0 .812-.202 1.787-.673 2.848l-.421.921-.115.25c-.655 1.433-1.11 2.272-1.654 3.012-.897 1.23-1.645 1.59-2.36 1.59-.77 0-1.366-.367-1.797-1.09a4.62 4.62 0 0 1-.307-.66 5.917 5.917 0 0 1-.191-1.578c0-2.202.608-4.716 1.726-6.34.785-1.14 1.586-1.672 2.43-1.672z"/></svg>
-            </div>
-            <span class="text-xs font-bold text-slate-300 text-center">Meta Ads<br>& Instagram</span>
+          <!-- Meta -->
+          <div class="flex items-center gap-3 opacity-40 hover:opacity-100 transition-all grayscale hover:grayscale-0 cursor-default">
+            <svg viewBox="0 0 24 24" class="w-8 h-8" fill="#0668E1"><path d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96A10 10 0 0 0 22 12.06C22 6.53 17.5 2.04 12 2.04Z"/></svg>
+            <span class="text-xl font-bold text-white tracking-tight">Meta</span>
           </div>
-
           <!-- Google Ads -->
-          <div class="glass rounded-2xl p-5 flex flex-col items-center gap-3 hover:border-cyan-500/30 transition-all group">
-            <div class="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center group-hover:bg-cyan-500/20 transition-colors">
-              <svg viewBox="0 0 24 24" class="w-7 h-7"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z" fill="#4285F4"/></svg>
-            </div>
-            <span class="text-xs font-bold text-slate-300 text-center">Google Ads<br>& Analytics</span>
+          <div class="flex items-center gap-3 opacity-40 hover:opacity-100 transition-all grayscale hover:grayscale-0 cursor-default">
+            <svg viewBox="0 0 24 24" class="w-8 h-8"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z" fill="#4285F4"/></svg>
+            <span class="text-xl font-bold text-white tracking-tight">Google Ads</span>
           </div>
-
+          <!-- Zapier -->
+          <div class="flex items-center gap-3 opacity-40 hover:opacity-100 transition-all grayscale hover:grayscale-0 cursor-default">
+            <svg viewBox="0 0 24 24" class="w-8 h-8" fill="#FF4F00"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg>
+            <span class="text-xl font-bold text-white tracking-tight italic">zapier</span>
+          </div>
+          <!-- Salesforce -->
+          <div class="flex items-center gap-3 opacity-40 hover:opacity-100 transition-all grayscale hover:grayscale-0 cursor-default">
+            <i data-lucide="cloud" class="w-8 h-8 text-blue-400"></i>
+            <span class="text-xl font-bold text-white tracking-tight">Salesforce</span>
+          </div>
+          <!-- HubSpot -->
+          <div class="flex items-center gap-3 opacity-40 hover:opacity-100 transition-all grayscale hover:grayscale-0 cursor-default">
+            <i data-lucide="settings" class="w-8 h-8 text-orange-400"></i>
+            <span class="text-xl font-bold text-white tracking-tight">HubSpot</span>
+          </div>
           <!-- Kiwify -->
-          <div class="glass rounded-2xl p-5 flex flex-col items-center gap-3 hover:border-violet-500/30 transition-all group">
-            <div class="w-12 h-12 rounded-xl bg-violet-500/10 flex items-center justify-center group-hover:bg-violet-500/20 transition-colors">
-              <i data-lucide="shopping-cart" class="w-7 h-7 text-violet-400"></i>
-            </div>
-            <span class="text-xs font-bold text-slate-300 text-center">Kiwify<br>& Hotmart</span>
+          <div class="flex items-center gap-3 opacity-40 hover:opacity-100 transition-all grayscale hover:grayscale-0 cursor-default">
+            <i data-lucide="shopping-cart" class="w-8 h-8 text-violet-400"></i>
+            <span class="text-xl font-black text-white tracking-tighter italic uppercase">KIWIFY</span>
+          </div>
+          <!-- Hotmart -->
+          <div class="flex items-center gap-3 opacity-40 hover:opacity-100 transition-all grayscale hover:grayscale-0 cursor-default">
+            <i data-lucide="flame" class="w-8 h-8 text-orange-500"></i>
+            <span class="text-xl font-bold text-white tracking-tight">Hotmart</span>
           </div>
 
-          <!-- Google Sheets -->
-          <div class="glass rounded-2xl p-5 flex flex-col items-center gap-3 hover:border-emerald-500/30 transition-all group">
-            <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center group-hover:bg-emerald-500/20 transition-colors">
-              <i data-lucide="table" class="w-7 h-7 text-emerald-400"></i>
-            </div>
-            <span class="text-xs font-bold text-slate-300 text-center">Google<br>Sheets & CRM</span>
+          <!-- DUPLICADOS PARA LOOP INFINITO -->
+          <div class="flex items-center gap-3 opacity-40 hover:opacity-100 transition-all grayscale hover:grayscale-0 cursor-default">
+            <svg viewBox="0 0 24 24" class="w-8 h-8" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+            <span class="text-xl font-bold text-white tracking-tight">WhatsApp</span>
           </div>
-
-          <!-- Webhooks / API -->
-          <div class="glass rounded-2xl p-5 flex flex-col items-center gap-3 hover:border-cyan-500/30 transition-all group">
-            <div class="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center group-hover:bg-cyan-500/20 transition-colors">
-              <i data-lucide="webhook" class="w-7 h-7 text-cyan-400"></i>
-            </div>
-            <span class="text-xs font-bold text-slate-300 text-center">Webhooks<br>& API Rest</span>
+          <div class="flex items-center gap-3 opacity-40 hover:opacity-100 transition-all grayscale hover:grayscale-0 cursor-default">
+            <svg viewBox="0 0 24 24" class="w-8 h-8" fill="#0668E1"><path d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96A10 10 0 0 0 22 12.06C22 6.53 17.5 2.04 12 2.04Z"/></svg>
+            <span class="text-xl font-bold text-white tracking-tight">Meta</span>
           </div>
-
+          <div class="flex items-center gap-3 opacity-40 hover:opacity-100 transition-all grayscale hover:grayscale-0 cursor-default">
+            <svg viewBox="0 0 24 24" class="w-8 h-8"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z" fill="#4285F4"/></svg>
+            <span class="text-xl font-bold text-white tracking-tight">Google Ads</span>
+          </div>
+          <div class="flex items-center gap-3 opacity-40 hover:opacity-100 transition-all grayscale hover:grayscale-0 cursor-default">
+            <svg viewBox="0 0 24 24" class="w-8 h-8" fill="#FF4F00"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg>
+            <span class="text-xl font-bold text-white tracking-tight italic">zapier</span>
+          </div>
+          <div class="flex items-center gap-3 opacity-40 hover:opacity-100 transition-all grayscale hover:grayscale-0 cursor-default">
+            <i data-lucide="cloud" class="w-8 h-8 text-blue-400"></i>
+            <span class="text-xl font-bold text-white tracking-tight">Salesforce</span>
+          </div>
+          <div class="flex items-center gap-3 opacity-40 hover:opacity-100 transition-all grayscale hover:grayscale-0 cursor-default">
+            <i data-lucide="settings" class="w-8 h-8 text-orange-400"></i>
+            <span class="text-xl font-bold text-white tracking-tight">HubSpot</span>
+          </div>
+          <div class="flex items-center gap-3 opacity-40 hover:opacity-100 transition-all grayscale hover:grayscale-0 cursor-default">
+            <i data-lucide="shopping-cart" class="w-8 h-8 text-violet-400"></i>
+            <span class="text-xl font-black text-white tracking-tighter italic uppercase">KIWIFY</span>
+          </div>
+          <div class="flex items-center gap-3 opacity-40 hover:opacity-100 transition-all grayscale hover:grayscale-0 cursor-default">
+            <i data-lucide="flame" class="w-8 h-8 text-orange-500"></i>
+            <span class="text-xl font-bold text-white tracking-tight">Hotmart</span>
+          </div>
         </div>
+      </div>
 
-        <p class="text-center text-xs text-slate-600 mt-6">+ mais de 40 integrações via API. Pergunte ao nosso time.</p>
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 mt-12 text-center reveal-item">
+        <p class="text-xs text-slate-600">+ mais de 40 integrações via API. Pergunte ao nosso time.</p>
       </div>
     </section>
 
