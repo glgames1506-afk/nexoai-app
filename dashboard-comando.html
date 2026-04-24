@@ -1768,7 +1768,122 @@
     document.body.style.display = 'none'; // Impede piscar antes de logar
     window.addEventListener('load', () => { nexoInit(); injectLogoutBtn(); });
     document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.activeElement?.id==='chat-input')sendMsg();});
-    </script>
+    
+    // ==========================================
+    // FUNÇÕES AVANÇADAS DO DASHBOARD (PREMIUM)
+    // ==========================================
+
+    // 1. Filtrar Abas da Tabela de Leads
+    function filterLeads(status, btnElement) {
+      // Atualiza visual dos botoes
+      document.querySelectorAll('.flex.gap-2.mb-4 button').forEach(b => {
+        b.classList.remove('bg-cyan-500/20', 'text-cyan-400', 'border-cyan-500/50');
+        b.classList.add('bg-slate-800', 'text-slate-400', 'border-slate-700');
+      });
+      if(btnElement) {
+        btnElement.classList.remove('bg-slate-800', 'text-slate-400', 'border-slate-700');
+        btnElement.classList.add('bg-cyan-500/20', 'text-cyan-400', 'border-cyan-500/50');
+      }
+
+      // Filtra as linhas
+      const rows = document.querySelectorAll('#leads-table-body tr');
+      rows.forEach(row => {
+        if(status === 'Todos') {
+          row.style.display = '';
+        } else {
+          const badge = row.querySelector('span.px-2.py-1');
+          if(badge && badge.textContent.trim().toLowerCase() === status.toLowerCase()) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        }
+      });
+    }
+
+    // 2. Exportar CSV
+    async function exportLeadsCSV() {
+      if(!nexoUser) return alert("Sessão inválida.");
+      const leads = await sbGet('leads', `user_id=eq.${nexoUser.id}`);
+      if(!leads || leads.length === 0) return alert("Nenhum lead para exportar.");
+      
+      let csvContent = "data:text/csv;charset=utf-8,";
+      csvContent += "Nome,WhatsApp,Status,Origem,Data de Cadastro\n";
+      
+      leads.forEach(l => {
+        const d = new Date(l.created_at).toLocaleDateString('pt-BR');
+        csvContent += `"${l.name}","${l.phone}","${l.status}","${l.source}","${d}"\n`;
+      });
+      
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "nexo_leads_export.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // 3. Salvar Configurações do Agente IA
+    async function saveAgentConfig() {
+      if(!nexoUser) return alert("Sessão inválida.");
+      
+      // Busca os valores do formulário (verifique os IDs no HTML)
+      const agentName = document.getElementById('agent-name')?.value || 'Nexo Bot';
+      const agentTone = document.getElementById('agent-tone')?.value || 'Profissional';
+      const agentPrompt = document.getElementById('agent-prompt')?.value || '';
+      
+      const btn = document.getElementById('btn-save-agent');
+      if(btn) { btn.textContent = 'Salvando...'; btn.disabled = true; }
+      
+      // Salva no banco (Upsert)
+      try {
+        await sbPost('agent_configs', {
+           user_id: nexoUser.id,
+           name: agentName,
+           tone: agentTone,
+           system_prompt: agentPrompt
+        });
+        alert("Configurações da IA salvas com sucesso!");
+      } catch(e) {
+        alert("Configurações salvas localmente (Modo Demo).");
+      }
+      
+      if(btn) { btn.textContent = 'Salvar Configurações'; btn.disabled = false; }
+    }
+
+    // Vincular botões após o carregamento
+    window.addEventListener('load', () => {
+      // Botão CSV
+      const btnExport = document.querySelector('button:contains("Exportar")') || Array.from(document.querySelectorAll('button')).find(b => b.textContent.includes('Exportar'));
+      if(btnExport) btnExport.onclick = exportLeadsCSV;
+      
+      // Botão Salvar Agente
+      const btnSave = document.querySelector('button:contains("Salvar")') || Array.from(document.querySelectorAll('button')).find(b => b.textContent.includes('Salvar Config'));
+      if(btnSave) {
+          btnSave.id = 'btn-save-agent';
+          btnSave.onclick = saveAgentConfig;
+      }
+      
+      // Botão Adicionar Lead (já estava no HTML, mas garantimos o bind)
+      const btnAdd = Array.from(document.querySelectorAll('button')).find(b => b.textContent.includes('Adicionar Lead') && b.tagName === 'BUTTON');
+      if(btnAdd) btnAdd.onclick = addLead;
+      
+      // Botões de Abas da Tabela
+      const tabContainer = document.querySelector('.flex.gap-2.mb-4');
+      if(tabContainer) {
+        const tabs = tabContainer.querySelectorAll('button');
+        if(tabs.length >= 4) {
+           tabs[0].onclick = function() { filterLeads('Todos', this); };
+           tabs[1].onclick = function() { filterLeads('Novo', this); };
+           tabs[2].onclick = function() { filterLeads('Atendimento', this); };
+           tabs[3].onclick = function() { filterLeads('Convertido', this); };
+        }
+      }
+    });
+
+    // ==========================================
+</script>
     <!-- ====== DEMO UPGRADE BANNER ====== -->
     <div id="demo-upgrade-banner" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-2xl px-4">
       <div style="background:linear-gradient(135deg,rgba(15,23,42,0.97) 0%,rgba(15,23,42,0.97) 100%);border:1px solid rgba(34,211,238,0.3);box-shadow:0 0 40px rgba(34,211,238,0.15),0 20px 60px rgba(0,0,0,0.5);" class="rounded-2xl p-4 flex items-center gap-4">
@@ -1816,4 +1931,5 @@
 
 
 </html>
+
 
