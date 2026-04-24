@@ -160,10 +160,15 @@
 
     /* Scroll reveal */
     .reveal-item {
-      opacity: 0;
-      transform: translateY(40px);
+      opacity: 1; /* Fallback de segurança */
+      transform: translateY(0);
       transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1),
                   transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .js-active .reveal-item:not(.revealed) {
+      opacity: 0;
+      transform: translateY(40px);
     }
 
     .reveal-item.revealed {
@@ -296,7 +301,7 @@
       <div class="max-w-7xl mx-auto px-6 lg:px-8 h-[72px] flex items-center justify-between">
         <!-- Logo -->
         <a href="/" class="flex items-center gap-2" id="logo" aria-label="Nexo AI - Página inicial">
-          <img src="assets/images/WhatsApp Image 2026-04-17 at 14.39.30 (2).jpeg" alt="Nexo AI" class="h-12 w-auto object-contain rounded-lg" style="filter: drop-shadow(0 0 10px rgba(34,211,238,0.4)) drop-shadow(0 0 20px rgba(168,85,247,0.3));">
+          <img src="logo.png" alt="Nexo AI" class="h-12 w-auto object-contain rounded-lg" style="filter: drop-shadow(0 0 10px rgba(34,211,238,0.4)) drop-shadow(0 0 20px rgba(168,85,247,0.3));">
         </a>
 
         <!-- Desktop Nav -->
@@ -377,6 +382,52 @@
             <strong class="text-emerald-400">Em tempo real.</strong>
           </p>
 
+          <!-- VSL Video Section -->
+          <div class="relative w-full max-w-4xl mx-auto mb-12 animate-slide-up-delay-2 group">
+            <!-- Glow background -->
+            <div class="absolute -inset-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-emerald-500 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-700"></div>
+            
+            <div class="relative rounded-2xl bg-slate-900 border border-slate-700/50 shadow-2xl overflow-hidden aspect-video">
+              <!-- Fake Overlay for VSL Play behavior (increases conversion) -->
+              <div class="absolute inset-0 flex items-center justify-center bg-slate-900 z-20 cursor-pointer" id="vsl-overlay" onclick="playVSL()">
+                 <!-- Capa do Vídeo de Alta Persuasão (Otimizada WEBP) -->
+                 <img src="capa_vsl_nexo.webp?v=2" class="absolute inset-0 w-full h-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105" alt="Nexo AI: O Comando Total - Dashboard de Lucro" onerror="this.src='https://img.youtube.com/vi/NSS3ZICbrQk/maxresdefault.jpg'">
+                 
+                 <!-- Play Button -->
+                 <div class="relative z-10 w-24 h-24 rounded-full bg-black/40 flex items-center justify-center backdrop-blur-md border border-white/10 group-hover:bg-black/60 transition-all duration-300">
+                   <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-cyan-500 to-purple-600 flex items-center justify-center shadow-[0_0_30px_rgba(34,211,238,0.4)] group-hover:shadow-[0_0_50px_rgba(34,211,238,0.7)] group-hover:scale-110 transition-all">
+                     <i data-lucide="play" class="w-8 h-8 text-white ml-1 fill-white"></i>
+                   </div>
+                 </div>
+                 
+                 <!-- Top Badge -->
+                 <div class="absolute top-4 left-4 bg-black/60 backdrop-blur-md px-4 py-1.5 rounded-lg text-xs font-bold text-white border border-white/10 flex items-center gap-2 shadow-[0_0_15px_rgba(0,0,0,0.5)]">
+                   <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                   COMO FUNCIONA A NEXO AI
+                 </div>
+              </div>
+              
+              <!-- Container for dynamic iframe injection -->
+              <div id="vsl-video-container" class="w-full h-full object-cover z-10 relative bg-black"></div>
+            </div>
+            
+            <!-- Sound Hint -->
+            <p class="text-sm text-slate-400 mt-4 flex items-center justify-center gap-2 font-medium">
+              <i data-lucide="volume-2" class="w-4 h-4 text-cyan-400 animate-pulse"></i>
+              Ligue o som. Veja como estancar a perda de vendas em 3 minutos.
+            </p>
+          </div>
+
+          <script>
+            function playVSL() {
+              document.getElementById('vsl-overlay').style.display = 'none';
+              const container = document.getElementById('vsl-video-container');
+              container.innerHTML = `
+                <iframe class="w-full h-full absolute inset-0 pointer-events-auto" src="https://www.youtube-nocookie.com/embed/NSS3ZICbrQk?autoplay=1&controls=1&rel=0&modestbranding=1" title="Nexo AI - VSL" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+              `;
+            }
+          </script>
+
           <!-- CTA Principal -->
             <div class="flex flex-col items-center gap-4 animate-slide-up-delay-2">
               <a href="#licenca" class="cta-glow animate-pulse-cta px-10 py-5 rounded-2xl text-lg sm:text-xl font-black text-white tracking-tight inline-flex items-center gap-3" id="btn-hero-cta">
@@ -419,6 +470,54 @@
       </div>
     </section>
 
+    <!-- ====== MURAL DE RESULTADOS (Provas Viscerais) ====== -->
+    <section id="provas" class="relative py-16 bg-slate-950 border-t border-slate-800/50 z-20">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="text-center mb-12 reveal-item">
+          <h3 class="text-xl sm:text-2xl font-bold text-slate-300">
+            Enquanto você hesita, empresas reais estão <span class="text-gradient-emerald">escalando o lucro</span>:
+          </h3>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <!-- Case 1 -->
+          <div class="glass rounded-2xl p-6 border-l-4 border-l-emerald-500 reveal-item">
+            <div class="flex items-center gap-4 mb-4">
+              <img src="https://i.pravatar.cc/150?img=11" alt="Diretor Odonto Premium" class="w-12 h-12 rounded-full border-2 border-emerald-500/50 object-cover shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+              <div>
+                <p class="text-white font-bold text-sm">Dr. Marcelo S.</p>
+                <p class="text-emerald-400 font-black text-xs uppercase tracking-wide">Odonto Premium</p>
+              </div>
+            </div>
+            <p class="text-slate-300 text-sm italic font-medium leading-relaxed">"Tínhamos 400 leads parados no WhatsApp. A Nexo reativou a base sozinha em 2 dias e fechamos R$ 42.000 em implantes na mesma semana. O sistema se pagou em 4 horas."</p>
+          </div>
+
+          <!-- Case 2 -->
+          <div class="glass rounded-2xl p-6 border-l-4 border-l-blue-500 reveal-item reveal-delay-1">
+            <div class="flex items-center gap-4 mb-4">
+              <img src="https://i.pravatar.cc/150?img=68" alt="Sócio Prime Imóveis" class="w-12 h-12 rounded-full border-2 border-blue-500/50 object-cover shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+              <div>
+                <p class="text-white font-bold text-sm">Ricardo Gomes</p>
+                <p class="text-blue-400 font-black text-xs uppercase tracking-wide">Prime Imóveis</p>
+              </div>
+            </div>
+            <p class="text-slate-300 text-sm italic font-medium leading-relaxed">"Meu custo de lead no Meta Ads estava em R$ 80. O painel da IA descobriu que o gargalo era o tempo de resposta dos corretores. Agora o bot qualifica e agenda em 30 segundos."</p>
+          </div>
+
+          <!-- Case 3 -->
+          <div class="glass rounded-2xl p-6 border-l-4 border-l-cyan-500 reveal-item reveal-delay-2">
+            <div class="flex items-center gap-4 mb-4">
+              <img src="https://i.pravatar.cc/150?img=47" alt="Diretora Escala" class="w-12 h-12 rounded-full border-2 border-cyan-500/50 object-cover shadow-[0_0_15px_rgba(6,182,212,0.2)]">
+              <div>
+                <p class="text-white font-bold text-sm">Carla Diniz</p>
+                <p class="text-cyan-400 font-black text-xs uppercase tracking-wide">Escala Lançamentos</p>
+              </div>
+            </div>
+            <p class="text-slate-300 text-sm italic font-medium leading-relaxed">"A automação de follow-up salvou 15% das vendas que os closers já davam como perdidas no último lançamento. O dashboard de lucro virou a tela principal do escritório."</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- ====== SOCIAL PROOF / AGITAÇÃO (A Faca na Ferida) ====== -->
     <section id="dor" class="relative py-24 lg:py-32">
@@ -1419,8 +1518,15 @@
 
   <!-- ====== SCRIPTS ====== -->
   <script>
+    // Ativa animações via JS (Fallback de segurança)
+    document.body.classList.add('js-active');
+
     // Initialize Lucide icons
-    lucide.createIcons();
+    try {
+      lucide.createIcons();
+    } catch (e) {
+      console.error('Erro ao carregar ícones:', e);
+    }
 
     // ---- Scroll Reveal ----
     function initScrollReveal() {

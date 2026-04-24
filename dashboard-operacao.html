@@ -1186,12 +1186,6 @@
         <p class="text-xs text-slate-600">Nexo AI — Licença Operação • Usuários: 2 de 3 ativos</p>
       </footer>
 
-    </main>
-  </div>
-
-  
-
-      </div>
 
       <!-- ========= VIEW: LEADS ========= -->
       <div id="view-leads" class="view-section hidden">
@@ -1549,7 +1543,7 @@
          </div>
          </form>
       </div>
-</main>
+    </main>
   </div>
 
   <!-- Chart.js Script -->
@@ -1706,40 +1700,73 @@
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxcXRqcnVucmltYWJpdG1lcnNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NjYwMjgsImV4cCI6MjA5MjA0MjAyOH0.CEJRX8rYb_5S5pN_M2KemyBRxdSPd9jf8Y-Xm3vlTDc";
 
     // ─── CORE API ──────────────────────────────────────────────
+    function _findSbSession() {
+      for(let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if(!key?.startsWith('sb-')) continue;
+        try {
+          const raw = JSON.parse(localStorage.getItem(key));
+          const token = raw?.access_token || raw?.currentSession?.access_token || raw?.session?.access_token;
+          if(token) return { key, raw, token };
+        } catch(_) {}
+      }
+      return null;
+    }
+
     function getAuthToken() {
+      const found = _findSbSession();
+      if(found) return `Bearer ${found.token}`;
+      console.warn('[NexoAuth] No JWT found — using anon key');
+      return `Bearer ${SUPABASE_KEY}`;
+    }
+
+    async function refreshSession() {
+      const found = _findSbSession();
+      const refreshToken = found?.raw?.refresh_token
+        || found?.raw?.currentSession?.refresh_token
+        || found?.raw?.session?.refresh_token;
+      if(!refreshToken) { window.location.replace('login.html'); return false; }
+
       try {
-        // Scan ALL localStorage keys — find any Supabase session regardless of key name
-        for(let i = 0; i < localStorage.length; i++) {
-          const key = localStorage.key(i);
-          if(!key || !key.startsWith('sb-')) continue;
-          try {
-            const raw = JSON.parse(localStorage.getItem(key));
-            // Check all known Supabase session formats
-            const token = raw?.access_token
-              || raw?.currentSession?.access_token
-              || raw?.session?.access_token
-              || raw?.data?.session?.access_token;
-            if(token) {
-              console.log(`[NexoAuth] Token found in key: ${key}`);
-              return `Bearer ${token}`;
-            }
-          } catch(_) {}
-        }
-        console.warn('[NexoAuth] No JWT found in localStorage — using anon key (RLS may block)');
-        return `Bearer ${SUPABASE_KEY}`;
-      } catch(e) { return `Bearer ${SUPABASE_KEY}`; }
+        console.log('[NexoAuth] Refreshing expired JWT...');
+        const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
+          method: 'POST',
+          headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refresh_token: refreshToken })
+        });
+        if(!res.ok) { window.location.replace('login.html'); return false; }
+        const data = await res.json();
+        // Save the new session back to the same localStorage key
+        const newSession = { ...found.raw, access_token: data.access_token, refresh_token: data.refresh_token, expires_at: data.expires_at };
+        localStorage.setItem(found.key, JSON.stringify(newSession));
+        console.log('[NexoAuth] JWT refreshed successfully.');
+        return true;
+      } catch(e) {
+        console.error('[NexoAuth] Refresh failed:', e);
+        window.location.replace('login.html');
+        return false;
+      }
     }
 
     async function sbFetch(table, params = "") {
-      const authHeader = getAuthToken();
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${params}`, {
+      const doFetch = () => fetch(`${SUPABASE_URL}/rest/v1/${table}?${params}`, {
         headers: {
           "apikey": SUPABASE_KEY,
-          "Authorization": authHeader,
+          "Authorization": getAuthToken(),
           "Content-Type": "application/json"
         }
       });
-      if (!res.ok) {
+
+      let res = await doFetch();
+
+      // Auto-refresh on JWT expired (401)
+      if(res.status === 401) {
+        const refreshed = await refreshSession();
+        if(!refreshed) return []; // redirect already triggered
+        res = await doFetch(); // retry with new token
+      }
+
+      if(!res.ok) {
         let errBody = '';
         try { errBody = JSON.stringify(await res.json()); } catch(_) {}
         const msg = `Supabase ${table} error ${res.status}: ${errBody}`;
@@ -1748,7 +1775,6 @@
       }
       return res.json();
     }
-
 
     async function sbInsert(table, body) {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
@@ -1764,6 +1790,7 @@
       if (!res.ok) throw new Error(`Supabase error na inserção: ${res.status}`);
       return res.json();
     }
+
 
     async function sbUpdate(table, id, body) {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, {
