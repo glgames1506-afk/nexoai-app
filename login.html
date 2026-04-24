@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -125,5 +125,28 @@
 
   <script src="auth.js"></script>
   <script>lucide.createIcons();</script>
+
+  <script>
+    // Auto-fill para acesso demo
+    window.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('demo') === 'true') {
+        const emailEl = document.getElementById('email');
+        const passEl  = document.getElementById('password');
+        if (emailEl) emailEl.value = 'demo@nexoai.app.br';
+        if (passEl)  passEl.value  = 'NexoDemo2026';
+        // Badge visual de modo demo
+        const card = document.querySelector('.glass');
+        if (card) {
+          const badge = document.createElement('div');
+          badge.className = 'mb-6 py-2.5 px-4 rounded-xl text-xs font-bold text-center';
+          badge.style.cssText = 'background:rgba(34,211,238,0.1);border:1px solid rgba(34,211,238,0.2);color:#22d3ee;';
+          badge.innerHTML = '⚡ Modo Demo ativo — clique em ENTRAR para acessar o painel';
+          card.querySelector('#auth-form').prepend(badge);
+        }
+      }
+    });
+  </script>
 </body>
 </html>
+
