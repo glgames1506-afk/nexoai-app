@@ -1,11 +1,11 @@
-/**
+﻿/**
  * Nexo AI — Auth Engine (Supabase Integration)
  * Responsável por gerenciar o login, sessão e redirecionamento.
  */
 
 // 1. Configuração do Supabase (Substitua pelas suas chaves se já tiver)
-const SUPABASE_URL = 'https://SUA_URL_AQUI.supabase.co';
-const SUPABASE_ANON_KEY = 'SUA_CHAVE_ANON_AQUI';
+const SUPABASE_URL = 'https://tqqtjrunrimabitmersr.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxcXRqcnVucmltYWJpdG1lcnNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NjYwMjgsImV4cCI6MjA5MjA0MjAyOH0.CEJRX8rYb_5S5pN_M2KemyBRxdSPd9jf8Y-Xm3vlTDc';
 
 let supabase = null;
 
@@ -133,3 +133,4 @@ function showFeedback(message, type) {
     feedback.className = `mt-6 text-sm font-bold ${type === 'success' ? 'text-emerald-400' : 'text-red-400'}`;
     feedback.classList.remove('hidden');
 }
+
