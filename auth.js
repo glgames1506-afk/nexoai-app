@@ -31,7 +31,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
         if (error) throw error;
         showFeedback('Acesso autorizado! Redirecionando...', 'success');
-        setTimeout(() => { window.location.href = 'dashboard-comando.html'; }, 1200);
+        setTimeout(() => { window.location.href = 'dashboard-operacao.html'; }, 1200);
       } catch(err) {
         showFeedback('Erro: ' + err.message, 'error');
         btnLogin.disabled    = false;
@@ -59,7 +59,7 @@ async function checkUser() {
     window.location.href = 'login.html'; return;
   }
   if (session && path.includes('login.html')) {
-    window.location.href = 'dashboard-comando.html'; return;
+    window.location.href = 'dashboard-operacao.html'; return;
   }
   if (session) {
     updateDashboardUI(session.user);
@@ -98,4 +98,5 @@ function showFeedback(msg, type) {
 
 // Executa verificação
 if (supabase) checkUser();
+
 
