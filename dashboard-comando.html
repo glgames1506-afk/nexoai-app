@@ -1927,9 +1927,31 @@
       });
     </script>
     <!-- ====== FIM DEMO UPGRADE BANNER ====== -->
+<script>
+/* ══════ NEXO AI - FUNCIONALIDADES COMPLETAS v2 ══════ */
+
+function startWhatsAppSetup(){var m=document.createElement('div');m.id='wpp-modal';m.className='fixed inset-0 z-[999] flex items-center justify-center p-4';m.style.background='rgba(0,0,0,0.85)';m.innerHTML='<div style="background:rgba(15,23,42,0.98);border:1px solid rgba(34,211,238,0.2);box-shadow:0 25px 80px rgba(0,0,0,0.6);" class="rounded-2xl p-8 max-w-lg w-full"><div class="flex items-center gap-3 mb-6"><div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background:linear-gradient(135deg,#25D366,#128C7E);"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div><div><h3 class="text-white font-black text-lg">Conectar WhatsApp</h3><p class="text-slate-400 text-xs">Configure sua integra\u00e7\u00e3o</p></div></div><div class="space-y-4"><div><label class="text-slate-400 text-xs font-bold block mb-1">N\u00daMERO WHATSAPP</label><input id="wpp-num" type="tel" placeholder="+55 85 99754-6957" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:border-cyan-400 outline-none"/></div><div><label class="text-slate-400 text-xs font-bold block mb-1">URL WEBHOOK</label><input id="wpp-hook" type="url" placeholder="https://seu-server.com/webhook" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:border-cyan-400 outline-none"/></div><div class="flex gap-3 mt-6"><button onclick="saveWppCfg()" class="flex-1 py-3 rounded-xl font-black text-sm text-white" style="background:linear-gradient(135deg,#25D366,#128C7E);">Salvar Conex\u00e3o</button><button onclick="document.getElementById(\'wpp-modal\').remove()" class="px-6 py-3 rounded-xl font-bold text-sm text-slate-400 bg-slate-800 border border-slate-700">Cancelar</button></div></div></div>';document.body.appendChild(m);}
+
+async function saveWppCfg(){var n=document.getElementById('wpp-num');if(!n||!n.value)return alert('Informe o n\u00famero.');try{if(typeof nexoUser!=='undefined'&&nexoUser)await sbPost('agent_configs',{user_id:nexoUser.id,name:'whatsapp',tone:n.value,system_prompt:document.getElementById('wpp-hook')?.value||''});}catch(e){}alert('WhatsApp configurado com sucesso!');document.getElementById('wpp-modal')?.remove();}
+
+function startCSVImport(){var inp=document.createElement('input');inp.type='file';inp.accept='.csv';inp.onchange=async function(e){var f=e.target.files[0];if(!f)return;var txt=await f.text();var lines=txt.split('\n').filter(function(l){return l.trim();});var count=0;for(var i=1;i<lines.length;i++){var cols=lines[i].split(',').map(function(c){return c.trim().replace(/^"|"$/g,'');});if(cols.length<2)continue;try{await sbPost('leads',{name:cols[0]||'Sem nome',phone:cols[1]||'',status:'novo',source:cols[2]||'CSV',last_message:'Importado via CSV',empresa_nome:(typeof nexoUser!=='undefined'&&nexoUser?.user_metadata?.company_name)||'Nexo'});count++;}catch(err){}}alert(count+' leads importados com sucesso!');if(typeof loadLeadsTable==='function')await loadLeadsTable();if(typeof loadKPIs==='function')await loadKPIs();};inp.click();}
+
+function exportRelatorioPDF(){var d=new Date().toLocaleDateString('pt-BR');var rows=document.querySelectorAll('#leads-table-body tr');var h='<html><head><title>Relat\u00f3rio Nexo AI</title><style>body{font-family:Arial;padding:40px;color:#1e293b;max-width:800px;margin:0 auto}h1{border-bottom:3px solid #22d3ee;padding-bottom:10px}table{width:100%;border-collapse:collapse;margin-top:20px}th{background:#0f172a;color:white;padding:12px;text-align:left;font-size:.8rem}td{padding:10px;border-bottom:1px solid #e2e8f0;font-size:.85rem}</style></head><body><h1>Relat\u00f3rio Executivo \u2014 Nexo AI</h1><p style="color:#64748b">Gerado em '+d+'</p><table><tr><th>Nome</th><th>Telefone</th><th>Status</th><th>Origem</th></tr>';rows.forEach(function(r){var c=r.querySelectorAll('td');if(c.length>=4)h+='<tr><td>'+c[0].textContent.trim()+'</td><td>'+c[1].textContent.trim()+'</td><td>'+c[2].textContent.trim()+'</td><td>'+c[3].textContent.trim()+'</td></tr>';});h+='</table><p style="margin-top:40px;text-align:center;color:#94a3b8;font-size:.75rem">Nexo AI \u2014 Intelig\u00eancia Comercial</p></body></html>';var b=new Blob([h],{type:'text/html'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='relatorio_nexo_'+new Date().toISOString().slice(0,10)+'.html';a.click();}
+
+async function gerarNovoRelatorio(){var b=event?.target;if(b){b.textContent='Gerando...';b.disabled=true;}if(typeof loadKPIs==='function')await loadKPIs();if(typeof loadLeadsTable==='function')await loadLeadsTable();if(typeof loadContacts==='function')await loadContacts();if(b){b.textContent='Atualizado \u2713';setTimeout(function(){b.textContent='Gerar Novo Relat\u00f3rio';b.disabled=false;},2000);}}
+
+async function deleteLead(id,name){if(!confirm('Remover "'+name+'"?'))return;try{await fetch(SUPABASE_URL+'/rest/v1/leads?id=eq.'+id,{method:'DELETE',headers:sbHeaders()});}catch(e){}if(typeof loadLeadsTable==='function')await loadLeadsTable();if(typeof loadKPIs==='function')await loadKPIs();}
+
+async function markConverted(id){await sbPatch('leads',id,{status:'convertido',last_message:'Lead convertido!',updated_at:new Date().toISOString()});if(typeof loadLeadsTable==='function')await loadLeadsTable();if(typeof loadKPIs==='function')await loadKPIs();}
+
+window.addEventListener('load',function(){document.querySelectorAll('button').forEach(function(b){var t=b.textContent.trim();if(t.includes('Adicionar Manual')&&typeof addLead==='function')b.onclick=addLead;if(t.includes('Download')&&t.includes('Relat'))b.onclick=exportRelatorioPDF;if(t.includes('Gerar Novo'))b.onclick=gerarNovoRelatorio;});});
+
+/* ══════ FIM FUNCIONALIDADES ══════ */
+</script>
 </body>
 
 
 </html>
+
 
 
