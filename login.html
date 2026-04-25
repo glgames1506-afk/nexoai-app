@@ -147,7 +147,7 @@
     // ── Se já logado, redireciona ──
     _supabase.auth.getSession().then(function(res) {
       if (res.data && res.data.session) {
-        window.location.href = 'dashboard-comando.html';
+        window.location.href = 'dashboard-operacao.html';
       }
     });
 
@@ -171,7 +171,7 @@
         btn.textContent = 'ENTRAR NO DASHBOARD';
       } else {
         showFb('Acesso autorizado! Redirecionando...', 'success');
-        setTimeout(function() { window.location.href = 'dashboard-comando.html'; }, 1000);
+        setTimeout(function() { window.location.href = 'dashboard-operacao.html'; }, 1000);
       }
     });
 
@@ -184,4 +184,5 @@
   </script>
 </body>
 </html>
+
 
