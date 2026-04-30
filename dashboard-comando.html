@@ -305,35 +305,68 @@
           </button>
         </div>
 
-        <form id="agent-config-form" onsubmit="saveAgentConfig(event)">
-          <!-- Agent Name -->
-          <div class="mb-5">
-            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nome do Assistente</label>
-            <input type="text" id="agent-name" value="Assistente Nexo" placeholder="Ex: Sofia, Atendimento Premium..." class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors" />
+                <form id="agent-config-form" onsubmit="saveAgentConfig(event)">
+          <!-- Agent Name & Tone in one row -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nome do Assistente</label>
+              <input type="text" id="agent-name" value="Assistente Nexo" placeholder="Ex: Sofia..." class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tom de Voz</label>
+              <select id="agent-tone" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 cursor-pointer appearance-none">
+                <option value="formal">👔 Formal - Profissional e polido</option>
+                <option value="amigavel" selected>🤝 Amigável - Próximo e acolhedor</option>
+                <option value="persuasivo">🎯 Persuasivo - Focado em conversão</option>
+                <option value="direto">⚡ Direto - Objetividade máxima</option>
+              </select>
+            </div>
           </div>
 
-          <!-- Tone of Voice -->
-          <div class="mb-5">
-            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tom de Voz da IA</label>
-            <select id="agent-tone" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 cursor-pointer appearance-none">
-              <option value="formal">🎩 Formal — Profissional e polido</option>
-              <option value="amigavel" selected>😊 Amigável — Próximo e acolhedor</option>
-              <option value="persuasivo">🎯 Persuasivo — Focado em conversão</option>
-              <option value="direto">⚡ Direto — Objetividade máxima</option>
-            </select>
+          <!-- Nome da Empresa & Nicho -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nome da Empresa</label>
+              <input type="text" id="agent-company" placeholder="Ex: Imobiliária Alfa..." class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nicho de Atuação</label>
+              <input type="text" id="agent-niche" placeholder="Ex: Venda de Imóveis..." class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Objetivo Principal</label>
+              <select id="agent-goal" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 cursor-pointer appearance-none">
+                <option value="agendamento">📅 Agendar Visita/Reunião</option>
+                <option value="venda" selected>💰 Realizar Venda Direta</option>
+                <option value="qualificacao">🎯 Qualificar Lead</option>
+                <option value="suporte">🎧 Suporte e Dúvidas</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Link de Ação (CTA)</label>
+              <input type="text" id="agent-link" placeholder="Ex: link do checkout ou agenda..." class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors" />
+            </div>
           </div>
 
           <!-- Base Instructions -->
+          <div class="mb-4">
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Base de Conhecimento da Empresa</label>
+            <textarea id="agent-instructions" rows="4" placeholder="Descreva os produtos, preços, endereço, e regras de negócio essenciais para a IA aprender e usar nas respostas..." class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors resize-none"></textarea>
+          </div>
+
+          <!-- Transferência Humana -->
           <div class="mb-6">
-            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Instruções Base da Empresa</label>
-            <textarea id="agent-instructions" rows="5" placeholder="Descreva o endereço, preços principais, horário de funcionamento e regras de negócio para a IA aprender..." class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors resize-none"></textarea>
-            <p class="text-[10px] text-slate-600 mt-1.5">Quanto mais detalhado, melhor a IA atende. Mínimo 50 caracteres recomendado.</p>
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Gatilho de Transferência Humana</label>
+            <input type="text" id="agent-transfer" placeholder="Ex: Quando pedir desconto > 10% ou falar com humano" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors" />
           </div>
 
           <!-- Buttons -->
           <div class="flex gap-3">
             <button type="button" onclick="closeAgentConfig()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm py-3 rounded-xl transition-colors">Cancelar</button>
-            <button type="submit" class="flex-1 bg-violet-500 hover:bg-violet-400 text-white font-black text-sm py-3 rounded-xl transition-all hover:scale-[1.02] shadow-lg shadow-violet-500/20">Salvar Configurações</button>
+            <button type="submit" id="btn-save-agent" class="flex-1 bg-violet-500 hover:bg-violet-400 text-white font-black text-sm py-3 rounded-xl transition-all hover:scale-[1.02] shadow-lg shadow-violet-500/20">Salvar Inteligência</button>
           </div>
         </form>
       </div>
@@ -1825,31 +1858,40 @@
     }
 
     // 3. Salvar Configurações do Agente IA
-    async function saveAgentConfig() {
+        async function saveAgentConfig(e) {
+      if(e) e.preventDefault();
       if(!nexoUser) return alert("Sessão inválida.");
       
-      // Busca os valores do formulário (verifique os IDs no HTML)
-      const agentName = document.getElementById('agent-name')?.value || 'Nexo Bot';
-      const agentTone = document.getElementById('agent-tone')?.value || 'Profissional';
-      const agentPrompt = document.getElementById('agent-prompt')?.value || '';
+      const name = document.getElementById('agent-name')?.value.trim() || '';
+      const tone = document.getElementById('agent-tone')?.value || '';
+      const company_name = document.getElementById('agent-company')?.value.trim() || '';
+      const niche = document.getElementById('agent-niche')?.value.trim() || '';
+      const goal = document.getElementById('agent-goal')?.value || '';
+      const action_link = document.getElementById('agent-link')?.value.trim() || '';
+      const instructions = document.getElementById('agent-instructions')?.value.trim() || '';
+      const human_transfer_trigger = document.getElementById('agent-transfer')?.value.trim() || '';
+      
+      if(!name) { alert('Preencha o nome do assistente.'); return; }
       
       const btn = document.getElementById('btn-save-agent');
       if(btn) { btn.textContent = 'Salvando...'; btn.disabled = true; }
       
-      // Salva no banco (Upsert)
       try {
-        await sbPost('agent_configs', {
-           user_id: nexoUser.id,
-           name: agentName,
-           tone: agentTone,
-           system_prompt: agentPrompt
-        });
+        const payload = {
+          user_id: nexoUser.id,
+          name, tone, company_name, niche, goal, action_link, instructions, human_transfer_trigger
+        };
+        
+        // Em dashboard-comando ele usa sbPost() para agent_configs (que faz upsert no backend)
+        await sbPost('agent_configs', payload);
         alert("Configurações da IA salvas com sucesso!");
-      } catch(e) {
+        closeAgentConfig();
+      } catch(err) {
+        console.error('Erro IA:', err);
         alert("Configurações salvas localmente (Modo Demo).");
       }
       
-      if(btn) { btn.textContent = 'Salvar Configurações'; btn.disabled = false; }
+      if(btn) { btn.textContent = 'Salvar Inteligência'; btn.disabled = false; }
     }
 
     // Vincular botões após o carregamento

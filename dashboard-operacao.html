@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nexo AI — Dashboard Operação</title>
+  <title>Nexo AI  Dashboard Operao</title>
   <link rel="icon" type="image/jpeg" href="assets/images/WhatsApp Image 2026-04-17 at 14.39.30 (2).jpeg">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -128,7 +128,7 @@
     }
     .sidebar-mobile-backdrop.active { display: block; }
 
-    /* ─── SIDEBAR: Drawer Overlay (todos os tamanhos de tela) ─── */
+    /* --- SIDEBAR: Drawer Overlay (todos os tamanhos de tela) --- */
     .nexo-sidebar {
       transform: translateX(-100%);
       transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
@@ -146,7 +146,7 @@
       transition: none;
     }
 
-    /* ─── MODAL ─── */
+    /* --- MODAL --- */
     .nexo-modal-overlay {
       position: fixed; inset: 0; z-index: 100;
       background: rgba(0,0,0,0.7);
@@ -172,7 +172,7 @@
       box-shadow: 0 25px 80px rgba(0,0,0,0.5);
     }
 
-    /* ─── TOAST ─── */
+    /* --- TOAST --- */
     .nexo-toast-container {
       position: fixed; top: 1.5rem; right: 1.5rem; z-index: 200;
       display: flex; flex-direction: column; gap: 0.75rem;
@@ -203,14 +203,14 @@
       to { transform: translateX(120%); opacity: 0; }
     }
 
-    /* ─── QR PULSE ─── */
+    /* --- QR PULSE --- */
     @keyframes qrPulse {
       0%, 100% { box-shadow: 0 0 0 0 rgba(52,211,153,0.3); }
       50% { box-shadow: 0 0 0 15px rgba(52,211,153,0); }
     }
     .qr-pulse { animation: qrPulse 2s infinite; }
 
-    /* ─── SPINNER ─── */
+    /* --- SPINNER --- */
     @keyframes spin { to { transform: rotate(360deg); } }
     .nexo-spinner {
       width: 24px; height: 24px;
@@ -239,7 +239,7 @@
             </div>
             <div>
               <h3 class="text-lg font-bold text-white">Conectar WhatsApp</h3>
-              <p class="text-[11px] text-slate-500" id="waha-session-id">Sessão: —</p>
+              <p class="text-[11px] text-slate-500" id="waha-session-id">Sesso: </p>
             </div>
           </div>
           <button onclick="closeWahaModal()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
@@ -252,7 +252,7 @@
           <!-- State: Loading -->
           <div id="waha-state-loading" class="py-8">
             <div class="nexo-spinner mx-auto mb-4"></div>
-            <p class="text-sm text-slate-400">Iniciando sessão WAHA...</p>
+            <p class="text-sm text-slate-400">Iniciando sesso WAHA...</p>
             <p class="text-[10px] text-slate-600 mt-1">Criando canal seguro</p>
           </div>
 
@@ -310,7 +310,7 @@
               </svg>
             </div>
             <p class="text-sm font-bold text-white mb-1">Escaneie para conectar</p>
-            <p class="text-xs text-slate-400 mb-4">Abra o WhatsApp → Menu → Aparelhos conectados → Conectar</p>
+            <p class="text-xs text-slate-400 mb-4">Abra o WhatsApp ? Menu ? Aparelhos conectados ? Conectar</p>
             <div class="flex items-center justify-center gap-2">
               <div class="nexo-spinner" style="width:16px;height:16px;border-width:2px;"></div>
               <span class="text-[11px] text-slate-500" id="waha-poll-status">Aguardando leitura do QR Code...</span>
@@ -322,8 +322,8 @@
             <div class="w-20 h-20 rounded-full bg-emerald-400/20 border-2 border-emerald-400 flex items-center justify-center mx-auto mb-5">
               <i data-lucide="check" class="w-10 h-10 text-emerald-400"></i>
             </div>
-            <h4 class="text-xl font-black text-white mb-2">WhatsApp Conectado! 🎉</h4>
-            <p class="text-sm text-slate-400">Seu agente IA já está ativo e pronto para atender.</p>
+            <h4 class="text-xl font-black text-white mb-2">WhatsApp Conectado! ??</h4>
+            <p class="text-sm text-slate-400">Seu agente IA j est ativo e pronto para atender.</p>
           </div>
         </div>
 
@@ -366,27 +366,39 @@
             <div>
               <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tom de Voz</label>
               <select id="agent-tone" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 cursor-pointer appearance-none">
-                <option value="formal">🎩 Formal — Profissional e polido</option>
-                <option value="amigavel" selected>😊 Amigável — Próximo e acolhedor</option>
-                <option value="persuasivo">🎯 Persuasivo — Focado em conversão</option>
-                <option value="direto">⚡ Direto — Objetividade máxima</option>
+                <option value="formal">?? Formal  Profissional e polido</option>
+                <option value="amigavel" selected>?? Amigvel  Prximo e acolhedor</option>
+                <option value="persuasivo">?? Persuasivo  Focado em converso</option>
+                <option value="direto">? Direto  Objetividade mxima</option>
               </select>
             </div>
           </div>
 
-          <!-- Objetivo da IA & Link CTA -->
+          <!-- Nome da Empresa & Nicho -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nome da Empresa</label>
+              <input type="text" id="agent-company" placeholder="Ex: Imobiliária Alfa..." class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nicho de Atuação</label>
+              <input type="text" id="agent-niche" placeholder="Ex: Venda de Imóveis..." class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors" />
+            </div>
+          </div>
+
+
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Objetivo Principal</label>
               <select id="agent-goal" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 cursor-pointer appearance-none">
-                <option value="agendamento">📅 Agendar Visita/Reunião</option>
-                <option value="venda" selected>💰 Realizar Venda Direta</option>
-                <option value="qualificacao">📋 Qualificar Lead</option>
-                <option value="suporte">🛠️ Suporte e Dúvidas</option>
+                <option value="agendamento">?? Agendar Visita/Reunio</option>
+                <option value="venda" selected>?? Realizar Venda Direta</option>
+                <option value="qualificacao">?? Qualificar Lead</option>
+                <option value="suporte">??? Suporte e Dvidas</option>
               </select>
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Link de Ação (CTA)</label>
+              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Link de Ao (CTA)</label>
               <input type="text" id="agent-link" placeholder="Ex: link do checkout ou agenda..." class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors" />
             </div>
           </div>
@@ -394,19 +406,19 @@
           <!-- Base Instructions -->
           <div class="mb-4">
             <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Base de Conhecimento da Empresa</label>
-            <textarea id="agent-instructions" rows="4" placeholder="Descreva os produtos, preços, endereço, e regras de negócio essenciais para a IA aprender e usar nas respostas..." class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors resize-none"></textarea>
+            <textarea id="agent-instructions" rows="4" placeholder="Descreva os produtos, preos, endereo, e regras de negcio essenciais para a IA aprender e usar nas respostas..." class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors resize-none"></textarea>
           </div>
 
-          <!-- Transferência Humana -->
+          <!-- Transferncia Humana -->
           <div class="mb-6">
-            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Gatilho de Transferência Humana</label>
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Gatilho de Transferncia Humana</label>
             <input type="text" id="agent-transfer" placeholder="Ex: Quando pedir desconto > 10% ou falar com humano" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors" />
           </div>
 
           <!-- Buttons -->
           <div class="flex gap-3">
             <button type="button" onclick="closeAgentConfig()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm py-3 rounded-xl transition-colors">Cancelar</button>
-            <button type="submit" id="btn-save-agent" class="flex-1 bg-violet-500 hover:bg-violet-400 text-white font-black text-sm py-3 rounded-xl transition-all hover:scale-[1.02] shadow-lg shadow-violet-500/20">Salvar Inteligência</button>
+            <button type="submit" id="btn-save-agent" class="flex-1 bg-violet-500 hover:bg-violet-400 text-white font-black text-sm py-3 rounded-xl transition-all hover:scale-[1.02] shadow-lg shadow-violet-500/20">Salvar Inteligncia</button>
           </div>
         </form>
       </div>
@@ -463,14 +475,14 @@
         <!-- CSV Preview (hidden by default) -->
         <div id="csv-preview-area" class="hidden">
           <div class="bg-slate-800/60 rounded-xl p-4 mb-4 max-h-32 overflow-y-auto">
-            <p class="text-xs font-bold text-slate-400 mb-2">Pré-visualização:</p>
+            <p class="text-xs font-bold text-slate-400 mb-2">Pr-visualizao:</p>
             <table class="w-full text-xs">
               <thead><tr class="text-slate-500"><th class="text-left pb-1">Nome</th><th class="text-left pb-1">Telefone</th></tr></thead>
               <tbody id="csv-preview-body" class="text-slate-300"></tbody>
             </table>
           </div>
           <button onclick="confirmCSVImport()" class="w-full bg-cyan-500 hover:bg-cyan-400 text-white font-black text-sm py-3 rounded-xl transition-all hover:scale-[1.02] shadow-lg shadow-cyan-500/20">
-            Confirmar Importação
+            Confirmar Importao
           </button>
         </div>
       </div>
@@ -510,12 +522,12 @@
           <div class="mb-4">
             <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">E-mail</label>
             <input type="email" id="profile-email" disabled class="w-full bg-slate-900/60 border border-slate-800 rounded-xl px-4 py-3 text-slate-500 text-sm cursor-not-allowed" />
-            <p class="text-[10px] text-slate-600 mt-1">O e-mail principal não pode ser alterado por segurança.</p>
+            <p class="text-[10px] text-slate-600 mt-1">O e-mail principal no pode ser alterado por segurana.</p>
           </div>
           <div class="grid grid-cols-2 gap-4 mb-6 border-t border-slate-800/50 pt-4 mt-2">
             <div>
               <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nova Senha</label>
-              <input type="password" id="profile-password" placeholder="Mín. 6 caracteres" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-cyan-400 transition-colors" />
+              <input type="password" id="profile-password" placeholder="Mn. 6 caracteres" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-cyan-400 transition-colors" />
             </div>
             <div>
               <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Confirmar Senha</label>
@@ -524,7 +536,7 @@
           </div>
           <div class="flex gap-3">
             <button type="button" onclick="closeProfileModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm py-3 rounded-xl transition-colors">Cancelar</button>
-            <button type="submit" class="flex-1 bg-cyan-500 hover:bg-cyan-400 text-white font-black text-sm py-3 rounded-xl transition-all hover:scale-[1.02] shadow-lg shadow-cyan-500/20">Salvar Alterações</button>
+            <button type="submit" class="flex-1 bg-cyan-500 hover:bg-cyan-400 text-white font-black text-sm py-3 rounded-xl transition-all hover:scale-[1.02] shadow-lg shadow-cyan-500/20">Salvar Alteraes</button>
           </div>
         </form>
       </div>
@@ -556,9 +568,9 @@
               <option value="Manual">Manual</option>
               <option value="Meta Ads">Meta Ads</option>
               <option value="Google Ads">Google Ads</option>
-              <option value="Orgânico">Orgânico</option>
+              <option value="Orgnico">Orgnico</option>
               <option value="Instagram">Instagram</option>
-              <option value="Indicação">Indicação</option>
+              <option value="Indicao">Indicao</option>
               <option value="WhatsApp">WhatsApp</option>
             </select>
           </div>
@@ -574,7 +586,7 @@
 
     <div id="notifications-dropdown" class="hidden fixed z-50 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl shadow-black/40 w-80" style="top:70px;right:100px;">
       <div class="p-4 border-b border-slate-800 flex items-center justify-between">
-        <h4 class="text-sm font-bold text-white">Notificações</h4>
+        <h4 class="text-sm font-bold text-white">Notificaes</h4>
         <button onclick="clearNotifications()" class="text-[10px] text-cyan-400 hover:text-cyan-300 font-bold transition-colors">Limpar tudo</button>
       </div>
       <div id="notifications-list" class="max-h-72 overflow-y-auto">
@@ -585,7 +597,7 @@
             </div>
             <div class="flex-1 min-w-0">
               <p class="text-xs font-bold text-white truncate">Conta criada com sucesso</p>
-              <p class="text-[10px] text-slate-500">Seu ecossistema está pronto para configurar.</p>
+              <p class="text-[10px] text-slate-500">Seu ecossistema est pronto para configurar.</p>
             </div>
             <span class="text-[9px] text-slate-600 flex-shrink-0">Agora</span>
           </div>
@@ -597,14 +609,14 @@
             </div>
             <div class="flex-1 min-w-0">
               <p class="text-xs font-bold text-white truncate">IA ativada no seu plano</p>
-              <p class="text-[10px] text-slate-500">Conecte o WhatsApp para começar.</p>
+              <p class="text-[10px] text-slate-500">Conecte o WhatsApp para comear.</p>
             </div>
             <span class="text-[9px] text-slate-600 flex-shrink-0">5 min</span>
           </div>
         </div>
       </div>
       <div class="p-3 text-center border-t border-slate-800">
-        <span class="text-[10px] text-slate-600">Nexo AI — Plano Operação</span>
+        <span class="text-[10px] text-slate-600">Nexo AI  Plano Operao</span>
       </div>
     </div>
 
@@ -624,7 +636,7 @@
         <img src="assets/images/WhatsApp Image 2026-04-17 at 14.39.30 (2).jpeg" alt="Nexo AI" class="w-10 h-10 rounded-xl object-cover flex-shrink-0" style="filter: drop-shadow(0 0 8px rgba(34,211,238,0.4));">
         <div>
           <div class="text-lg font-black text-white tracking-tight">Nexo AI</div>
-          <div class="text-[10px] font-semibold text-cyan-400 uppercase tracking-widest">Operação</div>
+          <div class="text-[10px] font-semibold text-cyan-400 uppercase tracking-widest">Operao</div>
         </div>
       </div>
 
@@ -632,7 +644,7 @@
       <nav class="flex flex-col gap-1 flex-1">
         <div class="sidebar-item active">
           <i data-lucide="layout-dashboard" class="w-5 h-5 flex-shrink-0"></i>
-          <span class="sidebar-label">Visão Geral</span>
+          <span class="sidebar-label">Viso Geral</span>
         </div>
         <div class="sidebar-item">
           <i data-lucide="users" class="w-5 h-5 flex-shrink-0"></i>
@@ -657,17 +669,17 @@
         </div>
         <div class="sidebar-item opacity-40 cursor-not-allowed">
           <i data-lucide="lock" class="w-4 h-4 flex-shrink-0"></i>
-          <span class="sidebar-label line-through">Reativação IA</span>
+          <span class="sidebar-label line-through">Reativao IA</span>
         </div>
         <div class="sidebar-item opacity-40 cursor-not-allowed">
           <i data-lucide="lock" class="w-4 h-4 flex-shrink-0"></i>
-          <span class="sidebar-label line-through">Relatórios</span>
+          <span class="sidebar-label line-through">Relatrios</span>
         </div>
 
         <div class="mt-auto">
           <div class="sidebar-item">
             <i data-lucide="settings" class="w-5 h-5 flex-shrink-0"></i>
-            <span class="sidebar-label">Configurações</span>
+            <span class="sidebar-label">Configuraes</span>
           </div>
           <div class="sidebar-item" onclick="nexoLogout()" style="cursor:pointer;">
             <i data-lucide="log-out" class="w-5 h-5 flex-shrink-0"></i>
@@ -684,13 +696,13 @@
       <header class="flex items-center justify-between mb-8 fade-in fade-in-1">
         <div>
           <h1 class="text-2xl font-black text-white" data-nexo-greeting>Carregando...</h1>
-          <p class="text-sm text-slate-500 mt-1"><span data-nexo-company>Nexo AI</span> — <span data-nexo-last-update>Atualizado agora</span></p>
+          <p class="text-sm text-slate-500 mt-1"><span data-nexo-company>Nexo AI</span>  <span data-nexo-last-update>Atualizado agora</span></p>
         </div>
         <div class="flex items-center gap-4">
           <!-- AI Indicator -->
           <div class="flex items-center gap-2 bg-cyan-400/10 border border-cyan-400/20 rounded-full px-4 py-2">
             <div class="w-2 h-2 rounded-full bg-cyan-400 ai-pulse"></div>
-            <span class="text-xs font-bold text-cyan-400">IA Ativa — 24/7</span>
+            <span class="text-xs font-bold text-cyan-400">IA Ativa  24/7</span>
           </div>
           <!-- Notifications -->
           <button onclick="toggleNotifications()" class="relative p-2 rounded-xl bg-slate-800/50 hover:bg-slate-700/50 transition-colors">
@@ -699,9 +711,9 @@
           </button>
           <!-- Avatar -->
           <div class="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity" onclick="openProfileModal()">
-            <div class="w-10 h-10 rounded-full ring-2 ring-cyan-400/30 bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center text-white text-sm font-black" data-nexo-avatar-initials>—</div>
+            <div class="w-10 h-10 rounded-full ring-2 ring-cyan-400/30 bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center text-white text-sm font-black" data-nexo-avatar-initials></div>
             <div class="hidden lg:block">
-              <div class="text-sm font-bold text-white" data-nexo-user-name>Usuário</div>
+              <div class="text-sm font-bold text-white" data-nexo-user-name>Usurio</div>
               <div class="text-[11px] text-slate-500">Administrador</div>
             </div>
           </div>
@@ -718,8 +730,8 @@
             <div class="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-400 to-violet-500 mx-auto mb-6 flex items-center justify-center shadow-lg shadow-cyan-400/20">
               <i data-lucide="rocket" class="w-10 h-10 text-white"></i>
             </div>
-            <h2 class="text-3xl font-black text-white mb-3">Bem-vindo à Nexo AI! 🎉</h2>
-            <p class="text-slate-400 max-w-lg mx-auto">Seu ecossistema de vendas automatizado está pronto. Vamos configurar tudo em <strong class="text-white">3 passos simples</strong> para começar a capturar e converter leads.</p>
+            <h2 class="text-3xl font-black text-white mb-3">Bem-vindo  Nexo AI! ??</h2>
+            <p class="text-slate-400 max-w-lg mx-auto">Seu ecossistema de vendas automatizado est pronto. Vamos configurar tudo em <strong class="text-white">3 passos simples</strong> para comear a capturar e converter leads.</p>
           </div>
 
           <!-- Setup Steps -->
@@ -737,10 +749,10 @@
                     <span class="text-[10px] font-bold text-slate-600">~2 minutos</span>
                   </div>
                   <h3 class="text-lg font-bold text-white">Conectar WhatsApp Business</h3>
-                  <p class="text-sm text-slate-400 mt-1">Escaneie o QR Code para integrar seu WhatsApp. A IA começa a atender seus leads automaticamente.</p>
+                  <p class="text-sm text-slate-400 mt-1">Escaneie o QR Code para integrar seu WhatsApp. A IA comea a atender seus leads automaticamente.</p>
                 </div>
                 <button onclick="startWhatsAppSetup()" class="bg-emerald-500 hover:bg-emerald-400 text-white font-black text-sm px-6 py-3 rounded-xl transition-all hover:scale-105 shadow-lg shadow-emerald-500/20 flex-shrink-0">
-                  Conectar →
+                  Conectar ?
                 </button>
               </div>
             </div>
@@ -757,10 +769,10 @@
                     <span class="text-[10px] font-bold text-slate-600">~3 minutos</span>
                   </div>
                   <h3 class="text-lg font-bold text-white">Configurar o Agente IA</h3>
-                  <p class="text-sm text-slate-400 mt-1">Defina o tom de voz, informações do seu negócio e respostas padrão da IA para seus clientes.</p>
+                  <p class="text-sm text-slate-400 mt-1">Defina o tom de voz, informaes do seu negcio e respostas padro da IA para seus clientes.</p>
                 </div>
                 <button onclick="startAgentConfig()" class="bg-violet-500 hover:bg-violet-400 text-white font-black text-sm px-6 py-3 rounded-xl transition-all hover:scale-105 shadow-lg shadow-violet-500/20 flex-shrink-0">
-                  Configurar →
+                  Configurar ?
                 </button>
               </div>
             </div>
@@ -777,10 +789,10 @@
                     <span class="text-[10px] font-bold text-slate-600">Opcional</span>
                   </div>
                   <h3 class="text-lg font-bold text-white">Importar Contatos Existentes</h3>
-                  <p class="text-sm text-slate-400 mt-1">Envie uma planilha CSV com seus leads atuais. O painel organizará seus leads para você ter controle total e previsibilidade da operação.</p>
+                  <p class="text-sm text-slate-400 mt-1">Envie uma planilha CSV com seus leads atuais. O painel organizar seus leads para voc ter controle total e previsibilidade da operao.</p>
                 </div>
                 <button onclick="startCSVImport()" class="bg-cyan-500 hover:bg-cyan-400 text-white font-black text-sm px-6 py-3 rounded-xl transition-all hover:scale-105 shadow-lg shadow-cyan-500/20 flex-shrink-0">
-                  Importar CSV →
+                  Importar CSV ?
                 </button>
               </div>
             </div>
@@ -789,9 +801,9 @@
           <!-- Skip / Later -->
           <div class="text-center fade-in fade-in-5">
             <button onclick="skipOnboarding()" class="text-sm text-slate-500 hover:text-slate-300 transition-colors underline underline-offset-4">
-              Pular configuração e ver o painel →
+              Pular configurao e ver o painel ?
             </button>
-            <p class="text-[10px] text-slate-600 mt-3">Você pode configurar tudo depois em <strong>Configurações</strong>.</p>
+            <p class="text-[10px] text-slate-600 mt-3">Voc pode configurar tudo depois em <strong>Configuraes</strong>.</p>
           </div>
 
           <!-- Support Card -->
@@ -802,7 +814,7 @@
               </div>
               <div class="flex-1">
                 <div class="text-sm font-bold text-white">Precisa de ajuda?</div>
-                <div class="text-xs text-slate-400">Nosso time faz a implantação completa por você em até 48h.</div>
+                <div class="text-xs text-slate-400">Nosso time faz a implantao completa por voc em at 48h.</div>
               </div>
               <a href="https://wa.me/5585997546957?text=Ol%C3%A1%2C%20preciso%20de%20ajuda%20com%20o%20painel%20Nexo%20AI" target="_blank" class="bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-bold text-xs px-5 py-2.5 rounded-full hover:bg-emerald-500/30 transition-colors flex-shrink-0 flex items-center gap-2">
                 <i data-lucide="message-circle" class="w-4 h-4"></i>
@@ -824,7 +836,7 @@
               <i data-lucide="user-plus" class="w-5 h-5 text-cyan-400"></i>
             </div>
             <span class="text-xs font-bold text-slate-500 flex items-center gap-1">
-              —
+              
             </span>
           </div>
           <div class="text-3xl font-black text-white" id="kpi-leads-hoje">0</div>
@@ -837,7 +849,7 @@
               <i data-lucide="reply" class="w-5 h-5 text-violet-400"></i>
             </div>
             <span class="text-xs font-bold text-slate-500 flex items-center gap-1">
-              —
+              
             </span>
           </div>
           <div class="text-3xl font-black text-white">0<span class="text-lg text-slate-400">%</span></div>
@@ -850,11 +862,11 @@
               <i data-lucide="check-circle" class="w-5 h-5 text-emerald-400"></i>
             </div>
             <span class="text-xs font-bold text-slate-500 flex items-center gap-1">
-              —
+              
             </span>
           </div>
           <div class="text-3xl font-black text-white">0</div>
-          <div class="text-xs text-slate-500 mt-1">Conversões (Mês)</div>
+          <div class="text-xs text-slate-500 mt-1">Converses (Ms)</div>
         </div>
 
         <div class="glass-card p-5 fade-in fade-in-4">
@@ -863,11 +875,11 @@
               <i data-lucide="clock" class="w-5 h-5 text-amber-400"></i>
             </div>
             <span class="text-xs font-bold text-slate-500 flex items-center gap-1">
-              —
+              
             </span>
           </div>
-          <div class="text-3xl font-black text-white">—</div>
-          <div class="text-xs text-slate-500 mt-1">Tempo Médio de Resposta</div>
+          <div class="text-3xl font-black text-white"></div>
+          <div class="text-xs text-slate-500 mt-1">Tempo Mdio de Resposta</div>
         </div>
       </div>
 
@@ -878,7 +890,7 @@
         <div class="lg:col-span-2 glass-card p-6 fade-in fade-in-3">
           <div class="flex items-center justify-between mb-6">
             <div>
-              <h3 class="text-lg font-bold text-white">Leads — Últimos 30 dias</h3>
+              <h3 class="text-lg font-bold text-white">Leads  ltimos 30 dias</h3>
               <p class="text-xs text-slate-500 mt-1">Recebidos vs Respondidos pela IA</p>
             </div>
             <div class="flex gap-4 text-xs">
@@ -899,8 +911,8 @@
 
         <!-- Conversion Funnel (1/3) -->
         <div class="glass-card p-6 fade-in fade-in-4">
-          <h3 class="text-lg font-bold text-white mb-2">Funil de Conversão</h3>
-          <p class="text-xs text-slate-500 mb-6">Mês atual</p>
+          <h3 class="text-lg font-bold text-white mb-2">Funil de Converso</h3>
+          <p class="text-xs text-slate-500 mb-6">Ms atual</p>
           
           <div class="space-y-3">
             <div>
@@ -909,16 +921,16 @@
                 <span class="text-cyan-400 font-bold" id="funnel-novo">0</span>
               </div>
               <div class="funnel-bar w-full bg-cyan-400/20">
-                <span class="text-cyan-400">—</span>
+                <span class="text-cyan-400"></span>
               </div>
             </div>
             <div>
               <div class="flex justify-between text-xs mb-1.5">
-                <span class="text-slate-400">1º Contato (IA)</span>
+                <span class="text-slate-400">1 Contato (IA)</span>
                 <span class="text-violet-400 font-bold" id="funnel-contato">0</span>
               </div>
               <div class="funnel-bar w-full bg-violet-400/20">
-                <span class="text-violet-400">—</span>
+                <span class="text-violet-400"></span>
               </div>
             </div>
             <div>
@@ -927,7 +939,7 @@
                 <span class="text-amber-400 font-bold" id="funnel-qual">0</span>
               </div>
               <div class="funnel-bar w-full bg-amber-400/20">
-                <span class="text-amber-400">—</span>
+                <span class="text-amber-400"></span>
               </div>
             </div>
             <div>
@@ -936,7 +948,7 @@
                 <span class="text-emerald-400 font-bold" id="funnel-conv">0</span>
               </div>
               <div class="funnel-bar w-full bg-emerald-400/20">
-                <span class="text-emerald-400">—</span>
+                <span class="text-emerald-400"></span>
               </div>
             </div>
           </div>
@@ -944,7 +956,7 @@
           <div class="mt-6 pt-4 border-t border-slate-800">
             <div class="flex items-center justify-between">
               <span class="text-xs text-slate-500">Taxa de Fechamento</span>
-              <span class="text-lg font-black text-slate-500">—</span>
+              <span class="text-lg font-black text-slate-500"></span>
             </div>
           </div>
         </div>
@@ -966,7 +978,7 @@
                   <th class="text-left text-xs text-slate-500 font-semibold pb-3 uppercase tracking-wider">Nome</th>
                   <th class="text-left text-xs text-slate-500 font-semibold pb-3 uppercase tracking-wider">WhatsApp</th>
                   <th class="text-left text-xs text-slate-500 font-semibold pb-3 uppercase tracking-wider">Status</th>
-                  <th class="text-left text-xs text-slate-500 font-semibold pb-3 uppercase tracking-wider">Última Msg</th>
+                  <th class="text-left text-xs text-slate-500 font-semibold pb-3 uppercase tracking-wider">ltima Msg</th>
                   <th class="text-right text-xs text-slate-500 font-semibold pb-3 uppercase tracking-wider">Tempo</th>
                 </tr>
               </thead>
@@ -979,7 +991,7 @@
                 <i data-lucide="users" class="w-8 h-8 text-slate-600"></i>
               </div>
               <p class="text-sm font-bold text-slate-400 mb-1">Nenhum lead ainda</p>
-              <p class="text-xs text-slate-600">Conecte seu WhatsApp para começar a receber leads automaticamente.</p>
+              <p class="text-xs text-slate-600">Conecte seu WhatsApp para comear a receber leads automaticamente.</p>
             </div>
           </div>
         </div>
@@ -1000,7 +1012,7 @@
               <i data-lucide="message-circle" class="w-10 h-10 text-emerald-400"></i>
             </div>
             <h4 class="text-base font-bold text-white mb-2">Conecte seu WhatsApp</h4>
-            <p class="text-xs text-slate-400 mb-6 max-w-[200px] mx-auto">Integre seu número comercial para a IA começar a atender seus leads 24/7.</p>
+            <p class="text-xs text-slate-400 mb-6 max-w-[200px] mx-auto">Integre seu nmero comercial para a IA comear a atender seus leads 24/7.</p>
             <button onclick="startWhatsAppSetup()" class="bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-bold text-sm px-6 py-3 rounded-xl hover:bg-emerald-500/30 transition-colors w-full">
               <i data-lucide="qr-code" class="w-4 h-4 inline mr-1"></i>
               Escanear QR Code
@@ -1014,7 +1026,7 @@
         </div>
       </div>
 
-      <!-- ═══ FUNCIONALIDADES DO PLANO OPERAÇÃO ═══ -->
+      <!-- --- FUNCIONALIDADES DO PLANO OPERAO --- -->
       <div class="mb-8">
         <div class="flex items-center gap-3 mb-5">
           <div class="w-8 h-8 rounded-lg bg-cyan-400/10 flex items-center justify-center">
@@ -1022,13 +1034,13 @@
           </div>
           <div>
             <h2 class="text-lg font-black text-white">Funcionalidades Ativas</h2>
-            <p class="text-[11px] text-slate-500">Plano Operação — Seus módulos prontos para usar</p>
+            <p class="text-[11px] text-slate-500">Plano Operao  Seus mdulos prontos para usar</p>
           </div>
         </div>
 
         <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
 
-          <!-- 1. Agente Automático Escalável -->
+          <!-- 1. Agente Automtico Escalvel -->
           <div class="glass-card p-5 hover:border-emerald-400/20 transition-all group" id="feat-agente">
             <div class="flex items-center justify-between mb-4">
               <div class="w-10 h-10 rounded-xl bg-emerald-400/10 flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -1040,15 +1052,15 @@
                 <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:bg-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-400 after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
               </label>
             </div>
-            <h3 class="text-sm font-bold text-white mb-1">Agente Automático</h3>
-            <p class="text-[10px] text-slate-500 mb-3">IA escalável atendendo leads 24/7</p>
+            <h3 class="text-sm font-bold text-white mb-1">Agente Automtico</h3>
+            <p class="text-[10px] text-slate-500 mb-3">IA escalvel atendendo leads 24/7</p>
             <div class="flex items-center gap-1.5">
               <div class="w-1.5 h-1.5 rounded-full bg-emerald-400 ai-pulse" id="agente-status-dot"></div>
               <span class="text-[10px] font-bold text-emerald-400" id="agente-status-label">Online</span>
             </div>
           </div>
 
-          <!-- 2. Configuração Zap + N8N -->
+          <!-- 2. Configurao Zap + N8N -->
           <div class="glass-card p-5 hover:border-violet-400/20 transition-all group" id="feat-zap-n8n">
             <div class="flex items-center justify-between mb-4">
               <div class="w-10 h-10 rounded-xl bg-violet-400/10 flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -1057,14 +1069,14 @@
               <span class="text-[9px] font-bold text-violet-400 bg-violet-400/10 border border-violet-400/20 px-2 py-0.5 rounded-full">N8N</span>
             </div>
             <h3 class="text-sm font-bold text-white mb-1">Zap + N8N</h3>
-            <p class="text-[10px] text-slate-500 mb-3">Automação de fluxos conectada</p>
+            <p class="text-[10px] text-slate-500 mb-3">Automao de fluxos conectada</p>
             <div class="flex items-center gap-1.5">
               <div class="w-1.5 h-1.5 rounded-full bg-violet-400"></div>
               <span class="text-[10px] font-bold text-violet-400" id="n8n-status">Configurado</span>
             </div>
           </div>
 
-          <!-- 3. Qualificação Básica (via IA) -->
+          <!-- 3. Qualificao Bsica (via IA) -->
           <div class="glass-card p-5 hover:border-cyan-400/20 transition-all group" id="feat-qualificacao">
             <div class="flex items-center justify-between mb-4">
               <div class="w-10 h-10 rounded-xl bg-cyan-400/10 flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -1072,7 +1084,7 @@
               </div>
               <span class="text-[9px] font-bold text-cyan-400 bg-cyan-400/10 border border-cyan-400/20 px-2 py-0.5 rounded-full">IA</span>
             </div>
-            <h3 class="text-sm font-bold text-white mb-1">Qualificação IA</h3>
+            <h3 class="text-sm font-bold text-white mb-1">Qualificao IA</h3>
             <p class="text-[10px] text-slate-500 mb-3">Classifica leads automaticamente</p>
             <div class="flex items-center justify-between">
               <span class="text-[10px] text-slate-500">Qualificados hoje</span>
@@ -1080,7 +1092,7 @@
             </div>
           </div>
 
-          <!-- 4. Transferência Humano (via chat) -->
+          <!-- 4. Transferncia Humano (via chat) -->
           <div class="glass-card p-5 hover:border-amber-400/20 transition-all group" id="feat-transfer">
             <div class="flex items-center justify-between mb-4">
               <div class="w-10 h-10 rounded-xl bg-amber-400/10 flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -1089,14 +1101,14 @@
               <span class="text-[9px] font-bold text-amber-400 bg-amber-400/10 border border-amber-400/20 px-2 py-0.5 rounded-full">CHAT</span>
             </div>
             <h3 class="text-sm font-bold text-white mb-1">Transfer. Humano</h3>
-            <p class="text-[10px] text-slate-500 mb-3">Escala para atendente quando necessário</p>
+            <p class="text-[10px] text-slate-500 mb-3">Escala para atendente quando necessrio</p>
             <div class="flex items-center gap-1.5">
               <div class="w-1.5 h-1.5 rounded-full bg-amber-400"></div>
               <span class="text-[10px] font-bold text-amber-400">Pronto</span>
             </div>
           </div>
 
-          <!-- 5. Importação de Leads CSV -->
+          <!-- 5. Importao de Leads CSV -->
           <div class="glass-card p-5 hover:border-cyan-400/20 transition-all group cursor-pointer" id="feat-csv" onclick="startCSVImport()">
             <div class="flex items-center justify-between mb-4">
               <div class="w-10 h-10 rounded-xl bg-cyan-400/10 flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -1124,7 +1136,7 @@
           <div class="grid grid-cols-2 gap-3">
             <div class="bg-slate-800/30 rounded-lg p-3">
               <div class="text-2xl font-black text-white">R$ 87k</div>
-              <div class="text-xs text-slate-500">Lucro Líquido</div>
+              <div class="text-xs text-slate-500">Lucro Lquido</div>
             </div>
             <div class="bg-slate-800/30 rounded-lg p-3">
               <div class="text-2xl font-black text-white">R$ 47</div>
@@ -1135,20 +1147,20 @@
             <div class="w-14 h-14 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto mb-3">
               <i data-lucide="lock" class="w-6 h-6 text-slate-500"></i>
             </div>
-            <div class="text-sm font-bold text-white">Disponível no</div>
+            <div class="text-sm font-bold text-white">Disponvel no</div>
             <div class="text-sm font-black bg-gradient-to-r from-cyan-400 to-violet-500 bg-clip-text text-transparent">Comando Total</div>
-            <a href="https://pay.kiwify.com.br/PIlSK9V" target="_blank" class="inline-block mt-3 text-xs font-bold text-cyan-400 border border-cyan-400/30 px-4 py-2 rounded-full hover:bg-cyan-400/10 transition-colors">Fazer Upgrade →</a>
+            <a href="https://pay.kiwify.com.br/PIlSK9V" target="_blank" class="inline-block mt-3 text-xs font-bold text-cyan-400 border border-cyan-400/30 px-4 py-2 rounded-full hover:bg-cyan-400/10 transition-colors">Fazer Upgrade ?</a>
           </div>
         </div>
 
         <!-- Locked: Reactivation -->
         <div class="glass-card p-6 locked-overlay fade-in fade-in-5">
-          <h3 class="text-lg font-bold text-white mb-4">Reativação com IA</h3>
+          <h3 class="text-lg font-bold text-white mb-4">Reativao com IA</h3>
           <div class="space-y-2">
             <div class="bg-slate-800/30 rounded-lg p-3 flex items-center gap-3">
               <div class="w-8 h-8 rounded-full bg-slate-700"></div>
               <div>
-                <div class="text-sm font-bold text-white">Lead parado há 30 dias</div>
+                <div class="text-sm font-bold text-white">Lead parado h 30 dias</div>
                 <div class="text-xs text-slate-500">Reativar com IA...</div>
               </div>
             </div>
@@ -1157,35 +1169,35 @@
             <div class="w-14 h-14 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto mb-3">
               <i data-lucide="lock" class="w-6 h-6 text-slate-500"></i>
             </div>
-            <div class="text-sm font-bold text-white">Disponível no</div>
+            <div class="text-sm font-bold text-white">Disponvel no</div>
             <div class="text-sm font-black bg-gradient-to-r from-cyan-400 to-violet-500 bg-clip-text text-transparent">Comando Total</div>
-            <a href="https://pay.kiwify.com.br/PIlSK9V" target="_blank" class="inline-block mt-3 text-xs font-bold text-cyan-400 border border-cyan-400/30 px-4 py-2 rounded-full hover:bg-cyan-400/10 transition-colors">Fazer Upgrade →</a>
+            <a href="https://pay.kiwify.com.br/PIlSK9V" target="_blank" class="inline-block mt-3 text-xs font-bold text-cyan-400 border border-cyan-400/30 px-4 py-2 rounded-full hover:bg-cyan-400/10 transition-colors">Fazer Upgrade ?</a>
           </div>
         </div>
 
         <!-- Locked: Reports -->
         <div class="glass-card p-6 locked-overlay fade-in fade-in-6">
-          <h3 class="text-lg font-bold text-white mb-4">Relatório Semanal</h3>
+          <h3 class="text-lg font-bold text-white mb-4">Relatrio Semanal</h3>
           <div class="space-y-2">
             <div class="bg-slate-800/30 rounded-lg p-3">
-              <div class="text-xs text-slate-500">Relatório da Semana 15</div>
-              <div class="text-sm font-bold text-white mt-1">Insights automáticos da IA...</div>
+              <div class="text-xs text-slate-500">Relatrio da Semana 15</div>
+              <div class="text-sm font-bold text-white mt-1">Insights automticos da IA...</div>
             </div>
           </div>
           <div class="lock-badge">
             <div class="w-14 h-14 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto mb-3">
               <i data-lucide="lock" class="w-6 h-6 text-slate-500"></i>
             </div>
-            <div class="text-sm font-bold text-white">Disponível no</div>
+            <div class="text-sm font-bold text-white">Disponvel no</div>
             <div class="text-sm font-black bg-gradient-to-r from-cyan-400 to-violet-500 bg-clip-text text-transparent">Comando Total</div>
-            <a href="https://pay.kiwify.com.br/PIlSK9V" target="_blank" class="inline-block mt-3 text-xs font-bold text-cyan-400 border border-cyan-400/30 px-4 py-2 rounded-full hover:bg-cyan-400/10 transition-colors">Fazer Upgrade →</a>
+            <a href="https://pay.kiwify.com.br/PIlSK9V" target="_blank" class="inline-block mt-3 text-xs font-bold text-cyan-400 border border-cyan-400/30 px-4 py-2 rounded-full hover:bg-cyan-400/10 transition-colors">Fazer Upgrade ?</a>
           </div>
         </div>
       </div>
 
       <!-- Footer -->
       <footer class="text-center py-6 border-t border-slate-800/50">
-        <p class="text-xs text-slate-600">Nexo AI — Licença Operação • Usuários: 2 de 3 ativos</p>
+        <p class="text-xs text-slate-600">Nexo AI  Licena Operao  Usurios: 2 de 3 ativos</p>
       </footer>
 
 
@@ -1194,8 +1206,8 @@
          <div class="glass-card p-6 fade-in fade-in-1">
             <div class="flex justify-between items-center mb-6">
                <div>
-                  <h2 class="text-xl font-bold text-white">Gestão de Leads</h2>
-                  <p class="text-xs text-slate-500 mt-1">Mendonça Imóveis Premium • Todos os canais</p>
+                  <h2 class="text-xl font-bold text-white">Gesto de Leads</h2>
+                  <p class="text-xs text-slate-500 mt-1">Mendona Imveis Premium  Todos os canais</p>
                </div>
                <div class="flex gap-3">
                   <select class="bg-slate-800/60 border border-slate-700 text-sm text-slate-300 rounded-xl px-3 py-2 focus:outline-none">
@@ -1216,8 +1228,8 @@
                           <th class="py-3 px-4 text-xs text-slate-500 font-semibold uppercase tracking-wider">WhatsApp</th>
                           <th class="py-3 px-4 text-xs text-slate-500 font-semibold uppercase tracking-wider">Status</th>
                           <th class="py-3 px-4 text-xs text-slate-500 font-semibold uppercase tracking-wider">Origem</th>
-                          <th class="py-3 px-4 text-xs text-slate-500 font-semibold uppercase tracking-wider">Última Msg</th>
-                          <th class="py-3 px-4 text-xs text-slate-500 font-semibold uppercase tracking-wider text-right">Ações</th>
+                          <th class="py-3 px-4 text-xs text-slate-500 font-semibold uppercase tracking-wider">ltima Msg</th>
+                          <th class="py-3 px-4 text-xs text-slate-500 font-semibold uppercase tracking-wider text-right">Aes</th>
                        </tr>
                     </thead>
                     <tbody id="leads-tbody" class="divide-y divide-white/5">
@@ -1257,7 +1269,7 @@
                      <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center text-white text-xs font-bold">MO</div>
                      <div>
                         <div class="text-sm font-bold text-white">Marina Oliveira</div>
-                        <div class="text-[10px] text-slate-500">(11) 9●●●●-4521 • Meta Ads</div>
+                        <div class="text-[10px] text-slate-500">(11) 9????-4521  Meta Ads</div>
                      </div>
                   </div>
                   <div class="flex items-center gap-2">
@@ -1266,20 +1278,20 @@
                   </div>
                </div>
                <div id="chat-messages" class="flex-1 p-6 overflow-y-auto space-y-4">
-                  <div class="bg-slate-800 p-3 rounded-xl rounded-tl-none w-3/4 text-sm text-slate-200 shadow-md">Olá, vi o apartamento no Vila Mariana pela internet. Ainda está disponível? Qual o valor?</div>
+                  <div class="bg-slate-800 p-3 rounded-xl rounded-tl-none w-3/4 text-sm text-slate-200 shadow-md">Ol, vi o apartamento no Vila Mariana pela internet. Ainda est disponvel? Qual o valor?</div>
                   <div class="bg-cyan-900/20 p-3 rounded-xl rounded-tr-none w-3/4 ml-auto text-sm border border-cyan-400/30 shadow-[0_0_15px_rgba(34,211,238,0.08)] text-slate-200">
                      <div class="text-[10px] text-cyan-400 font-bold mb-1 flex items-center gap-1"><i data-lucide="bot" class="w-3 h-3"></i> Nexo IA</div>
-                     Olá Marina! Sim, o apartamento no Vila Mariana está disponível. São 82m², 3 quartos (1 suíte), vaga de garagem e lazer completo. O valor é R$ 520.000. Gostaria de agendar uma visita presencial? Temos horários disponíveis amanhã às 10h ou 15h.
+                     Ol Marina! Sim, o apartamento no Vila Mariana est disponvel. So 82m, 3 quartos (1 sute), vaga de garagem e lazer completo. O valor  R$ 520.000. Gostaria de agendar uma visita presencial? Temos horrios disponveis amanh s 10h ou 15h.
                   </div>
-                  <div class="bg-slate-800 p-3 rounded-xl rounded-tl-none w-3/4 text-sm text-slate-200 shadow-md">Pode ser amanhã às 15h! Aceita financiamento pela Caixa?</div>
+                  <div class="bg-slate-800 p-3 rounded-xl rounded-tl-none w-3/4 text-sm text-slate-200 shadow-md">Pode ser amanh s 15h! Aceita financiamento pela Caixa?</div>
                   <div class="bg-cyan-900/20 p-3 rounded-xl rounded-tr-none w-3/4 ml-auto text-sm border border-cyan-400/30 shadow-[0_0_15px_rgba(34,211,238,0.08)] text-slate-200">
                      <div class="text-[10px] text-cyan-400 font-bold mb-1 flex items-center gap-1"><i data-lucide="bot" class="w-3 h-3"></i> Nexo IA</div>
-                     Perfeito, Marina! Visita agendada para amanhã (sexta) às 15h no endereço Rua Domingos de Morais, 1200. Sim, aceitamos financiamento Caixa, e nosso corretor pode te ajudar com a simulação no local. Envio um lembrete 1h antes. 😊
+                     Perfeito, Marina! Visita agendada para amanh (sexta) s 15h no endereo Rua Domingos de Morais, 1200. Sim, aceitamos financiamento Caixa, e nosso corretor pode te ajudar com a simulao no local. Envio um lembrete 1h antes. ??
                   </div>
                </div>
                <div class="p-4 border-t border-white/5">
                   <div class="relative">
-                     <input type="text" class="w-full bg-slate-900 border border-slate-700/50 rounded-xl pl-4 pr-12 py-3 text-sm focus:outline-none focus:border-cyan-400/50 transition-colors text-white" placeholder="A IA está atendendo. Digite para intervir manualmente...">
+                     <input type="text" class="w-full bg-slate-900 border border-slate-700/50 rounded-xl pl-4 pr-12 py-3 text-sm focus:outline-none focus:border-cyan-400/50 transition-colors text-white" placeholder="A IA est atendendo. Digite para intervir manualmente...">
                      <button class="absolute right-3 top-1/2 -translate-y-1/2 text-cyan-400 hover:text-cyan-300"><i data-lucide="send" class="w-5 h-5"></i></button>
                   </div>
                </div>
@@ -1348,7 +1360,7 @@
       <!-- ========= VIEW: P&L (LOCKED) ========= -->
       <div id="view-pl" class="view-section hidden">
          <div class="glass-card p-8 locked-overlay" style="height: calc(100vh - 180px);">
-            <h3 class="text-2xl font-black text-white mb-6">P&L Financeiro — DRE Automatizado</h3>
+            <h3 class="text-2xl font-black text-white mb-6">P&L Financeiro  DRE Automatizado</h3>
             <div class="grid grid-cols-3 gap-6 mb-8">
                <div class="bg-slate-800/30 rounded-xl p-5">
                   <div class="text-slate-500 text-xs uppercase font-bold mb-2">Custo Ads</div>
@@ -1367,24 +1379,24 @@
                <div class="w-20 h-20 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto mb-4 shadow-lg">
                   <i data-lucide="lock" class="w-8 h-8 text-slate-500"></i>
                </div>
-               <div class="text-lg font-bold text-white mb-1">Disponível exclusivamente no</div>
+               <div class="text-lg font-bold text-white mb-1">Disponvel exclusivamente no</div>
                <div class="text-xl font-black bg-gradient-to-r from-cyan-400 to-violet-500 bg-clip-text text-transparent mb-4">Comando Total</div>
-               <a href="https://pay.kiwify.com.br/PIlSK9V" target="_blank" class="inline-block text-sm font-bold text-cyan-400 border border-cyan-400/30 px-6 py-3 rounded-full hover:bg-cyan-400/10 transition-colors">Fazer Upgrade →</a>
+               <a href="https://pay.kiwify.com.br/PIlSK9V" target="_blank" class="inline-block text-sm font-bold text-cyan-400 border border-cyan-400/30 px-6 py-3 rounded-full hover:bg-cyan-400/10 transition-colors">Fazer Upgrade ?</a>
             </div>
          </div>
       </div>
 
-      <!-- ========= VIEW: REATIVAÇÃO (LOCKED) ========= -->
+      <!-- ========= VIEW: REATIVAO (LOCKED) ========= -->
       <div id="view-reativacao" class="view-section hidden">
          <div class="glass-card p-8 locked-overlay" style="height: calc(100vh - 180px);">
-            <h3 class="text-2xl font-black text-white mb-6">Reativação Autônoma com IA</h3>
+            <h3 class="text-2xl font-black text-white mb-6">Reativao Autnoma com IA</h3>
             <div class="grid grid-cols-2 gap-6">
                <div class="bg-slate-800/30 rounded-xl p-6 text-center">
                   <div class="text-4xl font-black text-amber-400 mb-2">87</div>
                   <div class="text-sm text-slate-400">Leads congelados (>30 dias)</div>
                </div>
                <div class="bg-slate-800/30 rounded-xl p-6 text-center">
-                  <div class="text-4xl font-black text-white mb-2">—</div>
+                  <div class="text-4xl font-black text-white mb-2"></div>
                   <div class="text-sm text-slate-400">Resgatados pela IA</div>
                </div>
             </div>
@@ -1392,44 +1404,44 @@
                <div class="w-20 h-20 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto mb-4 shadow-lg">
                   <i data-lucide="lock" class="w-8 h-8 text-slate-500"></i>
                </div>
-               <div class="text-lg font-bold text-white mb-1">Disponível exclusivamente no</div>
+               <div class="text-lg font-bold text-white mb-1">Disponvel exclusivamente no</div>
                <div class="text-xl font-black bg-gradient-to-r from-cyan-400 to-violet-500 bg-clip-text text-transparent mb-4">Comando Total</div>
-               <a href="https://pay.kiwify.com.br/PIlSK9V" target="_blank" class="inline-block text-sm font-bold text-cyan-400 border border-cyan-400/30 px-6 py-3 rounded-full hover:bg-cyan-400/10 transition-colors">Fazer Upgrade →</a>
+               <a href="https://pay.kiwify.com.br/PIlSK9V" target="_blank" class="inline-block text-sm font-bold text-cyan-400 border border-cyan-400/30 px-6 py-3 rounded-full hover:bg-cyan-400/10 transition-colors">Fazer Upgrade ?</a>
             </div>
          </div>
       </div>
 
-      <!-- ========= VIEW: RELATÓRIOS (LOCKED) ========= -->
+      <!-- ========= VIEW: RELATRIOS (LOCKED) ========= -->
       <div id="view-relatorios" class="view-section hidden">
          <div class="glass-card p-8 locked-overlay" style="height: calc(100vh - 180px);">
-            <h3 class="text-2xl font-black text-white mb-6">Relatório Executivo Semanal</h3>
+            <h3 class="text-2xl font-black text-white mb-6">Relatrio Executivo Semanal</h3>
             <div class="bg-slate-800/30 rounded-xl p-6">
-               <div class="text-xs text-slate-500 mb-2">Relatório da Semana 15</div>
-               <div class="text-sm font-bold text-white">Insights automáticos da IA...</div>
+               <div class="text-xs text-slate-500 mb-2">Relatrio da Semana 15</div>
+               <div class="text-sm font-bold text-white">Insights automticos da IA...</div>
             </div>
             <div class="lock-badge">
                <div class="w-20 h-20 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto mb-4 shadow-lg">
                   <i data-lucide="lock" class="w-8 h-8 text-slate-500"></i>
                </div>
-               <div class="text-lg font-bold text-white mb-1">Disponível exclusivamente no</div>
+               <div class="text-lg font-bold text-white mb-1">Disponvel exclusivamente no</div>
                <div class="text-xl font-black bg-gradient-to-r from-cyan-400 to-violet-500 bg-clip-text text-transparent mb-4">Comando Total</div>
-               <a href="https://pay.kiwify.com.br/PIlSK9V" target="_blank" class="inline-block text-sm font-bold text-cyan-400 border border-cyan-400/30 px-6 py-3 rounded-full hover:bg-cyan-400/10 transition-colors">Fazer Upgrade →</a>
+               <a href="https://pay.kiwify.com.br/PIlSK9V" target="_blank" class="inline-block text-sm font-bold text-cyan-400 border border-cyan-400/30 px-6 py-3 rounded-full hover:bg-cyan-400/10 transition-colors">Fazer Upgrade ?</a>
             </div>
          </div>
       </div>
 
-      <!-- ========= VIEW: CONFIGURAÇÕES ========= -->
+      <!-- ========= VIEW: CONFIGURAES ========= -->
       <div id="view-config" class="view-section hidden">
          <form id="settings-form" onsubmit="saveSettings(event)">
          <div class="glass-card p-8" style="min-height: calc(100vh - 180px);">
             <div class="flex items-center justify-between mb-8 border-b border-white/5 pb-5">
                <div>
-                  <h2 class="text-2xl font-black text-white">Configurações do Atendimento IA</h2>
+                  <h2 class="text-2xl font-black text-white">Configuraes do Atendimento IA</h2>
                   <p class="text-sm text-slate-500 mt-1">Controle o comportamento do seu agente inteligente</p>
                </div>
                <button type="submit" id="btn-save-settings" class="bg-cyan-500 hover:bg-cyan-400 text-white font-black text-sm px-6 py-3 rounded-xl transition-all hover:scale-105 shadow-lg shadow-cyan-500/20 flex items-center gap-2">
                   <i data-lucide="save" class="w-4 h-4"></i>
-                  Salvar Configurações
+                  Salvar Configuraes
                </button>
             </div>
 
@@ -1437,7 +1449,7 @@
 
                <!-- Bloco: Comportamento da IA -->
                <div class="space-y-4">
-                  <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">🤖 Comportamento da IA</h3>
+                  <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">?? Comportamento da IA</h3>
 
                   <div class="flex justify-between items-center p-5 bg-slate-900/60 rounded-xl border border-white/5 hover:border-cyan-400/10 transition-colors">
                      <div>
@@ -1445,10 +1457,10 @@
                         <div class="text-sm text-slate-500">Como a IA conversa com seus leads.</div>
                      </div>
                      <select id="cfg-tone" class="bg-slate-800 text-cyan-400 rounded-lg p-2.5 outline-none font-bold cursor-pointer border border-cyan-400/20 hover:border-cyan-400/50 text-sm">
-                        <option value="formal">🎩 Formal</option>
-                        <option value="amigavel" selected>😊 Amigável</option>
-                        <option value="persuasivo">🎯 Persuasivo</option>
-                        <option value="direto">⚡ Direto</option>
+                        <option value="formal">?? Formal</option>
+                        <option value="amigavel" selected>?? Amigvel</option>
+                        <option value="persuasivo">?? Persuasivo</option>
+                        <option value="direto">? Direto</option>
                      </select>
                   </div>
 
@@ -1458,10 +1470,10 @@
                         <div class="text-sm text-slate-500">Meta final do agente com cada lead.</div>
                      </div>
                      <select id="cfg-goal" class="bg-slate-800 text-cyan-400 rounded-lg p-2.5 outline-none font-bold cursor-pointer border border-cyan-400/20 hover:border-cyan-400/50 text-sm">
-                        <option value="agendamento">📅 Agendar Visita</option>
-                        <option value="venda" selected>💰 Venda Direta</option>
-                        <option value="qualificacao">📋 Qualificar Lead</option>
-                        <option value="suporte">🛠️ Suporte</option>
+                        <option value="agendamento">?? Agendar Visita</option>
+                        <option value="venda" selected>?? Venda Direta</option>
+                        <option value="qualificacao">?? Qualificar Lead</option>
+                        <option value="suporte">??? Suporte</option>
                      </select>
                   </div>
 
@@ -1478,7 +1490,7 @@
 
                   <div class="flex justify-between items-center p-5 bg-slate-900/60 rounded-xl border border-white/5 hover:border-cyan-400/10 transition-colors">
                      <div>
-                        <div class="text-white font-bold">Agendamento Automático</div>
+                        <div class="text-white font-bold">Agendamento Automtico</div>
                         <div class="text-sm text-slate-500">A IA pode agendar visitas sozinha.</div>
                      </div>
                      <label class="relative inline-flex items-center cursor-pointer">
@@ -1490,11 +1502,11 @@
 
                <!-- Bloco: Atendimento Humano -->
                <div class="space-y-4">
-                  <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">👤 Atendimento Humano</h3>
+                  <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">?? Atendimento Humano</h3>
 
                   <div class="flex justify-between items-center p-5 bg-slate-900/60 rounded-xl border border-white/5 hover:border-cyan-400/10 transition-colors">
                      <div>
-                        <div class="text-white font-bold">Lembrete Pré-Visita</div>
+                        <div class="text-white font-bold">Lembrete Pr-Visita</div>
                         <div class="text-sm text-slate-500">Enviar mensagem 1h antes da visita agendada.</div>
                      </div>
                      <label class="relative inline-flex items-center cursor-pointer">
@@ -1515,17 +1527,17 @@
                   </div>
 
                   <div class="p-5 bg-slate-900/60 rounded-xl border border-white/5 hover:border-cyan-400/10 transition-colors">
-                     <div class="text-white font-bold mb-1">Horário de Atendimento Humano</div>
-                     <div class="text-sm text-slate-500 mb-4">Fora desse horário, a IA assume 100%.</div>
+                     <div class="text-white font-bold mb-1">Horrio de Atendimento Humano</div>
+                     <div class="text-sm text-slate-500 mb-4">Fora desse horrio, a IA assume 100%.</div>
                      <div class="flex gap-3 items-center">
                         <input type="time" id="cfg-hour-start" value="08:00" class="flex-1 bg-slate-800 text-white rounded-lg p-2.5 border border-slate-700 outline-none focus:border-cyan-400 text-sm">
-                        <span class="text-slate-500 text-sm font-bold">até</span>
+                        <span class="text-slate-500 text-sm font-bold">at</span>
                         <input type="time" id="cfg-hour-end" value="18:00" class="flex-1 bg-slate-800 text-white rounded-lg p-2.5 border border-slate-700 outline-none focus:border-cyan-400 text-sm">
                      </div>
                   </div>
 
                   <div class="p-5 bg-slate-900/60 rounded-xl border border-white/5 hover:border-cyan-400/10 transition-colors">
-                     <div class="text-white font-bold mb-1">Gatilho de Transferência</div>
+                     <div class="text-white font-bold mb-1">Gatilho de Transferncia</div>
                      <div class="text-sm text-slate-500 mb-3">Palavras-chave que ativam o atendente humano.</div>
                      <input type="text" id="cfg-trigger" placeholder="Ex: falar com humano, quero desconto, gerente..." class="w-full bg-slate-800 text-white rounded-lg p-2.5 border border-slate-700 outline-none focus:border-cyan-400 text-sm">
                   </div>
@@ -1535,10 +1547,10 @@
 
             <!-- Bloco: Base de Conhecimento -->
             <div class="mt-6 max-w-5xl">
-               <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">📚 Base de Conhecimento da Empresa</h3>
+               <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">?? Base de Conhecimento da Empresa</h3>
                <div class="p-5 bg-slate-900/60 rounded-xl border border-white/5">
-                  <div class="text-sm text-slate-500 mb-3">Essas são as instruções que a IA usa para responder. Mantenha sempre atualizado.</div>
-                  <textarea id="cfg-instructions" rows="5" placeholder="Ex: Somos uma imobiliária em Fortaleza. Trabalhamos com apartamentos de 2 e 3 quartos entre R$ 280mil e R$ 650mil. Nosso horário de atendimento é de seg-sáb 8h-18h..." class="w-full bg-slate-800 text-white rounded-lg p-3.5 border border-slate-700 outline-none focus:border-cyan-400 text-sm resize-none"></textarea>
+                  <div class="text-sm text-slate-500 mb-3">Essas so as instrues que a IA usa para responder. Mantenha sempre atualizado.</div>
+                  <textarea id="cfg-instructions" rows="5" placeholder="Ex: Somos uma imobiliria em Fortaleza. Trabalhamos com apartamentos de 2 e 3 quartos entre R$ 280mil e R$ 650mil. Nosso horrio de atendimento  de seg-sb 8h-18h..." class="w-full bg-slate-800 text-white rounded-lg p-3.5 border border-slate-700 outline-none focus:border-cyan-400 text-sm resize-none"></textarea>
                </div>
             </div>
 
@@ -1648,14 +1660,14 @@
          const views = document.querySelectorAll('.view-section');
          
          const map = {
-            'Visão Geral': 'view-dashboard',
+            'Viso Geral': 'view-dashboard',
             'Leads': 'view-leads',
             'WhatsApp': 'view-whatsapp',
             'Funil': 'view-funil',
             'P&L Financeiro': 'view-pl',
-            'Reativação IA': 'view-reativacao',
-            'Relatórios': 'view-relatorios',
-            'Configurações': 'view-config'
+            'Reativao IA': 'view-reativacao',
+            'Relatrios': 'view-relatorios',
+            'Configuraes': 'view-config'
          };
 
          items.forEach(item => {
@@ -1696,12 +1708,12 @@
       });
     </script>
 
-    <!-- ====== NEXO AI — SUPABASE ENGINE v2.0 (LIVE) ====== -->
+    <!-- ====== NEXO AI  SUPABASE ENGINE v2.0 (LIVE) ====== -->
     <script id="nexo-engine-v2">
     const SUPABASE_URL = "https://tqqtjrunrimabitmersr.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxcXRqcnVucmltYWJpdG1lcnNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NjYwMjgsImV4cCI6MjA5MjA0MjAyOH0.CEJRX8rYb_5S5pN_M2KemyBRxdSPd9jf8Y-Xm3vlTDc";
 
-    // ─── CORE API ──────────────────────────────────────────────
+    // --- CORE API ----------------------------------------------
     function _findSbSession() {
       for(let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
@@ -1718,7 +1730,7 @@
     function getAuthToken() {
       const found = _findSbSession();
       if(found) return `Bearer ${found.token}`;
-      console.warn('[NexoAuth] No JWT found — using anon key');
+      console.warn('[NexoAuth] No JWT found  using anon key');
       return `Bearer ${SUPABASE_KEY}`;
     }
 
@@ -1778,37 +1790,66 @@
       return res.json();
     }
 
-    async function sbInsert(table, body) {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
-        method: "POST",
-        headers: {
-          "apikey": SUPABASE_KEY,
-          "Authorization": getAuthToken(),
-          "Content-Type": "application/json",
-          "Prefer": "return=representation"
-        },
-        body: JSON.stringify(body)
-      });
-      if (!res.ok) throw new Error(`Supabase error na inserção: ${res.status}`);
-      return res.json();
-    }
+            async function sbInsert(table, body) {
+        const doInsert = async () => {
+          const token = getAuthToken();
+          return fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+            method: "POST",
+            headers: {
+              "apikey": SUPABASE_KEY,
+              "Authorization": token,
+              "Content-Type": "application/json",
+              "Prefer": "return=representation"
+            },
+            body: JSON.stringify(body)
+          });
+        };
+
+        let res = await doInsert();
+        if (res.status === 401) {
+          const refreshed = await refreshSession();
+          if (refreshed) res = await doInsert();
+        }
+
+        if (!res.ok) {
+          const err = await res.json();
+          console.error("Supabase Insert Error:", err);
+          throw new Error(err.message || `Erro ${res.status}`);
+        }
+        return res.json();
+      }
 
 
-    async function sbUpdate(table, id, body) {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, {
-        method: "PATCH",
-        headers: {
-          "apikey": SUPABASE_KEY,
-          "Authorization": getAuthToken(),
-          "Content-Type": "application/json",
-          "Prefer": "return=representation"
-        },
-        body: JSON.stringify(body)
-      });
-      return res.json();
-    }
+            async function sbUpdate(table, id, body) {
+        const doUpdate = async () => {
+          const token = getAuthToken();
+          return fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, {
+            method: "PATCH",
+            headers: {
+              "apikey": SUPABASE_KEY,
+              "Authorization": token,
+              "Content-Type": "application/json",
+              "Prefer": "return=representation"
+            },
+            body: JSON.stringify(body)
+          });
+        };
 
-    // ─── STATUS BADGES ──────────────────────────────────────────
+        let res = await doUpdate();
+        if (res.status === 401) {
+          const refreshed = await refreshSession();
+          if (refreshed) res = await doUpdate();
+        }
+
+        if (!res.ok) {
+          const err = await res.json();
+          console.error("Supabase Update Error:", err);
+          throw new Error(err.message || `Erro ${res.status}`);
+        }
+        return res.json();
+      }
+
+    // --- STATUS BADGES ------------------------------------------
     const STATUS_LABELS = {
       novo: "Novo",
       atendimento: "Em Atendimento",
@@ -1827,7 +1868,7 @@
       return `<span class="${cls} text-xs font-bold px-2.5 py-1 rounded-full">${lbl}</span>`;
     }
 
-    // ─── KPIs ────────────────────────────────────────────────
+    // --- KPIs ------------------------------------------------
     async function loadKPIs() {
       try {
         const leads = await sbFetch("leads", "select=status");
@@ -1846,12 +1887,12 @@
         if (elTaxa) elTaxa.textContent = taxa;
         if (elConversoes) elConversoes.textContent = convertidos;
       } catch(e) {
-        console.warn("KPIs offline, usando dados estáticos:", e.message);
+        console.warn("KPIs offline, usando dados estticos:", e.message);
       }
     }
 
-    // ─── LEADS TABLE ─────────────────────────────────────────
-    // ─── LEADS TABLE + PAGINATION ─────────────────────────────
+    // --- LEADS TABLE -----------------------------------------
+    // --- LEADS TABLE + PAGINATION -----------------------------
     let leadsCache = [];
     let leadsPage  = 1;
     const LEADS_PER_PAGE = 10;
@@ -1874,7 +1915,7 @@
       } catch(e) {
         const isAuth = e.message?.includes('401') || e.message?.includes('403');
         const hint = isAuth
-          ? '<br><span class="text-slate-500 text-xs">Dica: sessão expirada. <a href="login.html" class="text-cyan-400 underline">Fazer login novamente</a></span>'
+          ? '<br><span class="text-slate-500 text-xs">Dica: sesso expirada. <a href="login.html" class="text-cyan-400 underline">Fazer login novamente</a></span>'
           : '';
         tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-red-400 text-sm">
           Erro ao carregar leads: <code class="text-xs text-red-300">${e.message||'Desconhecido'}</code>${hint}
@@ -1904,23 +1945,23 @@
 
       if(label) label.textContent = total === 0
         ? 'Nenhum lead encontrado'
-        : `Mostrando ${start+1}–${Math.min(start+page.length, total)} de ${total} leads`;
+        : `Mostrando ${start+1}${Math.min(start+page.length, total)} de ${total} leads`;
 
       if(page.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="py-12 text-center text-slate-500 text-sm">Nenhum lead encontrado. Importe sua planilha na Visão Geral.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="py-12 text-center text-slate-500 text-sm">Nenhum lead encontrado. Importe sua planilha na Viso Geral.</td></tr>`;
       } else {
         tbody.innerHTML = page.map(lead => {
           const action = lead.status === "convertido"
-            ? `<span class="text-emerald-400 font-bold text-xs">✓ Fechado</span>`
+            ? `<span class="text-emerald-400 font-bold text-xs">? Fechado</span>`
             : lead.status === "frio"
-              ? `<button onclick="triggerReactivation('${lead.id}')" class="text-amber-400 hover:text-amber-300 font-bold text-xs">Reenviar IA →</button>`
-              : `<button onclick="openChat('${lead.id}','${(lead.name||'').replace(/'/g,'')}')" class="text-cyan-400 hover:text-cyan-300 font-bold text-xs">Abrir Chat →</button>`;
+              ? `<button onclick="triggerReactivation('${lead.id}')" class="text-amber-400 hover:text-amber-300 font-bold text-xs">Reenviar IA ?</button>`
+              : `<button onclick="openChat('${lead.id}','${(lead.name||'').replace(/'/g,'')}')" class="text-cyan-400 hover:text-cyan-300 font-bold text-xs">Abrir Chat ?</button>`;
           return `<tr class="hover:bg-white/[0.02] transition-colors">
-            <td class="py-4 px-4 text-white font-bold">${lead.name||'—'}</td>
-            <td class="py-4 px-4 text-slate-400">${lead.phone||'—'}</td>
+            <td class="py-4 px-4 text-white font-bold">${lead.name||''}</td>
+            <td class="py-4 px-4 text-slate-400">${lead.phone||''}</td>
             <td class="py-4 px-4">${badge(lead.status)}</td>
-            <td class="py-4 px-4 text-slate-400">${lead.source||'—'}</td>
-            <td class="py-4 px-4 text-slate-500 text-xs max-w-[200px] truncate">${lead.last_message||'—'}</td>
+            <td class="py-4 px-4 text-slate-400">${lead.source||''}</td>
+            <td class="py-4 px-4 text-slate-500 text-xs max-w-[200px] truncate">${lead.last_message||''}</td>
             <td class="py-4 px-4 text-right">${action}</td>
           </tr>`;
         }).join('');
@@ -1933,7 +1974,7 @@
         // Anterior
         const prev = document.createElement('button');
         prev.className = `${btnBase} ${leadsPage<=1 ? 'bg-slate-900 text-slate-700 cursor-not-allowed' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'}`;
-        prev.textContent = '← Anterior';
+        prev.textContent = '? Anterior';
         prev.disabled = leadsPage <= 1;
         prev.onclick = () => { leadsPage--; renderLeadsPage(); };
         pgDiv.appendChild(prev);
@@ -1949,17 +1990,17 @@
           pgDiv.appendChild(btn);
         }
 
-        // Próxima
+        // Prxima
         const next = document.createElement('button');
         next.className = `${btnBase} ${leadsPage>=totalPages ? 'bg-slate-900 text-slate-700 cursor-not-allowed' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'}`;
-        next.textContent = 'Próxima →';
+        next.textContent = 'Prxima ?';
         next.disabled = leadsPage >= totalPages;
         next.onclick = () => { leadsPage++; renderLeadsPage(); };
         pgDiv.appendChild(next);
       }
     }
 
-    // ─── ADD LEAD MODAL ──────────────────────────────────────────
+    // --- ADD LEAD MODAL ------------------------------------------
     function openAddLeadModal() {
       const overlay = document.getElementById('add-lead-modal');
       if(overlay) { overlay.classList.add('active'); }
@@ -1991,7 +2032,7 @@
     }
 
 
-    // ─── WHATSAPP CONTACT LIST ─────────────────────────────────
+    // --- WHATSAPP CONTACT LIST ---------------------------------
     async function loadWhatsappContacts() {
       const list = document.getElementById("chat-contact-list");
       if (!list) return;
@@ -2004,7 +2045,7 @@
           const color = colors[i % colors.length];
           const activeClass = i === 0 ? "border-cyan-400/30 bg-cyan-400/5" : "border-white/5 hover:bg-white/[0.02]";
           const subtext = lead.status === "convertido"
-            ? `<div class="text-xs text-emerald-400 truncate">Convertido ✓</div>`
+            ? `<div class="text-xs text-emerald-400 truncate">Convertido ?</div>`
             : lead.status === "frio"
               ? `<div class="text-xs text-red-400 truncate">Sem resposta</div>`
               : `<div class="text-xs text-cyan-400 truncate">IA atendendo...</div>`;
@@ -2023,7 +2064,7 @@
       }
     }
 
-    // ─── LOAD CHAT ─────────────────────────────────────────────
+    // --- LOAD CHAT ---------------------------------------------
     async function loadChat(leadId, name, phone) {
       const chatWindow = document.getElementById("chat-messages");
       const chatHeader = document.getElementById("chat-header-name");
@@ -2031,7 +2072,7 @@
       if (!chatWindow) return;
 
       if(chatHeader) chatHeader.textContent = name;
-      if(chatSub) chatSub.textContent = `${phone} • Lead Ativo`;
+      if(chatSub) chatSub.textContent = `${phone}  Lead Ativo`;
 
       chatWindow.innerHTML = `<div class="text-center text-slate-500 text-sm py-8">Carregando conversa...</div>`;
 
@@ -2051,7 +2092,7 @@
           if (isIA) return `
             <div class="flex flex-col items-end mb-4">
               <div class="bg-cyan-900/20 p-3 rounded-xl rounded-tr-none w-3/4 ml-auto text-sm border border-cyan-400/30 text-slate-200">
-                <div class="text-[10px] text-cyan-400 font-bold mb-1 flex items-center gap-1">🤖 Nexo IA</div>
+                <div class="text-[10px] text-cyan-400 font-bold mb-1 flex items-center gap-1">?? Nexo IA</div>
                 ${msg.message}
               </div>
               <div class="text-[10px] text-slate-600 mt-1">${time}</div>
@@ -2068,7 +2109,7 @@
       }
     }
 
-    // ─── SEND MANUAL MESSAGE ───────────────────────────────────
+    // --- SEND MANUAL MESSAGE -----------------------------------
     async function sendMessage(leadId) {
       const input = document.getElementById("chat-input");
       if (!input || !input.value.trim()) return;
@@ -2078,13 +2119,13 @@
       await loadChat(leadId, "", "");
     }
 
-    // ─── ADD NEW LEAD ──────────────────────────────────────────
+    // --- ADD NEW LEAD ------------------------------------------
     async function addLead() {
       const name = prompt("Nome do lead:");
       if (!name) return;
       const phone = prompt("WhatsApp (com DDD):");
       if (!phone) return;
-      const source = prompt("Origem (Meta Ads, Google, Indicação...):");
+      const source = prompt("Origem (Meta Ads, Google, Indicao...):");
       
       await sbInsert("leads", {
         name: name.trim(),
@@ -2098,16 +2139,16 @@
       alert("Lead adicionado com sucesso!");
     }
 
-    // ─── TRIGGER REACTIVATION ─────────────────────────────────
+    // --- TRIGGER REACTIVATION ---------------------------------
     async function triggerReactivation(leadId) {
-      if (!confirm("Deseja que a IA envie uma mensagem de reativação para este lead?")) return;
-      await sbUpdate("leads", leadId, { status: "atendimento", last_message: "Reativação IA disparada..." });
-      await sbInsert("chats", { lead_id: leadId, sender: "ia", message: "Olá! Percebi que você demonstrou interesse anteriormente. Ainda posso te ajudar? Temos novidades que podem te interessar. 😊" });
+      if (!confirm("Deseja que a IA envie uma mensagem de reativao para este lead?")) return;
+      await sbUpdate("leads", leadId, { status: "atendimento", last_message: "Reativao IA disparada..." });
+      await sbInsert("chats", { lead_id: leadId, sender: "ia", message: "Ol! Percebi que voc demonstrou interesse anteriormente. Ainda posso te ajudar? Temos novidades que podem te interessar. ??" });
       await loadLeadsTable();
-      alert("✅ Reativação disparada com sucesso!");
+      alert("? Reativao disparada com sucesso!");
     }
 
-    // ─── FUNNEL COUNTS ────────────────────────────────────────
+    // --- FUNNEL COUNTS ----------------------------------------
     async function loadFunnelCounts() {
       try {
         const leads = await sbFetch("leads", "select=id,name,source,status,created_at&order=created_at.desc");
@@ -2133,7 +2174,7 @@
         const colColors = { novo: 'cyan', atendimento: 'violet', frio: 'amber', convertido: 'emerald' };
         const colBorders = { novo: 'border-white/5 hover:border-cyan-400/30', atendimento: 'border-violet-400/10 hover:border-violet-400/30', frio: 'border-amber-400/20', convertido: 'border-emerald-400/30' };
         const colSubColors = { novo: 'text-slate-500', atendimento: 'text-violet-400', frio: 'text-amber-400', convertido: 'text-emerald-400 font-bold' };
-        const colSubText = { novo: lead => `${lead.source || 'Direto'} • ${timeAgo(lead.created_at)}`, atendimento: () => 'Em atendimento', frio: () => 'Lead frio', convertido: () => 'Convertido ✓' };
+        const colSubText = { novo: lead => `${lead.source || 'Direto'}  ${timeAgo(lead.created_at)}`, atendimento: () => 'Em atendimento', frio: () => 'Lead frio', convertido: () => 'Convertido ?' };
 
         Object.keys(groups).forEach(status => {
           const col = document.getElementById(`funnel-col-${status}`);
@@ -2164,7 +2205,7 @@
           contactsBody.innerHTML = leads.slice(0, 20).map((lead, i) => {
             const initials = (lead.name || '?').split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
             const gradient = gradients[i % gradients.length];
-            const statusText = { novo: 'Aguardando atendimento', atendimento: 'IA respondendo...', frio: 'Lead frio', convertido: 'Convertido ✓' }[lead.status] || 'Novo lead';
+            const statusText = { novo: 'Aguardando atendimento', atendimento: 'IA respondendo...', frio: 'Lead frio', convertido: 'Convertido ?' }[lead.status] || 'Novo lead';
             const statusColor = { novo: 'text-slate-400', atendimento: 'text-cyan-400', frio: 'text-amber-400', convertido: 'text-emerald-400' }[lead.status] || 'text-slate-400';
             return `<div class="p-4 border-b border-white/5 cursor-pointer flex items-center gap-3 hover:bg-white/[0.02] transition-colors" onclick="openChatContact('${lead.name}','${initials}','${gradient}')">
               <div class="w-10 h-10 rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center text-white text-xs font-bold flex-shrink-0">${initials}</div>
@@ -2176,7 +2217,7 @@
           }).join('');
         } else if(contactsBody) {
           if(convCount) convCount.textContent = 'Conversas';
-          contactsBody.innerHTML = `<div class="p-6 text-center"><p class="text-xs text-slate-500 mt-4">Nenhum lead importado ainda.<br>Importe sua planilha na Visão Geral.</p></div>`;
+          contactsBody.innerHTML = `<div class="p-6 text-center"><p class="text-xs text-slate-500 mt-4">Nenhum lead importado ainda.<br>Importe sua planilha na Viso Geral.</p></div>`;
         }
 
       } catch(e) { 
@@ -2193,9 +2234,9 @@
       if(!dateStr) return '';
       const diff = Math.floor((Date.now() - new Date(dateStr)) / 60000);
       if(diff < 1) return 'agora';
-      if(diff < 60) return `há ${diff} min`;
-      if(diff < 1440) return `há ${Math.floor(diff/60)}h`;
-      return `há ${Math.floor(diff/1440)} dias`;
+      if(diff < 60) return `h ${diff} min`;
+      if(diff < 1440) return `h ${Math.floor(diff/60)}h`;
+      return `h ${Math.floor(diff/1440)} dias`;
     }
 
     function openChatContact(name, initials, gradient) {
@@ -2207,7 +2248,7 @@
       }
     }
 
-    // ─── AUTH GUARD ──────────────────────────────────────────
+    // --- AUTH GUARD ------------------------------------------
     function nexoAuthCheck() {
       const localSess = localStorage.getItem('sb-tqqtjrunrimabitmersr-auth-token');
       if(!localSess) { window.location.replace('login.html'); return null; }
@@ -2232,8 +2273,8 @@
       window.location.replace('login.html');
     }
 
-    // ─── MOBILE SIDEBAR TOGGLE ───────────────────────────────
-    // ─── SIDEBAR DRAWER TOGGLE (all screen sizes) ────────────
+    // --- MOBILE SIDEBAR TOGGLE -------------------------------
+    // --- SIDEBAR DRAWER TOGGLE (all screen sizes) ------------
     function toggleSidebar() {
       const sidebar = document.getElementById('nexo-sidebar');
       const backdrop = document.getElementById('sidebar-backdrop');
@@ -2276,7 +2317,7 @@
       else if(hour >= 12 && hour < 18) greet = 'Boa tarde';
 
       const greetEl = document.querySelector('[data-nexo-greeting]');
-      if(greetEl) greetEl.textContent = `${greet}, ${name.split(' ')[0]} 👋`;
+      if(greetEl) greetEl.textContent = `${greet}, ${name.split(' ')[0]} ??`;
       const compEl = document.querySelector('[data-nexo-company]');
       if(compEl) compEl.textContent = company;
 
@@ -2298,7 +2339,7 @@
       }
     }
 
-    // ─── INIT ENGINE ─────────────────────────────────────────
+    // --- INIT ENGINE -----------------------------------------
     async function initNexoEngine() {
       const session = nexoAuthCheck();
       if(!session) return;
@@ -2318,7 +2359,7 @@
         onboardingEl.classList.remove('hidden');
         if(dashboardEl) dashboardEl.classList.add('hidden');
         if(window.lucide) lucide.createIcons();
-        console.log("🎯 Nexo AI — Modo Onboarding (primeiro acesso)");
+        console.log("?? Nexo AI  Modo Onboarding (primeiro acesso)");
         return;
       }
 
@@ -2326,7 +2367,7 @@
       if(onboardingEl) onboardingEl.classList.add('hidden');
       if(dashboardEl) { dashboardEl.classList.remove('hidden'); dashboardEl.classList.add('block'); }
 
-      console.log("🚀 Nexo AI Engine — Conectando ao Supabase...");
+      console.log("?? Nexo AI Engine  Conectando ao Supabase...");
       await Promise.all([
         loadKPIs(),
         loadLeadsTable(),
@@ -2335,10 +2376,10 @@
         loadLeadsChart()
       ]);
       checkWahaStatus();
-      console.log("✅ Nexo AI Engine — Online e sincronizado.");
+      console.log("? Nexo AI Engine  Online e sincronizado.");
     }
 
-    // ─── ONBOARDING FUNCTIONS ────────────────────────────────
+    // --- ONBOARDING FUNCTIONS --------------------------------
     function skipOnboarding() {
       const session = nexoAuthCheck();
       const userId = session?.user?.id || 'default';
@@ -2368,15 +2409,15 @@
       }
     }
 
-    // ═══════════════════════════════════════════════════════════
-    // ─── TOAST SYSTEM ────────────────────────────────────────
-    // ═══════════════════════════════════════════════════════════
+    // -----------------------------------------------------------
+    // --- TOAST SYSTEM ----------------------------------------
+    // -----------------------------------------------------------
     function showToast(message, type = 'success') {
       const container = document.getElementById('nexo-toast-container');
       if(!container) return;
       const toast = document.createElement('div');
       toast.className = `nexo-toast ${type}`;
-      const icon = type === 'success' ? '✅' : '❌';
+      const icon = type === 'success' ? '?' : '?';
       toast.innerHTML = `<span>${icon}</span><span>${message}</span>`;
       container.appendChild(toast);
       setTimeout(() => {
@@ -2385,9 +2426,9 @@
       }, 4000);
     }
 
-    // ═══════════════════════════════════════════════════════════
-    // ─── WAHA WHATSAPP INTEGRATION ───────────────────────────
-    // ═══════════════════════════════════════════════════════════
+    // -----------------------------------------------------------
+    // --- WAHA WHATSAPP INTEGRATION ---------------------------
+    // -----------------------------------------------------------
     const WAHA_BASE = 'http://localhost:3000'; // WAHA Docker endpoint
     let wahaSessionId = null;
     let wahaPollInterval = null;
@@ -2424,12 +2465,12 @@
       wahaSessionId = `nexo_${userId.substring(0, 8)}`;
       
       const sessionIdEl = document.getElementById('waha-session-id');
-      if(sessionIdEl) sessionIdEl.textContent = `Sessão: ${wahaSessionId}`;
+      if(sessionIdEl) sessionIdEl.textContent = `Sesso: ${wahaSessionId}`;
 
       // Step 1: Create WAHA Session (simulated)
       try {
-        console.log(`📡 WAHA: POST ${WAHA_BASE}/api/sessions/start`);
-        console.log(`📡 Payload: { name: "${wahaSessionId}" }`);
+        console.log(`?? WAHA: POST ${WAHA_BASE}/api/sessions/start`);
+        console.log(`?? Payload: { name: "${wahaSessionId}" }`);
         
         // === REAL WAHA CALL (uncomment when Docker is running) ===
         // const res = await fetch(`${WAHA_BASE}/api/sessions/start`, {
@@ -2443,7 +2484,7 @@
         // Simulated delay for session creation
         await new Promise(r => setTimeout(r, 1500));
         
-        updateWahaFooter('connecting', 'Criando sessão...');
+        updateWahaFooter('connecting', 'Criando sesso...');
 
       } catch(err) {
         console.error('WAHA session error:', err);
@@ -2453,7 +2494,7 @@
 
       // Step 2: Fetch QR Code
       try {
-        console.log(`📡 WAHA: GET ${WAHA_BASE}/api/${wahaSessionId}/auth/qr`);
+        console.log(`?? WAHA: GET ${WAHA_BASE}/api/${wahaSessionId}/auth/qr`);
         
         // === REAL WAHA CALL (uncomment when Docker is running) ===
         // const qrRes = await fetch(`${WAHA_BASE}/api/${wahaSessionId}/auth/qr`);
@@ -2503,14 +2544,14 @@
           statusEl.textContent = 'Aguardando leitura do QR Code...';
         } else if(wahaPollCount === 2 && statusEl) {
           statusEl.textContent = 'QR Code detectado, verificando...';
-          updateWahaFooter('verifying', 'Verificando conexão...');
+          updateWahaFooter('verifying', 'Verificando conexo...');
         } else if(wahaPollCount >= 3) {
-          // After 9 seconds (3 polls × 3s), simulate success
+          // After 9 seconds (3 polls  3s), simulate success
           onWahaConnected();
           return;
         }
 
-        console.log(`📡 WAHA Poll #${wahaPollCount}: checking session ${wahaSessionId}...`);
+        console.log(`?? WAHA Poll #${wahaPollCount}: checking session ${wahaSessionId}...`);
       }, 3000);
     }
 
@@ -2536,7 +2577,7 @@
       // Auto-close modal after 2 seconds
       setTimeout(() => {
         closeWahaModal();
-        showToast('WhatsApp conectado com sucesso! Seu agente IA está ativo.');
+        showToast('WhatsApp conectado com sucesso! Seu agente IA est ativo.');
         updateWhatsAppUI();
       }, 2000);
     }
@@ -2567,10 +2608,10 @@
     }
 
     function updateWhatsAppUI() {
-      // Update all "Conectar" buttons to "Conectado ✓"
+      // Update all "Conectar" buttons to "Conectado ?"
       document.querySelectorAll('button').forEach(btn => {
         if(btn.textContent.trim().startsWith('Conectar')) {
-          btn.textContent = 'Conectado ✓';
+          btn.textContent = 'Conectado ?';
           btn.className = 'bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-bold text-sm px-6 py-3 rounded-xl cursor-default flex-shrink-0';
           btn.onclick = null;
           btn.disabled = true;
@@ -2615,9 +2656,9 @@
       }
     }
 
-    // ═══════════════════════════════════════════════════════════
-    // ─── AGENT CONFIG (Prompt 3) ─────────────────────────────
-    // ═══════════════════════════════════════════════════════════
+    // -----------------------------------------------------------
+    // --- AGENT CONFIG (Prompt 3) -----------------------------
+    // -----------------------------------------------------------
     let agentConfigured = false;
 
     async function startAgentConfig() {
@@ -2630,7 +2671,7 @@
       if(!userId) return;
 
       try {
-        const data = await sbFetch("agent_configs", `select=*`);
+        const session = nexoAuthCheck(); const userId = session?.user?.id; const data = await sbFetch("agent_configs", `user_id=eq.${userId}&select=*`);
         if(data && data.length > 0) {
           const cfg = data[0];
           document.getElementById('agent-name').value = cfg.name || 'Assistente Nexo';
@@ -2640,7 +2681,7 @@
           document.getElementById('agent-instructions').value = cfg.instructions || '';
           document.getElementById('agent-transfer').value = cfg.human_transfer_trigger || '';
         }
-      } catch(e) { console.warn("Configurações da IA ainda não existem:", e); }
+      } catch(e) { console.warn("Configuraes da IA ainda no existem:", e); }
     }
 
     function closeAgentConfig() {
@@ -2658,7 +2699,7 @@
       const human_transfer_trigger = document.getElementById('agent-transfer').value.trim();
 
       if(!name) { showToast('Preencha o nome do assistente.', 'error'); return; }
-      if(instructions.length < 20) { showToast('Instruções curtas. Detalhe mais a Base de Conhecimento.', 'error'); return; }
+      // Trava removida
 
       const btn = document.getElementById('btn-save-agent');
       if(btn) { btn.textContent = 'Salvando...'; btn.disabled = true; }
@@ -2667,12 +2708,15 @@
         const session = nexoAuthCheck();
         const userId = session?.user?.id;
 
+        const company_name = document.getElementById('agent-company')?.value.trim() || '';
+        const niche = document.getElementById('agent-niche')?.value.trim() || '';
+
         const payload = {
           user_id: userId,
-          name, tone, goal, action_link, instructions, human_transfer_trigger
+          name, tone, goal, action_link, instructions, human_transfer_trigger, company_name, niche
         };
 
-        const existing = await sbFetch("agent_configs", `select=id`);
+        const existing = await sbFetch("agent_configs", `user_id=eq.${userId}&select=id`);
         if(existing && existing.length > 0) {
           await sbUpdate("agent_configs", existing[0].id, payload);
         } else {
@@ -2681,12 +2725,12 @@
 
         agentConfigured = true;
         closeAgentConfig();
-        showToast(`Inteligência de IA salva na nuvem!`);
-        addNotification('Inteligência Salva', `O agente "${name}" foi configurado e salvo na nuvem.`, 'brain', 'violet');
+        showToast(`Inteligncia de IA salva na nuvem!`);
+        addNotification('Inteligncia Salva', `O agente "${name}" foi configurado e salvo na nuvem.`, 'brain', 'violet');
 
         document.querySelectorAll('button').forEach(b => {
           if(b.textContent.trim().includes('Configurar')) {
-            b.innerHTML = 'Configurado ✓';
+            b.innerHTML = 'Configurado ?';
             b.className = 'bg-violet-500/20 border border-violet-500/30 text-violet-400 font-bold text-sm px-6 py-3 rounded-xl cursor-default flex-shrink-0';
             b.onclick = null;
             b.disabled = true;
@@ -2695,13 +2739,13 @@
       } catch(err) {
         console.error('Erro IA:', err);
         showToast('Erro Supabase: ' + err.message, 'error');
-        if(btn) { btn.textContent = 'Salvar Inteligência'; btn.disabled = false; }
+        if(btn) { btn.textContent = 'Salvar Inteligncia'; btn.disabled = false; }
       }
     }
 
-    // ═══════════════════════════════════════════════════════════
-    // ─── CSV IMPORT (Prompt 4) ───────────────────────────────
-    // ═══════════════════════════════════════════════════════════
+    // -----------------------------------------------------------
+    // --- CSV IMPORT (Prompt 4) -------------------------------
+    // -----------------------------------------------------------
     let csvImported = false;
     let parsedContacts = [];
 
@@ -2793,7 +2837,7 @@
     }
 
     async function confirmCSVImport() {
-      if(!parsedContacts.length) { showToast('Nenhum contato válido encontrado.', 'error'); return; }
+      if(!parsedContacts.length) { showToast('Nenhum contato vlido encontrado.', 'error'); return; }
 
       const btn = document.querySelector('button[onclick="confirmCSVImport()"]');
       if(btn) { btn.textContent = 'Importando...'; btn.disabled = true; }
@@ -2808,10 +2852,10 @@
           name: c.name,
           phone: c.phone,
           status: 'novo',
-          source: 'Importação CSV'
+          source: 'Importao CSV'
         }));
 
-        console.log('📡 Gravando no Supabase (Bulk Insert)...', payload);
+        console.log('?? Gravando no Supabase (Bulk Insert)...', payload);
         await sbInsert('leads', payload);
 
         csvImported = true;
@@ -2824,7 +2868,7 @@
         // Update onboarding button
         document.querySelectorAll('button').forEach(b => {
           if(b.textContent.trim().includes('Importar CSV')) {
-            b.innerHTML = 'Importado ✓';
+            b.innerHTML = 'Importado ?';
             b.className = 'bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 font-bold text-sm px-6 py-3 rounded-xl cursor-default flex-shrink-0';
             b.onclick = null;
             b.disabled = true;
@@ -2839,15 +2883,15 @@
         loadFunnelCounts();
 
       } catch(err) {
-        console.error('Erro na importação:', err);
+        console.error('Erro na importao:', err);
         showToast('Erro Supabase: ' + err.message, 'error');
-        if(btn) { btn.textContent = 'Confirmar Importação'; btn.disabled = false; }
+        if(btn) { btn.textContent = 'Confirmar Importao'; btn.disabled = false; }
       }
     }
 
-    // ═══════════════════════════════════════════════════════════
-    // ─── PROFILE MODAL ───────────────────────────────────────
-    // ═══════════════════════════════════════════════════════════
+    // -----------------------------------------------------------
+    // --- PROFILE MODAL ---------------------------------------
+    // -----------------------------------------------------------
     function openProfileModal() {
       const modal = document.getElementById('profile-modal');
       if(modal) { modal.classList.add('active'); if(window.lucide) lucide.createIcons(); }
@@ -2907,8 +2951,8 @@
       let payload = { data: { full_name: name, company_name: company } };
 
       if(pass || passConfirm) {
-        if(pass !== passConfirm) { showToast('As senhas não conferem.', 'error'); return; }
-        if(pass.length < 6) { showToast('A senha deve ter no mínimo 6 caracteres.', 'error'); return; }
+        if(pass !== passConfirm) { showToast('As senhas no conferem.', 'error'); return; }
+        if(pass.length < 6) { showToast('A senha deve ter no mnimo 6 caracteres.', 'error'); return; }
         payload.password = pass;
       }
 
@@ -2929,7 +2973,7 @@
 
         if(!res.ok) {
           const errData = await res.json();
-          throw new Error(errData.msg || "Erro na atualização");
+          throw new Error(errData.msg || "Erro na atualizao");
         }
         
         const updatedUser = await res.json();
@@ -2939,7 +2983,7 @@
         nexoUpdateGreeting(session);
         closeProfileModal();
         showToast('Perfil atualizado com sucesso!');
-        addNotification('Perfil Atualizado', 'Suas informações de conta foram salvas na nuvem.', 'user-check', 'emerald');
+        addNotification('Perfil Atualizado', 'Suas informaes de conta foram salvas na nuvem.', 'user-check', 'emerald');
       } catch(err) {
         console.error("Erro profile:", err);
         showToast(`Erro Supabase: ${err.message}`, 'error');
@@ -2948,9 +2992,9 @@
       }
     }
 
-    // ═══════════════════════════════════════════════════════════
-    // ─── NOTIFICATIONS ───────────────────────────────────────
-    // ═══════════════════════════════════════════════════════════
+    // -----------------------------------------------------------
+    // --- NOTIFICATIONS ---------------------------------------
+    // -----------------------------------------------------------
     function toggleNotifications() {
       const dropdown = document.getElementById('notifications-dropdown');
       if(dropdown) {
@@ -2964,7 +3008,7 @@
       const badge = document.getElementById('notif-badge');
       if(!list) return;
 
-      if(list.innerHTML.includes('Nenhuma notificação')) {
+      if(list.innerHTML.includes('Nenhuma notificao')) {
         list.innerHTML = '';
       }
 
@@ -2979,7 +3023,7 @@
               <p class="text-[10px] text-slate-500 line-clamp-2">${message}</p>
             </div>
             <span class="text-[9px] text-slate-600 flex-shrink-0 absolute right-4 top-4">Agora</span>
-            <button onclick="this.closest('.cursor-pointer').remove(); updateNotifBadge();" class="absolute right-4 bottom-4 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-red-400 transition-opacity" title="Excluir notificação">
+            <button onclick="this.closest('.cursor-pointer').remove(); updateNotifBadge();" class="absolute right-4 bottom-4 opacity-0 group-hover:opacity-100 text-slate-500 hover:text-red-400 transition-opacity" title="Excluir notificao">
               <i data-lucide="trash-2" class="w-3 h-3"></i>
             </button>
           </div>
@@ -2997,7 +3041,7 @@
       const items = list.querySelectorAll('.p-4');
       if(items.length === 0) {
         badge.style.display = 'none';
-        list.innerHTML = '<div class="p-6 text-center"><p class="text-xs text-slate-500">Nenhuma notificação</p></div>';
+        list.innerHTML = '<div class="p-6 text-center"><p class="text-xs text-slate-500">Nenhuma notificao</p></div>';
       } else {
         badge.style.display = 'flex';
         badge.textContent = items.length;
@@ -3006,7 +3050,7 @@
 
     function clearNotifications() {
       const list = document.getElementById('notifications-list');
-      if(list) list.innerHTML = '<div class="p-6 text-center"><p class="text-xs text-slate-500">Nenhuma notificação</p></div>';
+      if(list) list.innerHTML = '<div class="p-6 text-center"><p class="text-xs text-slate-500">Nenhuma notificao</p></div>';
       updateNotifBadge();
     }
 
@@ -3020,9 +3064,9 @@
       }
     });
 
-    // ═══════════════════════════════════════════════════════════
-    // ─── FEATURE CARDS LOGIC ─────────────────────────────────
-    // ═══════════════════════════════════════════════════════════
+    // -----------------------------------------------------------
+    // --- FEATURE CARDS LOGIC ---------------------------------
+    // -----------------------------------------------------------
     function toggleAgente(checkbox) {
       const dot = document.getElementById('agente-status-dot');
       const label = document.getElementById('agente-status-label');
@@ -3060,12 +3104,12 @@
       }
     }
 
-    // ═══════════════════════════════════════════════════════════
-    // ─── SETTINGS PAGE ───────────────────────────────────────
-    // ═══════════════════════════════════════════════════════════
+    // -----------------------------------------------------------
+    // --- SETTINGS PAGE ---------------------------------------
+    // -----------------------------------------------------------
     async function loadSettings() {
       try {
-        const data = await sbFetch("agent_configs", "select=*&limit=1");
+        const session = nexoAuthCheck(); const userId = session?.user?.id; const data = await sbFetch("agent_configs", `user_id=eq.${userId}&select=*&limit=1`);
         if(!data || !data.length) return;
         const cfg = data[0];
 
@@ -3093,7 +3137,7 @@
         }
         if(trigger && cfg.human_transfer_trigger) trigger.value = cfg.human_transfer_trigger;
         if(instructions && cfg.instructions) instructions.value = cfg.instructions;
-      } catch(e) { console.warn("Settings não carregadas:", e.message); }
+      } catch(e) { console.warn("Settings no carregadas:", e.message); }
     }
 
     async function saveSettings(e) {
@@ -3118,7 +3162,7 @@
 
         const payload = { tone, goal, instructions, human_transfer_trigger, settings: JSON.stringify(settings) };
 
-        const existing = await sbFetch("agent_configs", "select=id&limit=1");
+        const session = nexoAuthCheck(); const userId = session?.user?.id; const existing = await sbFetch("agent_configs", `user_id=eq.${userId}&select=id&limit=1`);
         if(existing && existing.length > 0) {
           await sbUpdate("agent_configs", existing[0].id, payload);
         } else {
@@ -3126,13 +3170,13 @@
           await sbInsert("agent_configs", { ...payload, user_id: session?.user?.id, name: 'Assistente Nexo' });
         }
 
-        showToast('Configurações salvas na nuvem com sucesso!');
-        addNotification('Configurações Salvas', 'As preferências do agente IA foram atualizadas.', 'settings', 'cyan');
+        showToast('Configuraes salvas na nuvem com sucesso!');
+        addNotification('Configuraes Salvas', 'As preferncias do agente IA foram atualizadas.', 'settings', 'cyan');
       } catch(err) {
         console.error("Erro settings:", err);
         showToast('Erro ao salvar: ' + err.message, 'error');
       } finally {
-        if(btn) { btn.innerHTML = '<i data-lucide="save" class="w-4 h-4 inline mr-1"></i>Salvar Configurações'; btn.disabled = false; if(window.lucide) lucide.createIcons(); }
+        if(btn) { btn.innerHTML = '<i data-lucide="save" class="w-4 h-4 inline mr-1"></i>Salvar Configuraes'; btn.disabled = false; if(window.lucide) lucide.createIcons(); }
       }
     }
 
@@ -3143,20 +3187,20 @@
     <!-- ====== DEMO UPGRADE BANNER ====== -->
     <div id="demo-upgrade-banner" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-2xl px-4">
       <div style="background:linear-gradient(135deg,rgba(15,23,42,0.97) 0%,rgba(15,23,42,0.97) 100%);border:1px solid rgba(34,211,238,0.3);box-shadow:0 0 40px rgba(34,211,238,0.15),0 20px 60px rgba(0,0,0,0.5);" class="rounded-2xl p-4 flex items-center gap-4">
-        <!-- Ícone -->
+        <!-- cone -->
         <div class="w-12 h-12 rounded-xl flex-shrink-0 flex items-center justify-center" style="background:linear-gradient(135deg,#22d3ee,#a855f7);">
           <i data-lucide="zap" class="w-6 h-6 text-white"></i>
         </div>
         <!-- Texto -->
         <div class="flex-1 min-w-0">
-          <p class="text-white font-black text-sm">Você está no modo Demo</p>
-          <p class="text-slate-400 text-xs mt-0.5">Adquira sua licença e conecte seus leads reais agora.</p>
+          <p class="text-white font-black text-sm">Voc est no modo Demo</p>
+          <p class="text-slate-400 text-xs mt-0.5">Adquira sua licena e conecte seus leads reais agora.</p>
         </div>
         <!-- CTA -->
         <a href="https://pay.kiwify.com.br/nexoai" target="_blank"
            style="background:linear-gradient(135deg,#22d3ee,#a855f7);box-shadow:0 0 20px rgba(34,211,238,0.3);"
            class="flex-shrink-0 px-5 py-2.5 rounded-xl text-white font-black text-sm whitespace-nowrap hover:opacity-90 transition-opacity">
-          Ativar Licença →
+          Ativar Licena ?
         </a>
         <!-- Fechar -->
         <button onclick="document.getElementById('demo-upgrade-banner').remove();" class="flex-shrink-0 w-7 h-7 rounded-lg bg-slate-800 flex items-center justify-center text-slate-500 hover:text-white transition-colors">
@@ -3176,7 +3220,7 @@
             if (v && v.includes('demo@nexoai')) { isDemo = true; break; }
           }
         } catch(e){}
-        // Fallback: checa sessão via cookie/sessionStorage
+        // Fallback: checa sesso via cookie/sessionStorage
         if (!isDemo && document.cookie.includes('demo@nexoai')) isDemo = true;
         if (!isDemo && sessionStorage.getItem('nexo_demo')) isDemo = true;
 
