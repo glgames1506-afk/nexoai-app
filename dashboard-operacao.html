@@ -2429,7 +2429,7 @@
     // -----------------------------------------------------------
     // --- WAHA WHATSAPP INTEGRATION ---------------------------
     // -----------------------------------------------------------
-    const WAHA_BASE = 'http://localhost:3000'; // WAHA Docker endpoint
+    const WAHA_BASE = 'https://luanoliveira1506-nexo-waha.hf.space'; // WAHA Docker endpoint
     let wahaSessionId = null;
     let wahaPollInterval = null;
     let wahaPollCount = 0;
@@ -2472,19 +2472,27 @@
         console.log(`?? WAHA: POST ${WAHA_BASE}/api/sessions/start`);
         console.log(`?? Payload: { name: "${wahaSessionId}" }`);
         
-        // === REAL WAHA CALL (uncomment when Docker is running) ===
-        // const res = await fetch(`${WAHA_BASE}/api/sessions/start`, {
-        //   method: 'POST',
-        //   headers: { 'Content-Type': 'application/json' },
-        //   body: JSON.stringify({ name: wahaSessionId })
-        // });
-        // const data = await res.json();
-        // console.log('WAHA session created:', data);
-
-        // Simulated delay for session creation
-        await new Promise(r => setTimeout(r, 1500));
         
-        updateWahaFooter('connecting', 'Criando sesso...');
+        const payload = {
+          name: wahaSessionId,
+          config: {
+            webhooks: [
+              {
+                url: 'https://luanoliveira1506-nexo-n8n.hf.space/webhook/nexo-waha-webhook',
+                events: ['message']
+              }
+            ]
+          }
+        };
+        const res = await fetch(`${WAHA_BASE}/api/sessions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        await fetch(`${WAHA_BASE}/api/sessions/${wahaSessionId}/start`, { method: 'POST' });
+        await new Promise(r => setTimeout(r, 2000));
+        updateWahaFooter('connecting', 'Buscando QR Code...');
+
 
       } catch(err) {
         console.error('WAHA session error:', err);
@@ -2496,13 +2504,13 @@
       try {
         console.log(`?? WAHA: GET ${WAHA_BASE}/api/${wahaSessionId}/auth/qr`);
         
-        // === REAL WAHA CALL (uncomment when Docker is running) ===
-        // const qrRes = await fetch(`${WAHA_BASE}/api/${wahaSessionId}/auth/qr`);
-        // const qrBlob = await qrRes.blob();
-        // const qrUrl = URL.createObjectURL(qrBlob);
-        // const qrImg = document.getElementById('waha-qr-image');
-        // if(qrImg) { qrImg.src = qrUrl; qrImg.style.display = 'block'; }
-        // document.getElementById('waha-qr-placeholder').style.display = 'none';
+        
+        const qrRes = await fetch(`${WAHA_BASE}/api/${wahaSessionId}/auth/qr`);
+        const qrBlob = await qrRes.blob();
+        const qrUrl = URL.createObjectURL(qrBlob);
+        const qrImg = document.getElementById('waha-qr-image');
+        if(qrImg) { qrImg.src = qrUrl; qrImg.style.display = 'block'; }
+        document.getElementById('waha-qr-placeholder').style.display = 'none';
 
         // Simulated delay for QR generation
         await new Promise(r => setTimeout(r, 1000));
