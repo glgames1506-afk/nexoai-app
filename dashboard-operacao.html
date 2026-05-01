@@ -5928,8 +5928,6 @@ async function startAgentConfig() {
 
         } else {
 
-          const session = nexoAuthCheck();
-
           await sbInsert("agent_configs", { ...payload, user_id: session?.user?.id, name: 'Assistente Nexo' });
 
         }
