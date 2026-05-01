@@ -4802,31 +4802,75 @@
       wahaSessionId = 'default';
       const sessionIdEl = document.getElementById('waha-session-id');
       if(sessionIdEl) sessionIdEl.textContent = `Sessão: ${wahaSessionId}`;
+      
       try {
         const payload = {
           name: wahaSessionId,
-          config: { webhooks: [{ url: 'https://luanoliveira1506-nexo-n8n.hf.space/webhook/nexo-waha-webhook', events: ['message'] }] }
+          config: { 
+            webhooks: [{ 
+              url: 'https://luanoliveira1506-nexo-n8n.hf.space/webhook/nexo-waha-webhook', 
+              events: ['message'] 
+            }] 
+          }
         };
+
+        // 1. Garante que a sessão existe
         await fetch(`${WAHA_BASE}/api/sessions`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'X-Api-Key': WAHA_API_KEY },
           body: JSON.stringify(payload)
         });
-        await fetch(`${WAHA_BASE}/api/sessions/${wahaSessionId}/start`, { method: 'POST', headers: { 'X-Api-Key': WAHA_API_KEY } });
-        await new Promise(r => setTimeout(r, 2000));
-        updateWahaFooter('connecting', 'Buscando QR Code...');
-        const qrRes = await fetch(`${WAHA_BASE}/api/sessions/${wahaSessionId}/auth/qr`, { headers: { 'X-Api-Key': WAHA_API_KEY } });
-        const qrBlob = await qrRes.blob();
-        const qrUrl = URL.createObjectURL(qrBlob);
-        const qrImg = document.getElementById('waha-qr-image');
-        if(qrImg) { qrImg.src = qrUrl; qrImg.style.display = 'block'; }
-        document.getElementById('waha-qr-placeholder').style.display = 'none';
+
+        // 2. Inicia a sessão
+        await fetch(`${WAHA_BASE}/api/sessions/${wahaSessionId}/start`, { 
+          method: 'POST', 
+          headers: { 'X-Api-Key': WAHA_API_KEY } 
+        });
+
+        updateWahaFooter('connecting', 'Gerando QR Code...');
         showWahaState('qr');
-        updateWahaFooter('scanning', 'Aguardando escaneamento...');
+
+        // 3. Loop de busca do QR Code (tentativas)
+        let qrLoaded = false;
+        let attempts = 0;
+        const maxAttempts = 15;
+
+        while (!qrLoaded && attempts < maxAttempts) {
+          attempts++;
+          try {
+            const qrRes = await fetch(`${WAHA_BASE}/api/sessions/${wahaSessionId}/auth/qr`, { 
+              headers: { 'X-Api-Key': WAHA_API_KEY } 
+            });
+
+            if (qrRes.ok) {
+              const qrBlob = await qrRes.blob();
+              if (qrBlob.type.startsWith('image/')) {
+                const qrUrl = URL.createObjectURL(qrBlob);
+                const qrImg = document.getElementById('waha-qr-image');
+                if(qrImg) { 
+                  qrImg.src = qrUrl; 
+                  qrImg.style.display = 'block'; 
+                }
+                const placeholder = document.getElementById('waha-qr-placeholder');
+                if(placeholder) placeholder.style.display = 'none';
+                qrLoaded = true;
+                updateWahaFooter('scanning', 'Aguardando escaneamento...');
+              }
+            }
+          } catch(e) { console.warn("QR Fetch attempt failed", e); }
+          
+          if (!qrLoaded) await new Promise(r => setTimeout(r, 2000));
+        }
+
+        if (!qrLoaded) {
+          throw new Error("Timeout ao gerar QR Code. Tente fechar e abrir novamente.");
+        }
+
         startWahaPolling();
       } catch(err) {
         console.error('WAHA error:', err);
-        showToast('Erro ao conectar com WAHA. Verifique se o servidor está online no Hugging Face.', 'error');
+        showToast('Erro WAHA: ' + err.message, 'error');
+        showWahaState('error');
       }
     }
 
