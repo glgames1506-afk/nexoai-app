@@ -3997,29 +3997,29 @@
     }
 
     function closeAddLeadModal() {
-
       const overlay = document.getElementById('add-lead-modal');
-
       if(overlay) overlay.classList.remove('active');
+    }
 
+    async function saveNewLead(e) {
+      e.preventDefault();
+      const name = document.getElementById('new-lead-name')?.value.trim();
+      const phone = document.getElementById('new-lead-phone')?.value.trim();
+      const source = document.getElementById('new-lead-source')?.value || 'Manual';
+      if(!name || !phone) { showToast('Preencha Nome e WhatsApp.', 'error'); return; }
+
+      try {
+        const session = nexoAuthCheck();
+        await sbInsert("leads", { user_id: session?.user?.id, name, phone, source, status: 'Novo' });
         showToast('Lead adicionado com sucesso!', 'success');
-
         addNotification(`Novo lead manual: ${name}`, 'user');
-
         closeAddLeadModal();
-
         await loadLeadsTable();
-
         await loadFunnelCounts();
-
         await loadKPIs();
-
       } catch(err) {
-
         showToast('Erro ao salvar lead: ' + err.message, 'error');
-
       }
-
     }
 
 
