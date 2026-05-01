@@ -113,9 +113,16 @@
         <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
       </div>
 
-      <button class="btn-login" id="btn-login" type="button">
-        ENTRAR NO DASHBOARD
-      </button>
+      
+      <div style="display:flex; gap:10px; margin-top:.5rem;">
+        <button class="btn-login" id="btn-login" type="button" style="flex:1;">
+          ENTRAR
+        </button>
+        <button id="btn-register" type="button" style="flex:1; background: rgba(34,211,238,0.1); color: #22d3ee; border: 1px solid rgba(34,211,238,0.3); border-radius: 16px; font-weight: 900; font-size:.9rem; cursor:pointer; transition: opacity .2s;">
+          CRIAR CONTA
+        </button>
+      </div>
+
 
       <div id="feedback"></div>
     </div>
@@ -171,6 +178,31 @@
         btn.textContent = 'ENTRAR NO DASHBOARD';
       } else {
         showFb('Acesso autorizado! Redirecionando...', 'success');
+        setTimeout(function() { window.location.href = 'dashboard-operacao.html'; }, 1000);
+      }
+    });
+
+    
+    // ── Cadastro ──
+    document.getElementById('btn-register').addEventListener('click', async function() {
+      var email = document.getElementById('email').value.trim();
+      var pass  = document.getElementById('password').value;
+      var btn   = document.getElementById('btn-register');
+
+      if (!email || !pass) { showFb('Preencha todos os campos.', 'error'); return; }
+      if (pass.length < 6) { showFb('A senha deve ter no mínimo 6 caracteres.', 'error'); return; }
+
+      btn.disabled   = true;
+      btn.textContent = 'Criando...';
+
+      var result = await _supabase.auth.signUp({ email: email, password: pass });
+
+      if (result.error) {
+        showFb('Erro: ' + result.error.message, 'error');
+        btn.disabled    = false;
+        btn.textContent = 'CRIAR CONTA';
+      } else {
+        showFb('Conta criada e logada com sucesso! Redirecionando...', 'success');
         setTimeout(function() { window.location.href = 'dashboard-operacao.html'; }, 1000);
       }
     });
