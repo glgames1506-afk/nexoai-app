@@ -1056,7 +1056,7 @@
 
               <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nova Senha</label>
 
-              <input type="password" id="profile-password" placeholder="Mn. 6 caracteres" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-cyan-400 transition-colors" />
+              <input type="password" id="profile-password" autocomplete="new-password" placeholder="Mn. 6 caracteres" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-cyan-400 transition-colors" />
 
             </div>
 
@@ -1064,7 +1064,7 @@
 
               <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Confirmar Senha</label>
 
-              <input type="password" id="profile-password-confirm" placeholder="Repita a senha" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-cyan-400 transition-colors" />
+              <input type="password" id="profile-password-confirm" autocomplete="new-password" placeholder="Repita a senha" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-cyan-400 transition-colors" />
 
             </div>
 
@@ -5496,7 +5496,7 @@ async function startAgentConfig() {
 
 
 
-      if(pass || passConfirm) {
+      if((pass && pass.trim() !== "") || (passConfirm && passConfirm.trim() !== "")) {
 
         if(pass !== passConfirm) { showToast('As senhas no conferem.', 'error'); return; }
 
@@ -6069,6 +6069,12 @@ async function startAgentConfig() {
 
     <!-- ====== FIM DEMO UPGRADE BANNER ====== -->
 
+    <script>
+      // Garante a verificação de sessão e remoção do display:none
+      if (typeof checkUser === 'function') {
+        checkUser();
+      }
+    </script>
 </body>
 
 
