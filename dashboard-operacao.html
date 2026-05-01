@@ -5956,17 +5956,23 @@ async function startAgentConfig() {
 
 
 
-    // Run on page load
+    // Run on page load — usa DOMContentLoaded para não depender de CDNs lentos
+    // Safety timeout: se algo travar, libera a tela em 4s para nunca ficar branco
+    var _nexoSafetyTimer = setTimeout(function() {
+      console.warn("⚠️ Safety timeout: liberando tela após 4s");
+      document.body.style.display = 'block';
+    }, 4000);
 
-    window.addEventListener("load", () => { 
-      console.log("?? Página carregada. Iniciando Nexo Engine...");
+    document.addEventListener("DOMContentLoaded", () => { 
+      console.log("🚀 DOM pronto. Iniciando Nexo Engine...");
       initNexoEngine().then(() => { 
-        console.log("? Motor iniciado com sucesso.");
+        clearTimeout(_nexoSafetyTimer);
+        console.log("✅ Motor iniciado com sucesso.");
         restoreFeatureStates(); 
         loadSettings(); 
       }).catch(err => {
-        console.error("? Falha crítica na inicialização do motor:", err);
-        // Se falhar drasticamente, mostra o corpo para não ficar em loop branco
+        clearTimeout(_nexoSafetyTimer);
+        console.error("❌ Falha crítica na inicialização do motor:", err);
         document.body.style.display = 'block';
       }); 
     });
