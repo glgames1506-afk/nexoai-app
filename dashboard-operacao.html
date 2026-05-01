@@ -2486,10 +2486,10 @@
         };
         const res = await fetch(`${WAHA_BASE}/api/sessions`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'X-Api-Key': 'nexo123' },
           body: JSON.stringify(payload)
         });
-        await fetch(`${WAHA_BASE}/api/sessions/${wahaSessionId}/start`, { method: 'POST' });
+        await fetch(`${WAHA_BASE}/api/sessions/${wahaSessionId}/start`, { method: 'POST', headers: { 'X-Api-Key': 'nexo123' } });
         await new Promise(r => setTimeout(r, 2000));
         updateWahaFooter('connecting', 'Buscando QR Code...');
 
@@ -2505,7 +2505,7 @@
         console.log(`?? WAHA: GET ${WAHA_BASE}/api/${wahaSessionId}/auth/qr`);
         
         
-        const qrRes = await fetch(`${WAHA_BASE}/api/${wahaSessionId}/auth/qr`);
+        const qrRes = await fetch(`${WAHA_BASE}/api/${wahaSessionId}/auth/qr`, { headers: { 'X-Api-Key': 'nexo123' } });
         const qrBlob = await qrRes.blob();
         const qrUrl = URL.createObjectURL(qrBlob);
         const qrImg = document.getElementById('waha-qr-image');
