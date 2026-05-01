@@ -2462,7 +2462,7 @@
       // Generate session ID from user
       const session = nexoAuthCheck();
       const userId = session?.user?.id || 'default';
-      wahaSessionId = `nexo_${userId.substring(0, 8)}`;
+      wahaSessionId = 'default';
       
       const sessionIdEl = document.getElementById('waha-session-id');
       if(sessionIdEl) sessionIdEl.textContent = `Sesso: ${wahaSessionId}`;
