@@ -4843,7 +4843,7 @@
             headers: { 'Content-Type': 'application/json' }, 
             body: JSON.stringify({
               name: 'default',
-              config: { webhooks: [{ url: 'https://luanoliveira1506-nexo-n8n.hf.space/webhook/nexo-waha-webhook', events: ['message', 'message.upsert', 'session.status'] }] }
+              config: { webhooks: [{ url: 'https://luanoliveira1506-nexo-n8n.hf.space/webhook/nexo-waha-webhook', events: ['message', 'session.status'] }] }
             })
           });
           // Se já existe (422), tenta iniciar direto
