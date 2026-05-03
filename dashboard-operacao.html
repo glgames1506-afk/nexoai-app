@@ -2916,6 +2916,21 @@
 
                <div class="space-y-4">
 
+                  <div class="p-5 bg-slate-900/60 rounded-xl border border-white/5 hover:border-cyan-400/10 transition-colors mb-4">
+                     <div class="text-white font-bold mb-1">Identidade do Agente</div>
+                     <div class="text-sm text-slate-500 mb-4">Quem a IA é e para qual empresa ela trabalha.</div>
+                     <div class="flex gap-4">
+                        <div class="flex-1">
+                           <label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Nome do Agente</label>
+                           <input type="text" id="cfg-name" placeholder="Ex: Ana" class="w-full bg-slate-800 text-white rounded-lg p-2.5 border border-slate-700 outline-none focus:border-cyan-400 text-sm">
+                        </div>
+                        <div class="flex-1">
+                           <label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Nome da Empresa</label>
+                           <input type="text" id="cfg-company" placeholder="Ex: Imobiliária Silva" class="w-full bg-slate-800 text-white rounded-lg p-2.5 border border-slate-700 outline-none focus:border-cyan-400 text-sm">
+                        </div>
+                     </div>
+                  </div>
+
                   <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3"> Comportamento da IA</h3>
 
 
@@ -6107,7 +6122,13 @@ async function startAgentConfig() {
 
         const website = document.getElementById('cfg-website');
 
+        const agentName = document.getElementById('cfg-name');
 
+        const agentCompany = document.getElementById('cfg-company');
+
+
+
+        if(agentName && cfg.name) agentName.value = cfg.name;
 
         if(tone && cfg.tone) tone.value = cfg.tone;
 
@@ -6115,6 +6136,7 @@ async function startAgentConfig() {
             try {
                 const s = typeof cfg.settings === 'string' ? JSON.parse(cfg.settings) : cfg.settings;
                 if(s.website_url) website.value = s.website_url;
+                if(agentCompany && s.company_name) agentCompany.value = s.company_name;
             } catch(e) {}
         }
 
@@ -6168,6 +6190,9 @@ async function startAgentConfig() {
 
         const human_transfer_trigger = document.getElementById('cfg-trigger')?.value?.trim() || '';
 
+        const name = document.getElementById('cfg-name')?.value?.trim() || 'Assistente Nexo';
+        
+        const company_name = document.getElementById('cfg-company')?.value?.trim() || '';
 
 
         const settings = {
@@ -6186,11 +6211,13 @@ async function startAgentConfig() {
 
           website_url: document.getElementById('cfg-website')?.value?.trim() || '',
 
+          company_name: company_name
+
         };
 
 
 
-        const payload = { tone, goal, instructions, human_transfer_trigger, settings: JSON.stringify(settings) };
+        const payload = { name, tone, goal, instructions, human_transfer_trigger, settings: JSON.stringify(settings) };
 
 
 
