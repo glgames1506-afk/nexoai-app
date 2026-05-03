@@ -4812,46 +4812,92 @@
       if(sessionIdEl) sessionIdEl.textContent = 'Sessão: default';
       
       try {
-        updateWahaFooter('connecting', 'Preparando sessão...');
+        const pollEl = () => document.getElementById('waha-poll-status');
+        updateWahaFooter('connecting', 'Reiniciando sessão...');
 
-        // 1. Limpa estado FAILED: stop -> delete -> create -> start
-        await wahaFetch('/api/sessions/default/stop', { method: 'POST' });
-        await new Promise(r => setTimeout(r, 800));
-        await wahaFetch('/api/sessions/default', { method: 'DELETE' });
-        await new Promise(r => setTimeout(r, 800));
-
-        // 2. Recria sessão com webhook configurado
-        const webhookPayload = {
-          name: 'default',
-          config: { 
-            webhooks: [{ 
-              url: 'https://luanoliveira1506-nexo-n8n.hf.space/webhook/nexo-waha-webhook', 
-              events: ['message', 'message.upsert', 'session.status'] 
-            }] 
+        // 1. Usa o endpoint /restart que o WAHA tem nativamente (mais confiável que stop+delete+create+start)
+        const restartRes = await wahaFetch('/api/sessions/default/restart', { method: 'POST' });
+        
+        // Se não tiver sessão, cria do zero
+        if (!restartRes.ok) {
+          await wahaFetch('/api/sessions/default/stop', { method: 'POST' });
+          await new Promise(r => setTimeout(r, 1000));
+          const createRes = await wahaFetch('/api/sessions', { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify({
+              name: 'default',
+              config: { webhooks: [{ url: 'https://luanoliveira1506-nexo-n8n.hf.space/webhook/nexo-waha-webhook', events: ['message', 'message.upsert', 'session.status'] }] }
+            })
+          });
+          // Se já existe (422), tenta iniciar direto
+          if (!createRes.ok) {
+            await wahaFetch('/api/sessions/default/start', { method: 'POST' });
           }
-        };
-        await wahaFetch('/api/sessions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(webhookPayload) });
-        await new Promise(r => setTimeout(r, 800));
+        }
 
-        // 3. Inicia sessão
-        await wahaFetch('/api/sessions/default/start', { method: 'POST' });
-
-        updateWahaFooter('connecting', 'Gerando QR Code...');
         showWahaState('qr');
+        updateWahaFooter('connecting', 'Aguardando sessão inicializar...');
 
-        // 4. Poll pelo QR Code (imagem PNG ou JSON base64)
-        let qrLoaded = false;
-        let attempts = 0;
-        const maxAttempts = 20;
+        // 2. FASE CRÍTICA: Aguarda o status virar SCAN_QR_CODE antes de buscar o QR
+        let sessionReady = false;
+        let statusAttempts = 0;
+        const maxStatusAttempts = 30; // 30 x 2s = 60s
 
-        while (!qrLoaded && attempts < maxAttempts) {
-          attempts++;
-          await new Promise(r => setTimeout(r, 2500));
-          const pollEl = document.getElementById('waha-poll-status');
-          if(pollEl) pollEl.textContent = `Aguardando QR... (${attempts}/${maxAttempts})`;
-
+        while (!sessionReady && statusAttempts < maxStatusAttempts) {
+          statusAttempts++;
+          await new Promise(r => setTimeout(r, 2000));
+          const pe = pollEl();
+          if(pe) pe.textContent = `Iniciando motor WhatsApp... (${statusAttempts}/${maxStatusAttempts})`;
+          
           try {
-            // Tenta como imagem PNG
+            const statusRes = await wahaFetch('/api/sessions/default');
+            if (statusRes.ok) {
+              const statusData = await statusRes.json();
+              const st = statusData?.status;
+              console.log(`WAHA status: ${st}`);
+              
+              if (st === 'SCAN_QR_CODE') {
+                sessionReady = true;
+                if(pe) pe.textContent = 'QR Code pronto! Buscando imagem...';
+              } else if (st === 'WORKING') {
+                // Já está conectado
+                onWahaConnected();
+                return;
+              } else if (st === 'FAILED') {
+                // Tenta reiniciar e continua aguardando
+                await wahaFetch('/api/sessions/default/start', { method: 'POST' });
+              }
+            }
+          } catch(e) { console.warn('Status poll error:', e); }
+        }
+
+        if (!sessionReady) {
+          // Mostra tela de retry amigável
+          const qrArea = document.getElementById('waha-qr-area');
+          if(qrArea) {
+            qrArea.innerHTML = `
+              <div class="py-6 text-center">
+                <div class="w-16 h-16 rounded-full bg-amber-400/20 border border-amber-400/30 flex items-center justify-center mx-auto mb-4">
+                  <i data-lucide="refresh-cw" class="w-8 h-8 text-amber-400"></i>
+                </div>
+                <p class="text-sm font-bold text-white mb-2">Servidor ainda inicializando</p>
+                <p class="text-xs text-slate-400 mb-4">O Render pode demorar até 60s para acordar após inatividade. Aguarde e tente novamente.</p>
+                <button onclick="closeWahaModal(); setTimeout(startWhatsAppSetup, 1000);" class="bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-sm px-6 py-3 rounded-xl transition-all hover:scale-105">
+                  ↻ Tentar Novamente
+                </button>
+              </div>
+            `;
+            if(window.lucide) lucide.createIcons();
+          }
+          updateWahaFooter('connecting', 'Servidor inicializando...');
+          return;
+        }
+
+        // 3. AGORA busca o QR Code (sessão está em SCAN_QR_CODE)
+        let qrLoaded = false;
+        for (let attempt = 1; attempt <= 5; attempt++) {
+          try {
             const qrImgRes = await wahaFetch('/api/default/auth/qr', { headers: { 'Accept': 'image/png' } });
             if (qrImgRes.ok) {
               const blob = await qrImgRes.blob();
@@ -4862,12 +4908,12 @@
                 if(ph) ph.style.display = 'none';
                 qrLoaded = true;
                 updateWahaFooter('scanning', 'Aguardando escaneamento...');
-                if(pollEl) pollEl.textContent = 'Aguardando leitura do QR Code...';
+                const pe = pollEl();
+                if(pe) pe.textContent = 'Aguardando leitura do QR Code...';
                 break;
               }
             }
-
-            // Fallback: JSON com base64
+            // Fallback JSON base64
             const qrJsonRes = await wahaFetch('/api/default/auth/qr?format=json');
             if (qrJsonRes.ok) {
               const qrData = await qrJsonRes.json();
@@ -4882,27 +4928,14 @@
                 break;
               }
             }
-          } catch(e) { console.warn(`QR attempt ${attempts}:`, e); }
+          } catch(e) { console.warn(`QR fetch attempt ${attempt}:`, e); }
+          await new Promise(r => setTimeout(r, 1000));
         }
 
         if (!qrLoaded) {
-          const qrArea = document.getElementById('waha-qr-area');
-          if(qrArea) {
-            qrArea.innerHTML = `
-              <div class="py-6 text-center">
-                <div class="w-16 h-16 rounded-full bg-amber-400/20 border border-amber-400/30 flex items-center justify-center mx-auto mb-4">
-                  <i data-lucide="refresh-cw" class="w-8 h-8 text-amber-400"></i>
-                </div>
-                <p class="text-sm font-bold text-white mb-2">Servidor acordando...</p>
-                <p class="text-xs text-slate-400 mb-4">O servidor Render pode estar saindo da hibernação. Aguarde 30s e tente novamente.</p>
-                <button onclick="closeWahaModal(); setTimeout(startWhatsAppSetup, 500);" class="bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-sm px-6 py-3 rounded-xl transition-all hover:scale-105">
-                  Tentar Novamente
-                </button>
-              </div>
-            `;
-            if(window.lucide) lucide.createIcons();
-          }
-          updateWahaFooter('connecting', 'Servidor acordando...');
+          showToast('Erro ao carregar QR Code. Tente novamente.', 'error');
+          showWahaState('loading');
+          updateWahaFooter('connecting', 'Erro ao carregar QR');
           return;
         }
 
