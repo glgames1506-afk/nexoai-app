@@ -2046,6 +2046,22 @@
 
           </div>
 
+          
+
+          <!-- Botão de Desconexão Forçada -->
+
+          <div class="mt-3">
+
+            <button id="btn-waha-disconnect" onclick="forceDisconnectWaha()" 
+
+              class="w-full bg-red-500/10 border border-red-500/20 text-red-400 font-bold text-xs px-4 py-2 rounded-xl cursor-pointer transition-all hover:bg-red-500/20">
+
+              🔌 Forçar Desconexão
+
+            </button>
+
+          </div>
+
           </div>
 
         </div>
@@ -4991,6 +5007,25 @@
           btn.className = 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold text-sm px-6 py-3 rounded-xl cursor-default w-full transition-all';
           btn.onclick = null;
           
+          // Injectar botão de desconectar
+          if (!document.getElementById("btn-disconnect-waha")) {
+              const disBtn = document.createElement("button");
+              disBtn.id = "btn-disconnect-waha";
+              disBtn.innerHTML = '<i data-lucide="trash" class="w-4 h-4 inline mr-1"></i>Forçar Desconexão';
+              disBtn.className = 'mt-3 bg-red-500/10 border border-red-500/20 text-red-400 font-bold text-xs px-4 py-2 rounded-xl cursor-pointer w-full transition-all hover:bg-red-500/20';
+              disBtn.onclick = async () => {
+                  disBtn.innerText = 'Desconectando...';
+                  try {
+                      await fetch(`${WAHA_BASE}/api/sessions/${wahaSessionId}/stop`, { method: 'POST', headers: { 'X-Api-Key': WAHA_API_KEY }});
+                      await fetch(`${WAHA_BASE}/api/sessions/${wahaSessionId}/logout`, { method: 'POST', headers: { 'X-Api-Key': WAHA_API_KEY }});
+                  } catch(e) {}
+                  const session = nexoAuthCheck();
+                  localStorage.removeItem(`nexo_whatsapp_${session?.user?.id || "default"}`);
+                  location.reload();
+              };
+              btn.parentNode.appendChild(disBtn);
+          }
+          
           // Atualiza o estado do card pai
           const card = btn.closest('.glass-card');
           if(card) {
@@ -5030,26 +5065,51 @@
       const userId = session?.user?.id || 'default';
       
       try {
+        // SEMPRE checar o servidor real primeiro — com timeout de 6s para não bloquear
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 6000);
         const res = await fetch(`${WAHA_BASE}/api/sessions/${wahaSessionId}`, { 
-          headers: { 'X-Api-Key': WAHA_API_KEY } 
+          headers: { 'X-Api-Key': WAHA_API_KEY },
+          signal: controller.signal
         });
+        clearTimeout(timer);
+        
         if(res.ok) {
           const data = await res.json();
           if(data && data.status === 'WORKING') {
+            // Servidor confirmou: está WORKING. Atualizar UI.
             wahaConnected = true;
             localStorage.setItem(`nexo_whatsapp_${userId}`, 'connected');
             updateWhatsAppUI();
             return;
+          } else {
+            // Servidor respondeu mas sessão NÃO é WORKING (ex: SCAN_QR_CODE, FAILED)
+            // Forçar limpeza do cache mentiroso
+            wahaConnected = false;
+            localStorage.removeItem(`nexo_whatsapp_${userId}`);
+            console.info('WAHA: sessão não está WORKING, status =', data?.status, '— cache limpo.');
+            return;
           }
         }
       } catch(err) {
-        console.warn('WAHA Status Error:', err);
+        // Servidor inacessível (Render dormindo) — NÃO confiar no localStorage
+        console.warn('WAHA Status: servidor inacessível, ignorando cache.', err?.message);
+        return;
       }
+    }
 
-      const connected = localStorage.getItem(`nexo_whatsapp_${userId}`);
-      if(connected === 'connected') { 
-        updateWhatsAppUI(); 
-      }
+    async function forceDisconnectWaha() {
+      const session = nexoAuthCheck();
+      const userId = session?.user?.id || 'default';
+      const btn = document.getElementById('btn-waha-disconnect');
+      if(btn) btn.textContent = 'Desconectando...';
+      try {
+        await wahaFetch(`/api/sessions/${wahaSessionId}/stop`, { method: 'POST' });
+        await wahaFetch(`/api/sessions/${wahaSessionId}/logout`, { method: 'POST' });
+      } catch(e) {}
+      localStorage.removeItem(`nexo_whatsapp_${userId}`);
+      wahaConnected = false;
+      setTimeout(() => location.reload(), 500);
     }
 
     // -----------------------------------------------------------
