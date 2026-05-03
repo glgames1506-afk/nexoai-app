@@ -4784,6 +4784,14 @@
     let wahaPollInterval = null;
     let wahaConnected = false;
 
+    async function wahaFetch(path, opts = {}) {
+      const def = { 'X-Api-Key': WAHA_API_KEY };
+      const heads = Object.assign(def, opts.headers || {});
+      try {
+        return await fetch(`${WAHA_BASE}${path}`, { ...opts, headers: heads });
+      } catch(e) { return { ok: false, status: 0, json: async () => ({}), blob: async () => new Blob() }; }
+    }
+
     function startWhatsAppSetup() {
       if(wahaConnected) return;
       const modal = document.getElementById('waha-modal');
@@ -4801,69 +4809,101 @@
       showWahaState('loading');
       wahaSessionId = 'default';
       const sessionIdEl = document.getElementById('waha-session-id');
-      if(sessionIdEl) sessionIdEl.textContent = `Sessão: ${wahaSessionId}`;
+      if(sessionIdEl) sessionIdEl.textContent = 'Sessão: default';
       
       try {
-        const payload = {
-          name: wahaSessionId,
+        updateWahaFooter('connecting', 'Preparando sessão...');
+
+        // 1. Limpa estado FAILED: stop -> delete -> create -> start
+        await wahaFetch('/api/sessions/default/stop', { method: 'POST' });
+        await new Promise(r => setTimeout(r, 800));
+        await wahaFetch('/api/sessions/default', { method: 'DELETE' });
+        await new Promise(r => setTimeout(r, 800));
+
+        // 2. Recria sessão com webhook configurado
+        const webhookPayload = {
+          name: 'default',
           config: { 
             webhooks: [{ 
               url: 'https://luanoliveira1506-nexo-n8n.hf.space/webhook/nexo-waha-webhook', 
-              events: ['message'] 
+              events: ['message', 'message.upsert', 'session.status'] 
             }] 
           }
         };
+        await wahaFetch('/api/sessions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(webhookPayload) });
+        await new Promise(r => setTimeout(r, 800));
 
-        // 1. Garante que a sessão existe
-        await fetch(`${WAHA_BASE}/api/sessions`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-Api-Key': WAHA_API_KEY },
-          body: JSON.stringify(payload)
-        });
-
-        // 2. Inicia a sessão
-        await fetch(`${WAHA_BASE}/api/sessions/${wahaSessionId}/start`, { 
-          method: 'POST', 
-          headers: { 'X-Api-Key': WAHA_API_KEY } 
-        });
+        // 3. Inicia sessão
+        await wahaFetch('/api/sessions/default/start', { method: 'POST' });
 
         updateWahaFooter('connecting', 'Gerando QR Code...');
         showWahaState('qr');
 
-        // 3. Loop de busca do QR Code (tentativas)
+        // 4. Poll pelo QR Code (imagem PNG ou JSON base64)
         let qrLoaded = false;
         let attempts = 0;
-        const maxAttempts = 15;
+        const maxAttempts = 20;
 
         while (!qrLoaded && attempts < maxAttempts) {
           attempts++;
-          try {
-            const qrRes = await fetch(`${WAHA_BASE}/api/sessions/${wahaSessionId}/auth/qr`, { 
-              headers: { 'X-Api-Key': WAHA_API_KEY } 
-            });
+          await new Promise(r => setTimeout(r, 2500));
+          const pollEl = document.getElementById('waha-poll-status');
+          if(pollEl) pollEl.textContent = `Aguardando QR... (${attempts}/${maxAttempts})`;
 
-            if (qrRes.ok) {
-              const qrBlob = await qrRes.blob();
-              if (qrBlob.type.startsWith('image/')) {
-                const qrUrl = URL.createObjectURL(qrBlob);
+          try {
+            // Tenta como imagem PNG
+            const qrImgRes = await wahaFetch('/api/default/auth/qr', { headers: { 'Accept': 'image/png' } });
+            if (qrImgRes.ok) {
+              const blob = await qrImgRes.blob();
+              if (blob.size > 100 && blob.type && blob.type.startsWith('image/')) {
                 const qrImg = document.getElementById('waha-qr-image');
-                if(qrImg) { 
-                  qrImg.src = qrUrl; 
-                  qrImg.style.display = 'block'; 
-                }
-                const placeholder = document.getElementById('waha-qr-placeholder');
-                if(placeholder) placeholder.style.display = 'none';
+                if(qrImg) { qrImg.src = URL.createObjectURL(blob); qrImg.style.display = 'block'; }
+                const ph = document.getElementById('waha-qr-placeholder');
+                if(ph) ph.style.display = 'none';
                 qrLoaded = true;
                 updateWahaFooter('scanning', 'Aguardando escaneamento...');
+                if(pollEl) pollEl.textContent = 'Aguardando leitura do QR Code...';
+                break;
               }
             }
-          } catch(e) { console.warn("QR Fetch attempt failed", e); }
-          
-          if (!qrLoaded) await new Promise(r => setTimeout(r, 2000));
+
+            // Fallback: JSON com base64
+            const qrJsonRes = await wahaFetch('/api/default/auth/qr?format=json');
+            if (qrJsonRes.ok) {
+              const qrData = await qrJsonRes.json();
+              const b64 = qrData?.value || qrData?.qr || qrData?.image || null;
+              if (b64) {
+                const qrImg = document.getElementById('waha-qr-image');
+                if(qrImg) { qrImg.src = b64.startsWith('data:') ? b64 : `data:image/png;base64,${b64}`; qrImg.style.display = 'block'; }
+                const ph = document.getElementById('waha-qr-placeholder');
+                if(ph) ph.style.display = 'none';
+                qrLoaded = true;
+                updateWahaFooter('scanning', 'Aguardando escaneamento...');
+                break;
+              }
+            }
+          } catch(e) { console.warn(`QR attempt ${attempts}:`, e); }
         }
 
         if (!qrLoaded) {
-          throw new Error("Timeout ao gerar QR Code. Tente fechar e abrir novamente.");
+          const qrArea = document.getElementById('waha-qr-area');
+          if(qrArea) {
+            qrArea.innerHTML = `
+              <div class="py-6 text-center">
+                <div class="w-16 h-16 rounded-full bg-amber-400/20 border border-amber-400/30 flex items-center justify-center mx-auto mb-4">
+                  <i data-lucide="refresh-cw" class="w-8 h-8 text-amber-400"></i>
+                </div>
+                <p class="text-sm font-bold text-white mb-2">Servidor acordando...</p>
+                <p class="text-xs text-slate-400 mb-4">O servidor Render pode estar saindo da hibernação. Aguarde 30s e tente novamente.</p>
+                <button onclick="closeWahaModal(); setTimeout(startWhatsAppSetup, 500);" class="bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-sm px-6 py-3 rounded-xl transition-all hover:scale-105">
+                  Tentar Novamente
+                </button>
+              </div>
+            `;
+            if(window.lucide) lucide.createIcons();
+          }
+          updateWahaFooter('connecting', 'Servidor acordando...');
+          return;
         }
 
         startWahaPolling();

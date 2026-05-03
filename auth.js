@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Nexo AI — Auth Engine (Supabase)
  */
 
@@ -96,7 +96,6 @@ function showFeedback(msg, type) {
   el.classList.remove('hidden');
 }
 
-// Executa verificação
-if (supabase) checkUser();
-
-
+// O checkUser deve ser chamado explicitamente pelos arquivos que o utilizam
+// para evitar redirecionamentos prematuros antes da inicialização completa dos motores.
+// if (supabase) checkUser();
