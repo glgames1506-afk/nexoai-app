@@ -4983,21 +4983,44 @@
     }
 
     function updateWhatsAppUI() {
+      // Atualiza os botões
       document.querySelectorAll('button').forEach(btn => {
         const txt = btn.textContent.trim();
-        if(txt.startsWith('Conectar')) {
-          btn.textContent = 'Conectado ✅';
-          btn.className = 'bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-bold text-sm px-6 py-3 rounded-xl cursor-default flex-shrink-0';
+        if(txt.startsWith('Conectar') || txt.includes('Escanear QR Code')) {
+          btn.innerHTML = '<i data-lucide="check-circle" class="w-4 h-4 inline mr-1"></i>Conectado ✅';
+          btn.className = 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold text-sm px-6 py-3 rounded-xl cursor-default w-full transition-all';
           btn.onclick = null;
           
-          // Se for o card do onboarding, podemos marcar o container
+          // Atualiza o estado do card pai
           const card = btn.closest('.glass-card');
           if(card) {
-            card.style.borderColor = 'rgba(52, 211, 153, 0.3)';
-            card.style.background = 'rgba(52, 211, 153, 0.05)';
+            // Bolinha de status
+            const statusDot = card.querySelector('.bg-slate-500');
+            if(statusDot) {
+              statusDot.className = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse';
+              const statusText = statusDot.nextElementSibling;
+              if(statusText) {
+                statusText.textContent = 'Conectado';
+                statusText.className = 'text-[10px] font-bold text-emerald-400';
+              }
+            }
+            // Título e texto vazio
+            const h4 = card.querySelector('h4');
+            if(h4) h4.textContent = 'WhatsApp Operante';
+            const p = card.querySelector('p.text-xs');
+            if(p) p.textContent = 'IA conectada e roteando mensagens em tempo real.';
           }
         }
       });
+      
+      // Atualiza o bloco "Nenhum lead ainda" para sucesso se existir
+      const emptyLeadText = document.querySelector('h3.text-slate-400');
+      if(emptyLeadText && emptyLeadText.textContent.includes('Nenhum lead ainda')) {
+         emptyLeadText.innerHTML = '<span class="text-emerald-400">WhatsApp Conectado!</span> Aguardando novos leads...';
+         const emptySub = emptyLeadText.nextElementSibling;
+         if(emptySub) emptySub.textContent = 'A IA responderá automaticamente assim que chegarem.';
+      }
+
       if(window.lucide) lucide.createIcons();
     }
 
