@@ -1166,6 +1166,40 @@
 
 
 
+    
+    <!-- ====== N8N CONFIG MODAL ====== -->
+    <div class="nexo-modal-overlay" id="n8n-modal" onclick="if(event.target===this) closeN8nModal()">
+      <div class="nexo-modal-content" style="max-width:420px;">
+        <div class="flex items-center justify-between mb-5">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-violet-400/10 flex items-center justify-center">
+              <i data-lucide="workflow" class="w-5 h-5 text-violet-400"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white">Integração N8N</h3>
+              <p class="text-xs text-slate-400">Configure sua automação de fluxos</p>
+            </div>
+          </div>
+          <button type="button" onclick="closeN8nModal()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+        <form onsubmit="saveN8nWebhook(event)">
+          <div class="mb-6">
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">URL Base do N8N *</label>
+            <input type="url" id="n8n-webhook-url" placeholder="Ex: https://meu-n8n.app.br" required
+              class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors" />
+            <p class="text-[10px] text-slate-500 mt-2">Esta URL base será usada para enviar os disparos de Webhook do WhatsApp e Web Scraping.</p>
+          </div>
+          <div class="flex gap-3">
+            <button type="button" onclick="closeN8nModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm py-3 rounded-xl transition-colors">Cancelar</button>
+            <button type="submit" class="flex-1 bg-violet-500 hover:bg-violet-400 text-white font-black text-sm py-3 rounded-xl transition-all hover:scale-[1.02] shadow-lg shadow-violet-500/20">Salvar Conexão</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
     <!-- ====== NOTIFICATIONS DROPDOWN ====== -->
 
 
@@ -1237,18 +1271,8 @@
         <span class="text-[10px] text-slate-600">Nexo AI  Plano Operação</span>
 
       </div>
-            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">URL Base do N8N *</label>
-            <input type="url" id="n8n-webhook-url" placeholder="Ex: https://meu-n8n.app.br" required
-              class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors" />
-            <p class="text-[10px] text-slate-500 mt-2">Esta URL base será usada para enviar os disparos de Webhook do WhatsApp e Web Scraping.</p>
-          </div>
-          <div class="flex gap-3">
-            <button type="button" onclick="closeN8nModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm py-3 rounded-xl transition-colors">Cancelar</button>
-            <button type="submit" class="flex-1 bg-violet-500 hover:bg-violet-400 text-white font-black text-sm py-3 rounded-xl transition-all hover:scale-[1.02] shadow-lg shadow-violet-500/20">Salvar Conexão</button>
-          </div>
-        </form>
-      </div>
     </div>
+
 
 
     <!-- Sidebar Backdrop (ALL screen sizes) -->
