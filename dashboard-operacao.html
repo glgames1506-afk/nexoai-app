@@ -1200,6 +1200,49 @@
     </div>
 
 
+    
+    <!-- ====== QUALIFICACAO IA MODAL ====== -->
+    <div class="nexo-modal-overlay" id="quali-modal" onclick="if(event.target===this) closeQualiModal()">
+      <div class="nexo-modal-content" style="max-width:460px;">
+        <div class="flex items-center justify-between mb-5">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-cyan-400/10 flex items-center justify-center">
+              <i data-lucide="filter" class="w-5 h-5 text-cyan-400"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white">Qualificação IA</h3>
+              <p class="text-xs text-slate-400">Critérios de aprovação de leads</p>
+            </div>
+          </div>
+          <button type="button" onclick="closeQualiModal()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+        <form onsubmit="saveQualiConfig(event)">
+          <div class="mb-4">
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Critério Principal</label>
+            <textarea id="quali-criterio" rows="3" placeholder="Ex: O lead deve ter faturamento acima de R$ 10k/mês e estar buscando automação de vendas." required
+              class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30 transition-colors"></textarea>
+          </div>
+          <div class="mb-6 flex items-center justify-between bg-slate-800/50 p-4 rounded-xl border border-slate-700">
+            <div>
+              <p class="text-sm font-bold text-white mb-1">Score de Engajamento</p>
+              <p class="text-[10px] text-slate-500">Qualificar apenas leads responsivos</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="quali-score" class="sr-only peer" checked>
+              <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-500"></div>
+            </label>
+          </div>
+          <div class="flex gap-3">
+            <button type="button" onclick="closeQualiModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm py-3 rounded-xl transition-colors">Cancelar</button>
+            <button type="submit" class="flex-1 bg-cyan-500 hover:bg-cyan-400 text-white font-black text-sm py-3 rounded-xl transition-all hover:scale-[1.02] shadow-lg shadow-cyan-500/20">Salvar Critérios</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
     <!-- ====== NOTIFICATIONS DROPDOWN ====== -->
 
 
@@ -2204,7 +2247,7 @@
 
           <!-- 3. Qualificao Bsica (via IA) -->
 
-          <div class="glass-card p-5 hover:border-cyan-400/20 transition-all group" id="feat-qualificacao">
+          <div class="glass-card p-5 hover:border-cyan-400/20 transition-all group cursor-pointer" id="feat-qualificacao" onclick="openQualiModal()">
 
             <div class="flex items-center justify-between mb-4">
 
@@ -4286,7 +4329,34 @@
       }
       closeN8nModal();
     }
+
+    // --- QUALIFICACAO IA MODAL ---------------------------------
+    function openQualiModal() {
+      const overlay = document.getElementById('quali-modal');
+      const input = document.getElementById('quali-criterio');
+      if(input) {
+        input.value = localStorage.getItem('nexo_quali_criterio') || 'O lead deve ter intenção de compra clara e orçamento mínimo de R$ 1.500.';
+      }
+      if(overlay) { overlay.classList.add('active'); }
+      if(window.lucide) lucide.createIcons();
+    }
+
+    function closeQualiModal() {
+      const overlay = document.getElementById('quali-modal');
+      if(overlay) overlay.classList.remove('active');
+    }
+
+    function saveQualiConfig(e) {
+      e.preventDefault();
+      const input = document.getElementById('quali-criterio');
+      if(!input || !input.value.trim()) { showToast('Preencha os critérios de qualificação.', 'error'); return; }
+      localStorage.setItem('nexo_quali_criterio', input.value.trim());
+      showToast('Critérios de Qualificação IA atualizados!', 'success');
+      closeQualiModal();
+    }
+
     function addLead() {
+
       openAddLeadModal();
     }
 
