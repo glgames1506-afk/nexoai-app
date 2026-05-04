@@ -1237,9 +1237,18 @@
         <span class="text-[10px] text-slate-600">Nexo AI  Plano Operação</span>
 
       </div>
-
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">URL Base do N8N *</label>
+            <input type="url" id="n8n-webhook-url" placeholder="Ex: https://meu-n8n.app.br" required
+              class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors" />
+            <p class="text-[10px] text-slate-500 mt-2">Esta URL base será usada para enviar os disparos de Webhook do WhatsApp e Web Scraping.</p>
+          </div>
+          <div class="flex gap-3">
+            <button type="button" onclick="closeN8nModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm py-3 rounded-xl transition-colors">Cancelar</button>
+            <button type="submit" class="flex-1 bg-violet-500 hover:bg-violet-400 text-white font-black text-sm py-3 rounded-xl transition-all hover:scale-[1.02] shadow-lg shadow-violet-500/20">Salvar Conexão</button>
+          </div>
+        </form>
+      </div>
     </div>
-
 
 
     <!-- Sidebar Backdrop (ALL screen sizes) -->
@@ -2139,8 +2148,7 @@
 
 
           <!-- 2. Configuração Zap + N8N -->
-
-          <div class="glass-card p-5 hover:border-violet-400/20 transition-all group" id="feat-zap-n8n">
+          <div class="glass-card p-5 hover:border-violet-400/20 transition-all group cursor-pointer" id="feat-zap-n8n" onclick="openN8nModal()">
 
             <div class="flex items-center justify-between mb-4">
 
@@ -4223,7 +4231,37 @@
 
 
 
-    // --- ADD NEW LEAD ------------------------------------------
+    // --- N8N MODAL ---------------------------------------------
+    function openN8nModal() {
+      const overlay = document.getElementById('n8n-modal');
+      const input = document.getElementById('n8n-webhook-url');
+      if(input) {
+        input.value = localStorage.getItem('nexo_n8n_webhook') || 'https://luanoliveira1506-nexo-n8n.hf.space';
+      }
+      if(overlay) { overlay.classList.add('active'); }
+      if(window.lucide) lucide.createIcons();
+    }
+
+    function closeN8nModal() {
+      const overlay = document.getElementById('n8n-modal');
+      if(overlay) overlay.classList.remove('active');
+    }
+
+    function saveN8nWebhook(e) {
+      e.preventDefault();
+      const input = document.getElementById('n8n-webhook-url');
+      if(!input || !input.value.trim()) { showToast('Preencha a URL do Webhook.', 'error'); return; }
+      const url = input.value.trim();
+      localStorage.setItem('nexo_n8n_webhook', url);
+      showToast('Conexão N8N salva com sucesso!', 'success');
+      
+      const statusEl = document.getElementById('n8n-status');
+      if(statusEl) {
+        statusEl.textContent = 'Sincronizado';
+        statusEl.className = 'text-[10px] font-bold text-emerald-400';
+      }
+      closeN8nModal();
+    }
     function addLead() {
       openAddLeadModal();
     }
@@ -4805,14 +4843,18 @@
         if (!restartRes.ok) {
           await wahaFetch('/api/sessions/default/stop', { method: 'POST' });
           await new Promise(r => setTimeout(r, 1000));
+          
+          const n8nBaseUrl = localStorage.getItem('nexo_n8n_webhook') || 'https://luanoliveira1506-nexo-n8n.hf.space';
+          const wahaWebhook = n8nBaseUrl.replace(/\/$/, '') + '/webhook/nexo-waha-webhook';
           const createRes = await wahaFetch('/api/sessions', { 
             method: 'POST', 
             headers: { 'Content-Type': 'application/json' }, 
             body: JSON.stringify({
               name: 'default',
-              config: { webhooks: [{ url: 'https://luanoliveira1506-nexo-n8n.hf.space/webhook/nexo-waha-webhook', events: ['message', 'session.status'] }] }
+              config: { webhooks: [{ url: wahaWebhook, events: ['message', 'session.status'] }] }
             })
           });
+          
           // Se já existe (422), tenta iniciar direto
           if (!createRes.ok) {
             await wahaFetch('/api/sessions/default/start', { method: 'POST' });
@@ -5986,8 +6028,10 @@ async function startAgentConfig() {
         if(btnText) btnText.textContent = 'Extraindo...';
         
         try {
-            // Chamada para o webhook do n8n (ainda será criado)
-            const res = await fetch('https://luanoliveira1506-nexo-n8n.hf.space/webhook/scrape-website', {
+            const n8nBaseUrl = localStorage.getItem('nexo_n8n_webhook') || 'https://luanoliveira1506-nexo-n8n.hf.space';
+            const scrapeWebhook = n8nBaseUrl.replace(/\/$/, '') + '/webhook/scrape-website';
+            // Chamada para o webhook do n8n
+            const res = await fetch(scrapeWebhook, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ url })
