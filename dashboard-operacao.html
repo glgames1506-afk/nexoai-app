@@ -4707,27 +4707,16 @@
     // --- ONBOARDING FUNCTIONS --------------------------------
 
     function skipOnboarding() {
-
       const session = nexoAuthCheck();
-
       const userId = session?.user?.id || 'default';
-
       localStorage.setItem(`nexo_onboarding_${userId}`, 'done');
 
-
-
       const onboardingEl = document.getElementById('nexo-onboarding');
-
       const dashboardEl = document.getElementById('view-dashboard');
-
       
-
       if(onboardingEl) {
-
         onboardingEl.style.transition = 'opacity 0.4s ease';
-
         onboardingEl.style.opacity = '0';
-
         setTimeout(() => {
           onboardingEl.classList.add('hidden');
           if(dashboardEl) { 
@@ -4740,7 +4729,14 @@
             }, 50);
           }
           if(window.lucide) lucide.createIcons();
-          Promise.all([loadKPIs(), loadLeadsTable(), loadWhatsappContacts(), loadFunnelCounts()]);
+          // Agora carrega os dados reais depois de pular!
+          Promise.all([
+            loadKPIs(),
+            loadLeadsTable(),
+            loadWhatsappContacts(),
+            loadFunnelCounts(),
+            loadLeadsChart()
+          ]).catch(e => console.error(e));
         }, 400);
       }
     }
