@@ -1682,7 +1682,7 @@
 
           <div class="text-3xl font-black text-white" id="kpi-leads-hoje">0</div>
 
-          <div class="text-xs text-slate-500 mt-1">Leads Hoje</div>
+          <div class="text-xs text-slate-500 mt-1">Leads Total</div>
 
         </div>
 
@@ -1706,7 +1706,7 @@
 
           </div>
 
-          <div class="text-3xl font-black text-white">0<span class="text-lg text-slate-400">%</span></div>
+          <div class="text-3xl font-black text-white" id="kpi-taxa-resposta">0<span class="text-lg text-slate-400">%</span></div>
 
           <div class="text-xs text-slate-500 mt-1">Taxa de Resposta</div>
 
@@ -1732,9 +1732,9 @@
 
           </div>
 
-          <div class="text-3xl font-black text-white">0</div>
+          <div class="text-3xl font-black text-white" id="kpi-conversoes">0</div>
 
-          <div class="text-xs text-slate-500 mt-1">Converses (Ms)</div>
+          <div class="text-xs text-slate-500 mt-1">Convertidos (Mês)</div>
 
         </div>
 
@@ -1758,9 +1758,9 @@
 
           </div>
 
-          <div class="text-3xl font-black text-white"></div>
+          <div class="text-3xl font-black text-white" id="kpi-qualificados">0</div>
 
-          <div class="text-xs text-slate-500 mt-1">Tempo Mdio de Resposta</div>
+          <div class="text-xs text-slate-500 mt-1">Qualificados</div>
 
         </div>
 
@@ -1914,7 +1914,7 @@
 
               <span class="text-xs text-slate-500">Taxa de Fechamento</span>
 
-              <span class="text-lg font-black text-slate-500"></span>
+              <span class="text-lg font-black text-emerald-400" id="kpi-taxa-fechamento">0%</span>
 
             </div>
 
@@ -2192,7 +2192,7 @@
 
             <div class="flex items-center justify-between">
 
-              <span class="text-[10px] text-slate-500">Qualificados hoje</span>
+              <span class="text-[10px] text-slate-500">Qualificados</span>
 
               <span class="text-xs font-black text-cyan-400" id="quali-count">0</span>
 
@@ -2226,7 +2226,7 @@
 
               <div class="w-1.5 h-1.5 rounded-full bg-amber-400"></div>
 
-              <span class="text-[10px] font-bold text-amber-400">Pronto</span>
+              <span class="text-[10px] font-bold text-amber-400" id="transfer-count">Pronto</span>
 
             </div>
 
@@ -2438,17 +2438,17 @@
 
                <div class="flex gap-3">
 
-                  <select class="bg-slate-800/60 border border-slate-700 text-sm text-slate-300 rounded-xl px-3 py-2 focus:outline-none">
+                  <select id="leads-filter-select" class="bg-slate-800/60 border border-slate-700 text-sm text-slate-300 rounded-xl px-3 py-2 focus:outline-none">
 
-                     <option>Todos os Status</option>
+                     <option value="">Todos os Status</option>
 
-                     <option>Novos</option>
+                     <option value="novo">Novos</option>
 
-                     <option>Em Atendimento</option>
+                     <option value="atendimento">Em Atendimento</option>
 
-                     <option>Convertidos</option>
+                     <option value="convertido">Convertidos</option>
 
-                     <option>Sem Resposta</option>
+                     <option value="frio">Sem Resposta</option>
 
                   </select>
 
@@ -2550,13 +2550,13 @@
 
                   <div class="flex items-center gap-3">
 
-                     <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center text-white text-xs font-bold">MO</div>
+                     <div id="chat-header-avatar" class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center text-white text-xs font-bold">NA</div>
 
                      <div>
 
-                        <div class="text-sm font-bold text-white">Marina Oliveira</div>
+                        <div class="text-sm font-bold text-white" id="chat-header-name">Selecione um contato</div>
 
-                        <div class="text-[10px] text-slate-500">(11) 9-4521  Meta Ads</div>
+                        <div class="text-[10px] text-slate-500" id="chat-header-sub">Clique em um lead à esquerda</div>
 
                      </div>
 
@@ -2574,24 +2574,12 @@
 
                <div id="chat-messages" class="flex-1 p-6 overflow-y-auto space-y-4">
 
-                  <div class="bg-slate-800 p-3 rounded-xl rounded-tl-none w-3/4 text-sm text-slate-200 shadow-md">Ol, vi o apartamento no Vila Mariana pela internet. Ainda est disponvel? Qual o valor?</div>
-
-                  <div class="bg-cyan-900/20 p-3 rounded-xl rounded-tr-none w-3/4 ml-auto text-sm border border-cyan-400/30 shadow-[0_0_15px_rgba(34,211,238,0.08)] text-slate-200">
-
-                     <div class="text-[10px] text-cyan-400 font-bold mb-1 flex items-center gap-1"><i data-lucide="bot" class="w-3 h-3"></i> Nexo IA</div>
-
-                     Ol Marina! Sim, o apartamento no Vila Mariana est disponvel. So 82m, 3 quartos (1 sute), vaga de garagem e lazer completo. O valor  R$ 520.000. Gostaria de agendar uma visita presencial? Temos horrios disponveis amanh s 10h ou 15h.
-
-                  </div>
-
-                  <div class="bg-slate-800 p-3 rounded-xl rounded-tl-none w-3/4 text-sm text-slate-200 shadow-md">Pode ser amanh s 15h! Aceita financiamento pela Caixa?</div>
-
-                  <div class="bg-cyan-900/20 p-3 rounded-xl rounded-tr-none w-3/4 ml-auto text-sm border border-cyan-400/30 shadow-[0_0_15px_rgba(34,211,238,0.08)] text-slate-200">
-
-                     <div class="text-[10px] text-cyan-400 font-bold mb-1 flex items-center gap-1"><i data-lucide="bot" class="w-3 h-3"></i> Nexo IA</div>
-
-                     Perfeito, Marina! Visita agendada para amanh (sexta) s 15h no endereo Rua Domingos de Morais, 1200. Sim, aceitamos financiamento Caixa, e nosso corretor pode te ajudar com a simulao no local. Envio um lembrete 1h antes. 
-
+                  <div id="chat-empty-state" class="flex flex-col items-center justify-center py-16 gap-4">
+                     <div class="w-20 h-20 rounded-2xl bg-slate-800/60 flex items-center justify-center">
+                        <i data-lucide="message-square" class="w-10 h-10 text-slate-600"></i>
+                     </div>
+                     <p class="text-sm font-bold text-slate-400">Selecione um contato</p>
+                     <p class="text-xs text-slate-600 text-center max-w-[240px]">Clique em um lead na lista à esquerda para visualizar o histórico de conversa.</p>
                   </div>
 
                </div>
@@ -2600,9 +2588,9 @@
 
                   <div class="relative">
 
-                     <input type="text" class="w-full bg-slate-900 border border-slate-700/50 rounded-xl pl-4 pr-12 py-3 text-sm focus:outline-none focus:border-cyan-400/50 transition-colors text-white" placeholder="A IA est atendendo. Digite para intervir manualmente...">
+                     <input type="text" id="chat-input" class="w-full bg-slate-900 border border-slate-700/50 rounded-xl pl-4 pr-12 py-3 text-sm focus:outline-none focus:border-cyan-400/50 transition-colors text-white" placeholder="A IA está atendendo. Digite para intervir manualmente..." onkeydown="if(event.key==='Enter'){sendMessage(window._activeChatLeadId)}">
 
-                     <button class="absolute right-3 top-1/2 -translate-y-1/2 text-cyan-400 hover:text-cyan-300"><i data-lucide="send" class="w-5 h-5"></i></button>
+                     <button onclick="sendMessage(window._activeChatLeadId)" class="absolute right-3 top-1/2 -translate-y-1/2 text-cyan-400 hover:text-cyan-300"><i data-lucide="send" class="w-5 h-5"></i></button>
 
                   </div>
 
@@ -3782,45 +3770,68 @@
     // --- KPIs ------------------------------------------------
 
     async function loadKPIs() {
-
       try {
-
-        const leads = await sbFetch("leads", "select=status");
-
+        const leads = await sbFetch("leads", "select=status,created_at");
         const total = leads.length;
-
-        const hoje = leads.length; // todos como "hoje" para demo
-
-        const convertidos = leads.filter(l => l.status === "convertido").length;
-
-        const respondidos = leads.filter(l => l.status !== "frio").length;
-
-        const taxa = total > 0 ? Math.round((respondidos / total) * 100) : 0;
-
-
-
-        // Update KPI elements if they exist
-
-        const elLeads = document.getElementById("kpi-leads-hoje");
-
-        const elTaxa = document.getElementById("kpi-taxa-resposta");
-
-        const elConversoes = document.getElementById("kpi-conversãoes");
-
         
-
-        if (elLeads) elLeads.textContent = total;
-
-        if (elTaxa) elTaxa.textContent = taxa;
-
-        if (elConversoes) elConversoes.textContent = convertidos;
-
+        // Leads com status != novo e != frio = respondidos pela IA
+        const respondidos = leads.filter(l => l.status === 'atendimento' || l.status === 'convertido').length;
+        const convertidos = leads.filter(l => l.status === 'convertido').length;
+        const qualificados = leads.filter(l => l.status !== 'novo' && l.status !== 'frio').length;
+        const taxa = total > 0 ? Math.round((respondidos / total) * 100) : 0;
+        const taxaFechamento = total > 0 ? Math.round((convertidos / total) * 100) : 0;
+        
+        // Atualizar KPI cards
+        const set = (id, val) => { const el = document.getElementById(id); if(el) el.innerHTML = val; };
+        set('kpi-leads-hoje', total);
+        set('kpi-taxa-resposta', taxa + '<span class="text-lg text-slate-400">%</span>');
+        set('kpi-conversoes', convertidos);
+        set('kpi-qualificados', qualificados);
+        set('kpi-taxa-fechamento', taxaFechamento + '%');
+        
+        // Qualificação IA card count
+        set('quali-count', qualificados);
+        
+        // Transfer Humano count - leads que pediram humano (frio = potenciais transferências)
+        const transferPending = leads.filter(l => l.status === 'frio').length;
+        const transferEl = document.getElementById('transfer-count');
+        if(transferEl) {
+          transferEl.textContent = transferPending > 0 ? transferPending + ' pendente(s)' : 'Pronto';
+          if(transferPending > 0) {
+            transferEl.className = 'text-[10px] font-bold text-red-400';
+          }
+        }
+        
+        // CSV imported count
+        const csvEl = document.getElementById('csv-imported-count');
+        if(csvEl && total > 0) csvEl.textContent = total;
+        
+        // Funnel mini-bars on dashboard
+        const novo = leads.filter(l => l.status === 'novo').length;
+        const contato = leads.filter(l => l.status === 'atendimento').length;
+        const qual = qualificados;
+        const conv = convertidos;
+        
+        set('funnel-novo', novo);
+        set('funnel-contato', contato);
+        set('funnel-qual', qual);
+        set('funnel-conv', conv);
+        
+        // Animate funnel bars
+        const maxFunnel = Math.max(novo, contato, qual, conv, 1);
+        const bars = document.querySelectorAll('.funnel-bar');
+        const vals = [novo, contato, qual, conv];
+        bars.forEach((bar, i) => {
+          if(i < vals.length) {
+            const pct = Math.max(5, Math.round((vals[i] / maxFunnel) * 100));
+            bar.style.width = pct + '%';
+            bar.style.transition = 'width 0.8s ease';
+          }
+        });
+        
       } catch(e) {
-
-        console.warn("KPIs offline, usando dados estticos:", e.message);
-
+        console.warn("KPIs offline:", e.message);
       }
-
     }
 
 
@@ -3856,16 +3867,14 @@
         renderLeadsPage();
 
         // Wire filter select
-
-        document.querySelector('#view-leads select')?.addEventListener('change', e => {
-
-          leadsFilterStatus = e.target.value === 'Todos os Status' ? '' : e.target.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
-
-          leadsPage = 1;
-
-          renderLeadsPage();
-
-        });
+        const filterEl = document.getElementById('leads-filter-select');
+        if(filterEl) {
+          filterEl.onchange = (e) => {
+            leadsFilterStatus = e.target.value;
+            leadsPage = 1;
+            renderLeadsPage();
+          };
+        }
 
       } catch(e) {
 
@@ -4067,7 +4076,7 @@
 
       try {
         const session = nexoAuthCheck();
-        await sbInsert("leads", { user_id: session?.user?.id, name, phone, source, status: 'Novo' });
+        await sbInsert("leads", { user_id: session?.user?.id, name, phone, source, status: 'novo' });
         showToast('Lead adicionado com sucesso!', 'success');
         addNotification(`Novo lead manual: ${name}`, 'user');
         closeAddLeadModal();
@@ -4079,70 +4088,39 @@
       }
     }
 
-
-
-
-
     // --- WHATSAPP CONTACT LIST ---------------------------------
 
     async function loadWhatsappContacts() {
-
-      const list = document.getElementById("chat-contact-list");
-
-      if (!list) return;
-
-
+      const bodyEl = document.getElementById('chat-contacts-body');
+      const countEl = document.getElementById('chat-conv-count');
+      if (!bodyEl) return;
 
       try {
-
-        const leads = await sbFetch("leads", "select=*&order=updated_at.desc");
-
-        list.innerHTML = leads.map((lead, i) => {
-
-          const initials = lead.name.split(" ").map(w => w[0]).slice(0,2).join("").toUpperCase();
-
-          const colors = ["from-cyan-400 to-violet-500", "from-violet-400 to-pink-500", "from-emerald-400 to-cyan-500", "from-amber-400 to-orange-500", "from-red-400 to-pink-600"];
-
-          const color = colors[i % colors.length];
-
-          const activeClass = i === 0 ? "border-cyan-400/30 bg-cyan-400/5" : "border-white/5 hover:bg-white/[0.02]";
-
-          const subtext = lead.status === "convertido"
-
-            ? `<div class="text-xs text-emerald-400 truncate">Convertido ?</div>`
-
-            : lead.status === "frio"
-
-              ? `<div class="text-xs text-red-400 truncate">Sem resposta</div>`
-
-              : `<div class="text-xs text-cyan-400 truncate">IA atendendo...</div>`;
-
-          return `
-
-            <div onclick="loadChat('${lead.id}', '${lead.name}', '${lead.phone}')"
-
-                 class="p-4 border-b ${activeClass} cursor-pointer flex items-center gap-3 transition-colors">
-
-              <div class="w-10 h-10 rounded-full bg-gradient-to-br ${color} flex items-center justify-center text-white text-xs font-bold flex-shrink-0">${initials}</div>
-
-              <div class="flex-1 min-w-0">
-
-                <div class="text-sm font-bold text-white">${lead.name}</div>
-
-                ${subtext}
-
-              </div>
-
-            </div>`;
-
-        }).join("");
-
+        const leads = await sbFetch("leads", "select=*&order=updated_at.desc&limit=30");
+        if(!leads || !leads.length) {
+          if(countEl) countEl.textContent = 'Conversas';
+          bodyEl.innerHTML = '<div class="p-6 text-center"><p class="text-xs text-slate-500 mt-4">Nenhum lead importado ainda.<br>Importe sua planilha na Visão Geral.</p></div>';
+          return;
+        }
+        if(countEl) countEl.textContent = `Conversas (${leads.length})`;
+        const gradients = ['from-cyan-400 to-violet-500','from-violet-400 to-pink-500','from-emerald-400 to-cyan-500','from-amber-400 to-orange-500','from-blue-400 to-cyan-500'];
+        bodyEl.innerHTML = leads.map((lead, i) => {
+          const initials = (lead.name || '?').split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+          const gradient = gradients[i % gradients.length];
+          const statusText = { novo: 'Aguardando atendimento', atendimento: 'IA respondendo...', frio: 'Lead frio', convertido: 'Convertido ✓' }[lead.status] || 'Novo lead';
+          const statusColor = { novo: 'text-slate-400', atendimento: 'text-cyan-400', frio: 'text-amber-400', convertido: 'text-emerald-400' }[lead.status] || 'text-slate-400';
+          return `<div class="p-4 border-b border-white/5 cursor-pointer flex items-center gap-3 hover:bg-white/[0.02] transition-colors" onclick="loadChat('${lead.id}','${(lead.name||'').replace(/'/g,'')}','${lead.phone||''}')">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center text-white text-xs font-bold flex-shrink-0">${initials}</div>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-bold text-white truncate">${lead.name || 'Lead'}</div>
+              <div class="text-xs ${statusColor} truncate">${statusText}</div>
+            </div>
+            <div class="text-[9px] text-slate-600 flex-shrink-0">${timeAgo(lead.updated_at || lead.created_at)}</div>
+          </div>`;
+        }).join('');
       } catch(e) {
-
-        console.error("Erro carregando contatos:", e);
-
+        console.error('Erro carregando contatos:', e);
       }
-
     }
 
 
@@ -4150,89 +4128,78 @@
     // --- LOAD CHAT ---------------------------------------------
 
     async function loadChat(leadId, name, phone) {
-
-      const chatWindow = document.getElementById("chat-messages");
-
-      const chatHeader = document.getElementById("chat-header-name");
-
-      const chatSub = document.getElementById("chat-header-sub");
-
+      const chatWindow = document.getElementById('chat-messages');
+      const chatHeader = document.getElementById('chat-header-name');
+      const chatSub = document.getElementById('chat-header-sub');
+      const chatAvatar = document.getElementById('chat-header-avatar');
       if (!chatWindow) return;
 
+      // Track active lead for sending messages
+      window._activeChatLeadId = leadId;
 
-
-      if(chatHeader) chatHeader.textContent = name;
-
-      if(chatSub) chatSub.textContent = `${phone}  Lead Ativo`;
-
-
-
-      chatWindow.innerHTML = `<div class="text-center text-slate-500 text-sm py-8">Carregando conversa...</div>`;
-
-
-
-      try {
-
-        const msgs = await sbFetch("chats", `lead_id=eq.${leadId}&order=created_at.asc`);
-
-        if (!msgs.length) {
-
-          chatWindow.innerHTML = `
-
-            <div class="text-center py-8">
-
-              <div class="text-slate-500 text-sm mb-4">Nenhuma conversa registrada ainda.</div>
-
-              <button onclick="sendFirstMessage('${leadId}')" class="bg-cyan-400 text-slate-900 font-bold px-4 py-2 rounded-xl text-sm hover:bg-cyan-300 transition-colors">IA Iniciar Abordagem</button>
-
-            </div>`;
-
-          return;
-
-        }
-
-        chatWindow.innerHTML = msgs.map(msg => {
-
-          const isIA = msg.sender === "ia";
-
-          const time = new Date(msg.created_at).toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"});
-
-          if (isIA) return `
-
-            <div class="flex flex-col items-end mb-4">
-
-              <div class="bg-cyan-900/20 p-3 rounded-xl rounded-tr-none w-3/4 ml-auto text-sm border border-cyan-400/30 text-slate-200">
-
-                <div class="text-[10px] text-cyan-400 font-bold mb-1 flex items-center gap-1"> Nexo IA</div>
-
-                ${msg.message}
-
-              </div>
-
-              <div class="text-[10px] text-slate-600 mt-1">${time}</div>
-
-            </div>`;
-
-          return `
-
-            <div class="flex flex-col items-start mb-4">
-
-              <div class="bg-slate-800 p-3 rounded-xl rounded-tl-none w-3/4 text-sm text-slate-200">${msg.message}</div>
-
-              <div class="text-[10px] text-slate-600 mt-1">${time}</div>
-
-            </div>`;
-
-        }).join("");
-
-        chatWindow.scrollTop = chatWindow.scrollHeight;
-
-      } catch(e) {
-
-        chatWindow.innerHTML = `<div class="text-center text-red-400 text-sm py-8">Erro ao carregar conversa.</div>`;
-
+      // Update header
+      if(chatHeader) chatHeader.textContent = name || 'Lead';
+      if(chatSub) chatSub.textContent = `${phone || ''} — Lead Ativo`;
+      if(chatAvatar) {
+        const initials = (name || '?').split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+        chatAvatar.textContent = initials;
       }
 
+      // Highlight active contact in sidebar
+      const contactsBody = document.getElementById('chat-contacts-body');
+      if(contactsBody) {
+        contactsBody.querySelectorAll('.p-4').forEach(el => {
+          el.classList.remove('bg-cyan-400/5', 'border-l-2', 'border-cyan-400');
+        });
+      }
+
+      chatWindow.innerHTML = '<div class="text-center text-slate-500 text-sm py-8 animate-pulse">Carregando conversa...</div>';
+
+      try {
+        const msgs = await sbFetch('chats', `lead_id=eq.${leadId}&order=created_at.asc`);
+        if (!msgs || !msgs.length) {
+          chatWindow.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-12 gap-4">
+              <div class="w-16 h-16 rounded-2xl bg-slate-800/60 flex items-center justify-center">
+                <i data-lucide="message-circle" class="w-8 h-8 text-slate-600"></i>
+              </div>
+              <p class="text-sm font-bold text-slate-400">Nenhuma conversa ainda</p>
+              <p class="text-xs text-slate-600 text-center">Quando a IA atender este lead, as mensagens aparecerão aqui.</p>
+              <button onclick="sendFirstMessage('${leadId}')" class="bg-cyan-400 text-slate-900 font-bold px-4 py-2 rounded-xl text-sm hover:bg-cyan-300 transition-colors mt-2">💬 IA Iniciar Abordagem</button>
+            </div>`;
+          if(window.lucide) lucide.createIcons();
+          return;
+        }
+        chatWindow.innerHTML = msgs.map(msg => {
+          const isIA = msg.sender === 'ia';
+          const isHuman = msg.sender === 'humano';
+          const time = new Date(msg.created_at).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+          if (isIA) return `
+            <div class="flex flex-col items-end mb-4">
+              <div class="bg-cyan-900/20 p-3 rounded-xl rounded-tr-none w-3/4 ml-auto text-sm border border-cyan-400/30 text-slate-200">
+                <div class="text-[10px] text-cyan-400 font-bold mb-1 flex items-center gap-1">🤖 Nexo IA</div>
+                ${msg.message}
+              </div>
+              <div class="text-[10px] text-slate-600 mt-1">${time}</div>
+            </div>`;
+          if (isHuman) return `
+            <div class="flex flex-col items-end mb-4">
+              <div class="bg-violet-900/20 p-3 rounded-xl rounded-tr-none w-3/4 ml-auto text-sm border border-violet-400/30 text-slate-200">
+                <div class="text-[10px] text-violet-400 font-bold mb-1">👤 Atendente</div>
+                ${msg.message}
+              </div>
+              <div class="text-[10px] text-slate-600 mt-1">${time}</div>
+            </div>`;
+          return `
+            <div class="flex flex-col items-start mb-4">
+              <div class="bg-slate-800 p-3 rounded-xl rounded-tl-none w-3/4 text-sm text-slate-200">${msg.message}</div>
+              <div class="text-[10px] text-slate-600 mt-1">${time}</div>
+            </div>`;
+        }).join('');
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+      } catch(e) {
+        chatWindow.innerHTML = '<div class="text-center text-red-400 text-sm py-8">Erro ao carregar conversa.</div>';
+      }
     }
 
 
@@ -4240,77 +4207,40 @@
     // --- SEND MANUAL MESSAGE -----------------------------------
 
     async function sendMessage(leadId) {
-
-      const input = document.getElementById("chat-input");
-
+      if(!leadId) { showToast('Selecione um contato primeiro.', 'error'); return; }
+      const input = document.getElementById('chat-input');
       if (!input || !input.value.trim()) return;
-
       const msg = input.value.trim();
-
-      input.value = "";
-
-      await sbInsert("chats", { lead_id: leadId, sender: "humano", message: msg });
-
-      await loadChat(leadId, "", "");
-
+      input.value = '';
+      try {
+        await sbInsert('chats', { lead_id: leadId, sender: 'humano', message: msg });
+        showToast('Mensagem enviada!', 'success');
+        await loadChat(leadId, document.getElementById('chat-header-name')?.textContent || '', '');
+      } catch(e) {
+        showToast('Erro ao enviar: ' + e.message, 'error');
+      }
     }
 
 
 
     // --- ADD NEW LEAD ------------------------------------------
-
-    async function addLead() {
-
-      const name = prompt("Nome do lead:");
-
-      if (!name) return;
-
-      const phone = prompt("WhatsApp (com DDD):");
-
-      if (!phone) return;
-
-      const source = prompt("Origem (Meta Ads, Google, Indicação...):");
-
-      
-
-      await sbInsert("leads", {
-
-        name: name.trim(),
-
-        phone: phone.trim(),
-
-        status: "novo",
-
-        source: source || "Manual",
-
-        last_message: "Cadastrado manualmente"
-
-      });
-
-      
-
-      await loadLeadsTable();
-
-      alert("Lead adicionado com sucesso!");
-
+    function addLead() {
+      openAddLeadModal();
     }
 
-
-
     // --- TRIGGER REACTIVATION ---------------------------------
-
     async function triggerReactivation(leadId) {
-
-      if (!confirm("Deseja que a IA envie uma mensagem de reativao para este lead?")) return;
-
-      await sbUpdate("leads", leadId, { status: "atendimento", last_message: "Reativação IA disparada..." });
-
-      await sbInsert("chats", { lead_id: leadId, sender: "ia", message: "Ol! Percebi que você demonstrou interesse anteriormente. Ainda posso te ajudar? Temos novidades que podem te interessar. " });
-
-      await loadLeadsTable();
-
-      alert("? Reativação disparada com sucesso!");
-
+      if (!confirm("Deseja que a IA envie uma mensagem de reativação para este lead?")) return;
+      try {
+        await sbUpdate("leads", leadId, { status: "atendimento", last_message: "Reativação IA disparada..." });
+        await sbInsert("chats", { lead_id: leadId, sender: "ia", message: "Olá! Percebi que você demonstrou interesse anteriormente. Ainda posso te ajudar? Temos novidades que podem te interessar." });
+        showToast("Reativação disparada com sucesso!", "success");
+        await loadLeadsTable();
+        await loadFunnelCounts();
+        await loadKPIs();
+      } catch(e) {
+        showToast("Erro ao reativar: " + e.message, "error");
+      }
     }
 
 
@@ -4433,7 +4363,7 @@
 
             const statusColor = { novo: 'text-slate-400', atendimento: 'text-cyan-400', frio: 'text-amber-400', convertido: 'text-emerald-400' }[lead.status] || 'text-slate-400';
 
-            return `<div class="p-4 border-b border-white/5 cursor-pointer flex items-center gap-3 hover:bg-white/[0.02] transition-colors" onclick="openChatContact('${lead.name}','${initials}','${gradient}')">
+            return `<div class="p-4 border-b border-white/5 cursor-pointer flex items-center gap-3 hover:bg-white/[0.02] transition-colors" onclick="document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active')); Array.from(document.querySelectorAll('.sidebar-item')).find(i=>i.innerText.includes('WhatsApp'))?.classList.add('active'); document.querySelectorAll('.view-section').forEach(v=>{v.classList.add('hidden'); v.classList.remove('block');}); const tw=document.getElementById('view-whatsapp'); if(tw){tw.classList.remove('hidden'); tw.classList.add('block'); tw.style.opacity=1;} loadChat('${lead.id}','${(lead.name||'').replace(/'/g,'')}','${lead.phone||''}');">
 
               <div class="w-10 h-10 rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center text-white text-xs font-bold flex-shrink-0">${initials}</div>
 
@@ -4835,7 +4765,7 @@
     // -----------------------------------------------------------
     // --- WAHA WHATSAPP INTEGRATION ---------------------------
     // -----------------------------------------------------------
-    const WAHA_BASE = 'https://nexo-waha.onrender.com'; 
+    const WAHA_BASE = 'https://waha-production-6103.up.railway.app'; 
     const WAHA_API_KEY = 'nexo123';
     let wahaSessionId = 'default';
     let wahaPollInterval = null;
