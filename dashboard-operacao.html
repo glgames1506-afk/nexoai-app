@@ -2279,7 +2279,7 @@
 
           <!-- 1. Agente Automtico Escalvel -->
 
-          <div class="glass-card p-5 hover:border-emerald-400/20 transition-all group" id="feat-agente">
+          <div class="glass-card p-5 hover:border-emerald-400/20 transition-all group cursor-pointer" id="feat-agente" onclick="openAgentFromCard(event)">
 
             <div class="flex items-center justify-between mb-4">
 
@@ -6228,6 +6228,12 @@ async function startAgentConfig() {
     // --- FEATURE CARDS LOGIC ---------------------------------
 
     // -----------------------------------------------------------
+
+    function openAgentFromCard(e) {
+      // Se clicou no toggle, ignora para não conflitar com a ação de ligar/desligar
+      if(e.target.closest('label') || e.target.tagName === 'INPUT') return;
+      startAgentConfig();
+    }
 
     function toggleAgente(checkbox) {
       const dot = document.getElementById('agente-status-dot');
