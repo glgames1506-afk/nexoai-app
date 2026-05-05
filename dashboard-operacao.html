@@ -6230,33 +6230,24 @@ async function startAgentConfig() {
     // -----------------------------------------------------------
 
     function toggleAgente(checkbox) {
-
       const dot = document.getElementById('agente-status-dot');
-
       const label = document.getElementById('agente-status-label');
+      const isActive = checkbox.checked;
+      
+      localStorage.setItem('nexo_agente_ativo', isActive);
+      saveSettingToCloud('agente_ativo', isActive);
 
-      if(checkbox.checked) {
-
+      if(isActive) {
         dot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400 ai-pulse';
-
         label.textContent = 'Online';
-
         label.className = 'text-[10px] font-bold text-emerald-400';
-
-        showToast('Agente IA ativado!');
-
+        showToast('Agente IA ativado na nuvem!');
       } else {
-
         dot.className = 'w-1.5 h-1.5 rounded-full bg-slate-500';
-
         label.textContent = 'Offline';
-
         label.className = 'text-[10px] font-bold text-slate-500';
-
-        showToast('Agente IA desativado.', 'error');
-
+        showToast('Agente IA pausado na nuvem.', 'warning');
       }
-
     }
 
 
@@ -6422,6 +6413,23 @@ async function startAgentConfig() {
           if(s.n8n_webhook) localStorage.setItem('nexo_n8n_webhook', s.n8n_webhook);
           if(s.quali_criterio) localStorage.setItem('nexo_quali_criterio', s.quali_criterio);
           if(s.transfer_msg) localStorage.setItem('nexo_transfer_msg', s.transfer_msg);
+          
+          if(s.agente_ativo !== undefined) {
+             localStorage.setItem('nexo_agente_ativo', s.agente_ativo);
+             const toggleCheck = document.getElementById('agente-toggle');
+             if(toggleCheck) {
+                 toggleCheck.checked = s.agente_ativo;
+                 const dot = document.getElementById('agente-status-dot');
+                 const label = document.getElementById('agente-status-label');
+                 if(s.agente_ativo) {
+                   if(dot) dot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400 ai-pulse';
+                   if(label) { label.textContent = 'Online'; label.className = 'text-[10px] font-bold text-emerald-400'; }
+                 } else {
+                   if(dot) dot.className = 'w-1.5 h-1.5 rounded-full bg-slate-500';
+                   if(label) { label.textContent = 'Offline'; label.className = 'text-[10px] font-bold text-slate-500'; }
+                 }
+             }
+          }
         }
 
         if(trigger && cfg.human_transfer_trigger) trigger.value = cfg.human_transfer_trigger;
