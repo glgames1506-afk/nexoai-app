@@ -1243,6 +1243,49 @@
     </div>
 
 
+    
+    <!-- ====== TRANSFERENCIA HUMANA MODAL ====== -->
+    <div class="nexo-modal-overlay" id="transfer-modal" onclick="if(event.target===this) closeTransferModal()">
+      <div class="nexo-modal-content" style="max-width:460px;">
+        <div class="flex items-center justify-between mb-5">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-amber-400/10 flex items-center justify-center">
+              <i data-lucide="user-check" class="w-5 h-5 text-amber-400"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white">Transbordo Humano</h3>
+              <p class="text-xs text-slate-400">Escala de atendimento inteligente</p>
+            </div>
+          </div>
+          <button type="button" onclick="closeTransferModal()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+        <form onsubmit="saveTransferConfig(event)">
+          <div class="mb-4">
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Mensagem de Transbordo</label>
+            <textarea id="transfer-msg" rows="3" placeholder="Ex: Certo! Vou transferir você para um de nossos especialistas reais. Aguarde um momento!" required
+              class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400/30 transition-colors"></textarea>
+          </div>
+          <div class="mb-6 flex items-center justify-between bg-slate-800/50 p-4 rounded-xl border border-slate-700">
+            <div>
+              <p class="text-sm font-bold text-white mb-1">Notificar Atendentes</p>
+              <p class="text-[10px] text-slate-500">Enviar alerta no WhatsApp de Vendas</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="transfer-notify" class="sr-only peer" checked>
+              <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+            </label>
+          </div>
+          <div class="flex gap-3">
+            <button type="button" onclick="closeTransferModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm py-3 rounded-xl transition-colors">Cancelar</button>
+            <button type="submit" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-900 font-black text-sm py-3 rounded-xl transition-all hover:scale-[1.02] shadow-lg shadow-amber-500/20">Salvar Transbordo</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
     <!-- ====== NOTIFICATIONS DROPDOWN ====== -->
 
 
@@ -2279,7 +2322,7 @@
 
           <!-- 4. Transferncia Humano (via chat) -->
 
-          <div class="glass-card p-5 hover:border-amber-400/20 transition-all group" id="feat-transfer">
+          <div class="glass-card p-5 hover:border-amber-400/20 transition-all group cursor-pointer" id="feat-transfer" onclick="openTransferModal()">
 
             <div class="flex items-center justify-between mb-4">
 
@@ -4355,7 +4398,34 @@
       closeQualiModal();
     }
 
+
+    // --- TRANSFERENCIA HUMANA MODAL ----------------------------
+    function openTransferModal() {
+      const overlay = document.getElementById('transfer-modal');
+      const input = document.getElementById('transfer-msg');
+      if(input) {
+        input.value = localStorage.getItem('nexo_transfer_msg') || 'Tudo bem! Vou transferir você para um de nossos especialistas. Aguarde um instante.';
+      }
+      if(overlay) { overlay.classList.add('active'); }
+      if(window.lucide) lucide.createIcons();
+    }
+
+    function closeTransferModal() {
+      const overlay = document.getElementById('transfer-modal');
+      if(overlay) overlay.classList.remove('active');
+    }
+
+    function saveTransferConfig(e) {
+      e.preventDefault();
+      const input = document.getElementById('transfer-msg');
+      if(!input || !input.value.trim()) { showToast('Preencha a mensagem de transbordo.', 'error'); return; }
+      localStorage.setItem('nexo_transfer_msg', input.value.trim());
+      showToast('Configuração de Transbordo salva com sucesso!', 'success');
+      closeTransferModal();
+    }
+
     function addLead() {
+
 
       openAddLeadModal();
     }
