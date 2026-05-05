@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Nexo AI — Dashboard Comando Total</title>
+  <title>Nexo AI — COMANDO MASTER (ADMIN)</title>
 
   <link rel="icon" type="image/jpeg" href="assets/images/WhatsApp Image 2026-04-17 at 14.39.30 (2).jpeg">
 
@@ -1091,69 +1091,27 @@
       <nav class="flex flex-col gap-1 flex-1">
 
         <div class="sidebar-item active">
-
-          <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-
-          Visão Geral
-
+          <i data-lucide="shield-check" class="w-5 h-5"></i>
+          Master Dashboard
         </div>
-
         <div class="sidebar-item">
-
           <i data-lucide="users" class="w-5 h-5"></i>
-
-          Leads
-
+          Gestão de Clientes
         </div>
-
         <div class="sidebar-item">
-
-          <i data-lucide="message-circle" class="w-5 h-5"></i>
-
-          WhatsApp
-
-          <span class="ml-auto bg-cyan-400/20 text-cyan-400 text-[10px] font-bold px-2 py-0.5 rounded-full">8</span>
-
+          <i data-lucide="credit-card" class="w-5 h-5"></i>
+          Faturamento (Stripe)
         </div>
-
         <div class="sidebar-item">
-
-          <i data-lucide="filter" class="w-5 h-5"></i>
-
-          Funil
-
+          <i data-lucide="server" class="w-5 h-5"></i>
+          Monitoramento Infra
         </div>
-
-        
-
         <div class="mt-4 mb-2 px-3">
-
-          <div class="text-[10px] font-bold text-violet-400 uppercase tracking-widest">⚡ Premium</div>
-
+          <div class="text-[10px] font-bold text-amber-400 uppercase tracking-widest">⚙️ Sistema</div>
         </div>
-
         <div class="sidebar-item">
-
-          <i data-lucide="trending-up" class="w-5 h-5 text-violet-400"></i>
-
-          P&L Financeiro
-
-        </div>
-
-        <div class="sidebar-item">
-
-          <i data-lucide="zap" class="w-5 h-5 text-violet-400"></i>
-
-          Reativação IA
-
-        </div>
-
-        <div class="sidebar-item">
-
-          <i data-lucide="file-text" class="w-5 h-5 text-violet-400"></i>
-
-          Relatórios
-
+          <i data-lucide="settings" class="w-5 h-5 text-amber-400"></i>
+          Configurações SaaS
         </div>
 
 
@@ -1314,9 +1272,7 @@
 
           </div>
 
-          <div class="text-3xl font-black text-white">97<span class="text-lg text-slate-400">%</span></div>
-
-          <div class="text-xs text-slate-500 mt-1">Taxa de Resposta IA</div>
+          <div class="text-3xl font-black text-white">R$ 1.164</div><div class="text-xs text-slate-500 mt-1">MRR (Faturamento Recorrente)</div>
 
         </div>
 
@@ -1340,9 +1296,7 @@
 
           </div>
 
-          <div class="text-3xl font-black text-white" id="kpi-conversãoes">43</div>
-
-          <div class="text-xs text-slate-500 mt-1">Conversões (Mês)</div>
+          <div class="text-3xl font-black text-white" id="kpi-leads-globais">1.402</div><div class="text-xs text-slate-500 mt-1">Leads Totais Processados</div>
 
         </div>
 
@@ -1366,9 +1320,7 @@
 
           </div>
 
-          <div class="text-3xl font-black text-white">47<span class="text-lg text-slate-400">s</span></div>
-
-          <div class="text-xs text-slate-500 mt-1">Tempo Médio de Resposta</div>
+          <div class="text-3xl font-black text-white">98.2<span class="text-lg text-slate-400">%</span></div><div class="text-xs text-slate-500 mt-1">Uptime Infraestrutura</div>
 
         </div>
 
@@ -1376,7 +1328,7 @@
 
 
 
-      <!-- KPI Cards Row 2: FINANCEIRO (P&L) — PREMIUM EXCLUSIVE -->
+      <!-- KPI Cards Row 2: PERFORMANCE GLOBAL DO ECOSSISTEMA -->
 
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
 
@@ -2514,13 +2466,13 @@
 
                     <tbody>
 
-                        <tr class="border-b border-white/5"><td class="py-4 px-2 text-white font-bold">Carlos Silva</td><td class="px-2"><span class="badge-novo px-2 py-1 rounded text-[10px] font-bold uppercase">Novo</span></td><td class="px-2">Meta Ads</td><td class="text-cyan-400 px-2 cursor-pointer font-bold hover:text-cyan-300">Ver Conversa</td></tr>
+                        
 
-                        <tr class="border-b border-white/5"><td class="py-4 px-2 text-white font-bold">Ana Souza</td><td class="px-2"><span class="badge-atendimento px-2 py-1 rounded text-[10px] font-bold uppercase">Em Atendimento</span></td><td class="px-2">Orgânico</td><td class="text-cyan-400 px-2 cursor-pointer font-bold hover:text-cyan-300">Ver Conversa</td></tr>
+                        
 
-                        <tr class="border-b border-white/5"><td class="py-4 px-2 text-white font-bold">Dr. Marcos</td><td class="px-2"><span class="badge-convertido px-2 py-1 rounded text-[10px] font-bold uppercase">Convertido</span></td><td class="px-2">Indicacao</td><td class="text-emerald-400 px-2 cursor-pointer font-bold hover:text-emerald-300">Contrato Assinado</td></tr>
+                        
 
-                        <tr><td class="py-4 px-2 text-white font-bold">Fernanda L.</td><td class="px-2"><span class="badge-frio px-2 py-1 rounded text-[10px] font-bold uppercase">Sem Resposta</span></td><td class="px-2">Instagram</td><td class="text-amber-400 px-2 cursor-pointer font-bold hover:text-amber-300">Acionar Reativação</td></tr>
+                        
 
                     </tbody>
 
