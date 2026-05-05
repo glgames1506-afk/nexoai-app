@@ -4363,7 +4363,8 @@
       if(!input || !input.value.trim()) { showToast('Preencha a URL do Webhook.', 'error'); return; }
       const url = input.value.trim();
       localStorage.setItem('nexo_n8n_webhook', url);
-      showToast('Conexão N8N salva com sucesso!', 'success');
+      saveSettingToCloud('n8n_webhook', url);
+      showToast('Conexão N8N salva com sucesso na nuvem!', 'success');
       
       const statusEl = document.getElementById('n8n-status');
       if(statusEl) {
@@ -4373,7 +4374,31 @@
       closeN8nModal();
     }
 
+
+    // --- HELPER PARA SALVAR NA NUVEM ---------------------------
+    async function saveSettingToCloud(key, value) {
+      try {
+        const session = nexoAuthCheck();
+        if(!session) return;
+        const userId = session?.user?.id;
+        const existing = await sbFetch("agent_configs", `user_id=eq.${userId}&select=id,settings&limit=1`);
+        if(existing && existing.length > 0) {
+          let settings = {};
+          try { settings = JSON.parse(existing[0].settings || '{}'); } catch(e){}
+          settings[key] = value;
+          await sbUpdate("agent_configs", existing[0].id, { settings: JSON.stringify(settings) });
+        } else {
+          let settings = {};
+          settings[key] = value;
+          await sbInsert("agent_configs", { user_id: userId, name: 'Assistente Nexo', settings: JSON.stringify(settings) });
+        }
+      } catch(e) {
+        console.error("Erro ao salvar config na nuvem:", e);
+      }
+    }
+
     // --- QUALIFICACAO IA MODAL ---------------------------------
+
     function openQualiModal() {
       const overlay = document.getElementById('quali-modal');
       const input = document.getElementById('quali-criterio');
@@ -4394,7 +4419,8 @@
       const input = document.getElementById('quali-criterio');
       if(!input || !input.value.trim()) { showToast('Preencha os critérios de qualificação.', 'error'); return; }
       localStorage.setItem('nexo_quali_criterio', input.value.trim());
-      showToast('Critérios de Qualificação IA atualizados!', 'success');
+      saveSettingToCloud('quali_criterio', input.value.trim());
+      showToast('Critérios de Qualificação salvos na nuvem!', 'success');
       closeQualiModal();
     }
 
@@ -4420,7 +4446,8 @@
       const input = document.getElementById('transfer-msg');
       if(!input || !input.value.trim()) { showToast('Preencha a mensagem de transbordo.', 'error'); return; }
       localStorage.setItem('nexo_transfer_msg', input.value.trim());
-      showToast('Configuração de Transbordo salva com sucesso!', 'success');
+      saveSettingToCloud('transfer_msg', input.value.trim());
+      showToast('Transbordo salvo com sucesso na nuvem!', 'success');
       closeTransferModal();
     }
 
@@ -4888,6 +4915,7 @@
       console.log(" Nexo AI Engine  Conectando ao Supabase...");
       
       try {
+        await loadSettings(); // Puxa config da nuvem para o localStorage
         await Promise.all([
           loadKPIs(),
           loadLeadsTable(),
@@ -6291,7 +6319,11 @@ async function startAgentConfig() {
           if(hourStart && s.hour_start) hourStart.value = s.hour_start;
 
           if(hourEnd && s.hour_end) hourEnd.value = s.hour_end;
-
+          
+          // Sincroniza Cloud -> LocalStorage (Modais Funcionais)
+          if(s.n8n_webhook) localStorage.setItem('nexo_n8n_webhook', s.n8n_webhook);
+          if(s.quali_criterio) localStorage.setItem('nexo_quali_criterio', s.quali_criterio);
+          if(s.transfer_msg) localStorage.setItem('nexo_transfer_msg', s.transfer_msg);
         }
 
         if(trigger && cfg.human_transfer_trigger) trigger.value = cfg.human_transfer_trigger;
