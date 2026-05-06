@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html lang="pt-BR">
 
@@ -1272,7 +1272,7 @@
 
           </div>
 
-          <div class="text-3xl font-black text-white" id="kpi-mrr">R$ 1.164</div><div class="text-xs text-slate-500 mt-1">MRR (Faturamento Recorrente)</div>
+          <div class="text-3xl font-black text-white">R$ 1.164</div><div class="text-xs text-slate-500 mt-1">MRR (Faturamento Recorrente)</div>
 
         </div>
 
@@ -3279,35 +3279,27 @@
 
 
     async function loadKPIs(){
+
       try{
-        const l=await sbGet('leads','select=status,created_at');
-        const t=l.length;
-        const cv=l.filter(x=>x.status==='convertido').length;
-        const rp=l.filter(x=>x.status!=='frio').length;
-        const hoje=new Date().toISOString().slice(0,10);
-        const lHoje=l.filter(x=>x.created_at&&x.created_at.startsWith(hoje)).length;
-        
-        // Simulação de MRR baseado no volume de leads processados (R$ 0.50 por lead) + assinatura base (R$ 1497)
-        // Como o CEO quer ver dinheiro girando, o MRR reflete a licença base + leads
-        const mrr = t > 0 ? (1497 + (t * 0.50)).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0,00';
 
-        const eL=document.getElementById('kpi-leads-hoje');
-        const eT=document.getElementById('kpi-taxa-resposta');
-        const eC=document.getElementById('kpi-conversoes');
-        const eM=document.getElementById('kpi-mrr');
-        const eG=document.getElementById('kpi-leads-globais');
+        const l=await sbGet('leads','select=status');
 
-        if(eL)eL.textContent=lHoje;
-        if(eT)eT.textContent=t>0?Math.round(rp/t*100)+'%':'0%';
-        if(eC)eC.textContent=cv;
-        if(eG)eG.textContent=t;
-        if(eM)eM.textContent='R$ '+mrr;
+        const t=l.length,cv=l.filter(x=>x.status==='convertido').length,rp=l.filter(x=>x.status!=='frio').length;
+
+        const eL=document.getElementById('kpi-leads-hoje'),eT=document.getElementById('kpi-taxa-resposta'),eC=document.getElementById('kpi-conversãoes');
+
+        if(eL)eL.textContent=t;if(eT)eT.textContent=t>0?Math.round(rp/t*100):0;if(eC)eC.textContent=cv;
 
         document.querySelectorAll('#funnel-count-novo').forEach(e=>e.textContent=l.filter(x=>x.status==='novo').length);
+
         document.querySelectorAll('#funnel-count-atendimento').forEach(e=>e.textContent=l.filter(x=>x.status==='atendimento').length);
+
         document.querySelectorAll('#funnel-count-convertido').forEach(e=>e.textContent=cv);
+
         document.querySelectorAll('#funnel-count-frio').forEach(e=>e.textContent=l.filter(x=>x.status==='frio').length);
+
       }catch(e){console.warn('KPI offline',e.message);}
+
     }
 
 
