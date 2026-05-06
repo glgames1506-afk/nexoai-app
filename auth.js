@@ -99,3 +99,17 @@ function showFeedback(msg, type) {
 // O checkUser deve ser chamado explicitamente pelos arquivos que o utilizam
 // para evitar redirecionamentos prematuros antes da inicialização completa dos motores.
 // if (supabase) checkUser();
+
+// ── Auditoria de Sessão (Keep-Alive) ──
+// Garante que o token de acesso não expire durante demonstrações longas
+if (supabase) {
+  setInterval(async () => {
+    try {
+      const { data, error } = await supabase.auth.refreshSession();
+      if (error) console.warn('Falha no refresh automático da sessão', error);
+      else console.log('Sessão revalidada com sucesso (keep-alive).');
+    } catch (e) {
+      console.error('Erro no keep-alive da sessão:', e);
+    }
+  }, 1000 * 60 * 15); // A cada 15 minutos
+}
