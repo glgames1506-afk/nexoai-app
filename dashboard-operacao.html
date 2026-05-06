@@ -1503,31 +1503,37 @@
 
         <div class="mt-4 mb-2 px-3 sidebar-section-label">
 
-          <div class="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Premium</div>
+          <div class="text-[10px] font-bold uppercase tracking-widest" style="background: linear-gradient(90deg, #22d3ee, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">⚡ Comando Total</div>
 
         </div>
 
-        <div class="sidebar-item opacity-40 cursor-not-allowed">
+        <div class="sidebar-item">
 
-          <i data-lucide="lock" class="w-4 h-4 flex-shrink-0"></i>
+          <i data-lucide="trending-up" class="w-5 h-5 flex-shrink-0"></i>
 
-          <span class="sidebar-label line-through">P&L Financeiro</span>
+          <span class="sidebar-label">P&L Financeiro</span>
 
-        </div>
-
-        <div class="sidebar-item opacity-40 cursor-not-allowed">
-
-          <i data-lucide="lock" class="w-4 h-4 flex-shrink-0"></i>
-
-          <span class="sidebar-label line-through">Reativação IA</span>
+          <span class="ml-auto text-[8px] font-black px-1.5 py-0.5 rounded-full" style="background: linear-gradient(135deg, rgba(34,211,238,0.2), rgba(168,85,247,0.2)); color: #a855f7; border: 1px solid rgba(168,85,247,0.3);">PRO</span>
 
         </div>
 
-        <div class="sidebar-item opacity-40 cursor-not-allowed">
+        <div class="sidebar-item">
 
-          <i data-lucide="lock" class="w-4 h-4 flex-shrink-0"></i>
+          <i data-lucide="refresh-cw" class="w-5 h-5 flex-shrink-0"></i>
 
-          <span class="sidebar-label line-through">Relatórios</span>
+          <span class="sidebar-label">Reativação IA</span>
+
+          <span class="ml-auto text-[8px] font-black px-1.5 py-0.5 rounded-full" style="background: linear-gradient(135deg, rgba(34,211,238,0.2), rgba(168,85,247,0.2)); color: #a855f7; border: 1px solid rgba(168,85,247,0.3);">PRO</span>
+
+        </div>
+
+        <div class="sidebar-item">
+
+          <i data-lucide="file-text" class="w-5 h-5 flex-shrink-0"></i>
+
+          <span class="sidebar-label">Relatórios</span>
+
+          <span class="ml-auto text-[8px] font-black px-1.5 py-0.5 rounded-full" style="background: linear-gradient(135deg, rgba(34,211,238,0.2), rgba(168,85,247,0.2)); color: #a855f7; border: 1px solid rgba(168,85,247,0.3);">PRO</span>
 
         </div>
 
@@ -2898,146 +2904,246 @@
 
 
 
-      <!-- ========= VIEW: P&L (LOCKED) ========= -->
+      <!-- ========= VIEW: P&L FINANCEIRO (COMANDO TOTAL) ========= -->
 
       <div id="view-pl" class="view-section hidden">
 
-         <div class="glass-card p-8 locked-overlay" style="height: calc(100vh - 180px);">
-
-            <h3 class="text-2xl font-black text-white mb-6">P&L Financeiro  DRE Automatizado</h3>
-
-            <div class="grid grid-cols-3 gap-6 mb-8">
-
-               <div class="bg-slate-800/30 rounded-xl p-5">
-
-                  <div class="text-slate-500 text-xs uppercase font-bold mb-2">Custo Ads</div>
-
-                  <div class="text-3xl font-black text-white">R$ 4.250</div>
-
-               </div>
-
-               <div class="bg-slate-800/30 rounded-xl p-5">
-
-                  <div class="text-slate-500 text-xs uppercase font-bold mb-2">Faturamento</div>
-
-                  <div class="text-3xl font-black text-emerald-400">R$ 38.900</div>
-
-               </div>
-
-               <div class="bg-slate-800/30 rounded-xl p-5">
-
-                  <div class="text-slate-500 text-xs uppercase font-bold mb-2">ROAS</div>
-
-                  <div class="text-3xl font-black text-cyan-400">9.1x</div>
-
-               </div>
-
+         <div class="flex items-center justify-between mb-6">
+            <div>
+               <h2 class="text-2xl font-black text-white flex items-center gap-3">P&L Financeiro <span class="text-xs font-black px-2 py-1 rounded-full" style="background: linear-gradient(135deg, rgba(34,211,238,0.15), rgba(168,85,247,0.15)); color: #a855f7; border: 1px solid rgba(168,85,247,0.3);">COMANDO</span></h2>
+               <p class="text-sm text-slate-500 mt-1">DRE automatizado do seu negócio — atualizado em tempo real</p>
             </div>
+            <button onclick="recalcPL()" class="bg-cyan-500 hover:bg-cyan-400 text-white font-black text-sm px-5 py-2.5 rounded-xl transition-all hover:scale-105 shadow-lg shadow-cyan-500/20 flex items-center gap-2">
+               <i data-lucide="calculator" class="w-4 h-4"></i> Recalcular
+            </button>
+         </div>
 
-            <div class="lock-badge">
-
-               <div class="w-20 h-20 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto mb-4 shadow-lg">
-
-                  <i data-lucide="lock" class="w-8 h-8 text-slate-500"></i>
-
+         <!-- Input Row -->
+         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="glass-card p-5">
+               <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Investimento em Ads (mês)</label>
+               <div class="relative">
+                  <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-sm">R$</span>
+                  <input type="number" id="pl-ads-spend" value="0" placeholder="0" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl pl-10 pr-4 py-3 text-white text-lg font-black outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30 transition-colors" oninput="recalcPL()">
                </div>
-
-               <div class="text-lg font-bold text-white mb-1">Disponvel exclusivamente no</div>
-
-               <div class="text-xl font-black bg-gradient-to-r from-cyan-400 to-violet-500 bg-clip-text text-transparent mb-4">Comando Total</div>
-
-               <a href="https://pay.kiwify.com.br/PIlSK9V" target="_blank" class="inline-block text-sm font-bold text-cyan-400 border border-cyan-400/30 px-6 py-3 rounded-full hover:bg-cyan-400/10 transition-colors">Fazer Upgrade ?</a>
-
             </div>
+            <div class="glass-card p-5">
+               <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Faturamento Gerado (mês)</label>
+               <div class="relative">
+                  <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-sm">R$</span>
+                  <input type="number" id="pl-revenue" value="0" placeholder="0" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl pl-10 pr-4 py-3 text-emerald-400 text-lg font-black outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/30 transition-colors" oninput="recalcPL()">
+               </div>
+            </div>
+            <div class="glass-card p-5">
+               <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Ticket Médio por Venda</label>
+               <div class="relative">
+                  <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-sm">R$</span>
+                  <input type="number" id="pl-ticket" value="0" placeholder="0" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl pl-10 pr-4 py-3 text-white text-lg font-black outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/30 transition-colors" oninput="recalcPL()">
+               </div>
+            </div>
+         </div>
 
+         <!-- KPI Cards (auto-calculated) -->
+         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="glass-card p-5 premium-glow">
+               <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Lucro Líquido</div>
+               <div class="text-3xl font-black text-emerald-400" id="pl-lucro">R$ 0</div>
+               <div class="text-[10px] text-slate-600 mt-1">Faturamento - Custo Ads</div>
+            </div>
+            <div class="glass-card p-5">
+               <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">CAC</div>
+               <div class="text-3xl font-black text-amber-400" id="pl-cac">R$ 0</div>
+               <div class="text-[10px] text-slate-600 mt-1">Custo por Aquisição de Cliente</div>
+            </div>
+            <div class="glass-card p-5">
+               <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">ROAS</div>
+               <div class="text-3xl font-black text-cyan-400" id="pl-roas">0x</div>
+               <div class="text-[10px] text-slate-600 mt-1">Retorno sobre Ads</div>
+            </div>
+            <div class="glass-card p-5">
+               <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Margem</div>
+               <div class="text-3xl font-black text-violet-400" id="pl-margem">0%</div>
+               <div class="text-[10px] text-slate-600 mt-1">Margem de Lucro</div>
+            </div>
+         </div>
+
+         <!-- LTV + Saúde do Funil -->
+         <div class="grid lg:grid-cols-2 gap-6">
+            <div class="glass-card p-6">
+               <h3 class="text-lg font-bold text-white mb-4">Saúde do Funil</h3>
+               <div class="space-y-4">
+                  <div class="flex items-center justify-between">
+                     <span class="text-sm text-slate-400">Leads Recebidos (mês)</span>
+                     <span class="text-lg font-black text-white" id="pl-leads-total">0</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                     <span class="text-sm text-slate-400">Convertidos</span>
+                     <span class="text-lg font-black text-emerald-400" id="pl-convertidos">0</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                     <span class="text-sm text-slate-400">Taxa de Conversão</span>
+                     <span class="text-lg font-black text-cyan-400" id="pl-conv-rate">0%</span>
+                  </div>
+                  <div class="flex items-center justify-between border-t border-slate-800 pt-4">
+                     <span class="text-sm text-slate-400">LTV Estimado (12 meses)</span>
+                     <span class="text-lg font-black text-violet-400" id="pl-ltv">R$ 0</span>
+                  </div>
+               </div>
+            </div>
+            <div class="glass-card p-6">
+               <h3 class="text-lg font-bold text-white mb-4">Diagnóstico IA</h3>
+               <div class="bg-slate-800/40 rounded-xl p-5 border border-cyan-500/10 relative overflow-hidden">
+                  <div class="absolute top-2 right-2 opacity-10"><i data-lucide="brain" class="w-12 h-12 text-cyan-400"></i></div>
+                  <p class="text-[10px] text-cyan-400 font-bold uppercase tracking-wider mb-2 flex items-center gap-1"><i data-lucide="sparkles" class="w-3 h-3"></i> Insight Automático</p>
+                  <p class="text-sm text-slate-300 leading-relaxed" id="pl-insight">Preencha os campos acima para receber insights automáticos sobre a performance do seu funil e recomendações de otimização.</p>
+               </div>
+            </div>
          </div>
 
       </div>
 
 
 
-      <!-- ========= VIEW: REATIVAO (LOCKED) ========= -->
+      <!-- ========= VIEW: REATIVAÇÃO IA (COMANDO TOTAL) ========= -->
 
       <div id="view-reativacao" class="view-section hidden">
 
-         <div class="glass-card p-8 locked-overlay" style="height: calc(100vh - 180px);">
-
-            <h3 class="text-2xl font-black text-white mb-6">Reativação Autnoma com IA</h3>
-
-            <div class="grid grid-cols-2 gap-6">
-
-               <div class="bg-slate-800/30 rounded-xl p-6 text-center">
-
-                  <div class="text-4xl font-black text-amber-400 mb-2">87</div>
-
-                  <div class="text-sm text-slate-400">Leads congelados (>30 dias)</div>
-
-               </div>
-
-               <div class="bg-slate-800/30 rounded-xl p-6 text-center">
-
-                  <div class="text-4xl font-black text-white mb-2"></div>
-
-                  <div class="text-sm text-slate-400">Resgatados pela IA</div>
-
-               </div>
-
+         <div class="flex items-center justify-between mb-6">
+            <div>
+               <h2 class="text-2xl font-black text-white flex items-center gap-3">Reativação com IA <span class="text-xs font-black px-2 py-1 rounded-full" style="background: linear-gradient(135deg, rgba(34,211,238,0.15), rgba(168,85,247,0.15)); color: #a855f7; border: 1px solid rgba(168,85,247,0.3);">SDR AVANÇADO</span></h2>
+               <p class="text-sm text-slate-500 mt-1">Reative leads frios automaticamente com mensagens inteligentes da IA</p>
             </div>
+            <button onclick="dispararReativacao()" id="btn-reativar" class="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-black text-sm px-6 py-3 rounded-xl transition-all hover:scale-105 shadow-lg shadow-amber-500/20 flex items-center gap-2">
+               <i data-lucide="zap" class="w-4 h-4"></i> Reativar Todos os Frios ⚡
+            </button>
+         </div>
 
-            <div class="lock-badge">
-
-               <div class="w-20 h-20 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto mb-4 shadow-lg">
-
-                  <i data-lucide="lock" class="w-8 h-8 text-slate-500"></i>
-
-               </div>
-
-               <div class="text-lg font-bold text-white mb-1">Disponvel exclusivamente no</div>
-
-               <div class="text-xl font-black bg-gradient-to-r from-cyan-400 to-violet-500 bg-clip-text text-transparent mb-4">Comando Total</div>
-
-               <a href="https://pay.kiwify.com.br/PIlSK9V" target="_blank" class="inline-block text-sm font-bold text-cyan-400 border border-cyan-400/30 px-6 py-3 rounded-full hover:bg-cyan-400/10 transition-colors">Fazer Upgrade ?</a>
-
+         <!-- Stats -->
+         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="glass-card p-5">
+               <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Leads Frios</div>
+               <div class="text-3xl font-black text-amber-400" id="reat-frios">0</div>
+               <div class="text-[10px] text-slate-600 mt-1">Sem resposta há +7 dias</div>
             </div>
+            <div class="glass-card p-5">
+               <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Reativações Enviadas</div>
+               <div class="text-3xl font-black text-cyan-400" id="reat-enviados">0</div>
+               <div class="text-[10px] text-slate-600 mt-1">Mensagens disparadas pela IA</div>
+            </div>
+            <div class="glass-card p-5">
+               <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Resgatados</div>
+               <div class="text-3xl font-black text-emerald-400" id="reat-resgatados">0</div>
+               <div class="text-[10px] text-slate-600 mt-1">Leads que responderam</div>
+            </div>
+            <div class="glass-card p-5">
+               <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Taxa de Resgate</div>
+               <div class="text-3xl font-black text-violet-400" id="reat-taxa">0%</div>
+               <div class="text-[10px] text-slate-600 mt-1">Eficiência da reativação</div>
+            </div>
+         </div>
 
+         <!-- Cold Leads List -->
+         <div class="glass-card p-6">
+            <div class="flex items-center justify-between mb-4">
+               <h3 class="text-lg font-bold text-white">Leads Frios Identificados</h3>
+               <span class="text-xs text-slate-500" id="reat-list-count">0 leads</span>
+            </div>
+            <div class="overflow-auto max-h-[400px]">
+               <table class="w-full text-sm">
+                  <thead>
+                     <tr class="border-b border-slate-800">
+                        <th class="text-left text-xs text-slate-500 font-semibold pb-3 uppercase tracking-wider">Lead</th>
+                        <th class="text-left text-xs text-slate-500 font-semibold pb-3 uppercase tracking-wider">WhatsApp</th>
+                        <th class="text-left text-xs text-slate-500 font-semibold pb-3 uppercase tracking-wider">Último Contato</th>
+                        <th class="text-left text-xs text-slate-500 font-semibold pb-3 uppercase tracking-wider">Dias Parado</th>
+                        <th class="text-right text-xs text-slate-500 font-semibold pb-3 uppercase tracking-wider">Ação</th>
+                     </tr>
+                  </thead>
+                  <tbody id="reat-leads-tbody" class="divide-y divide-slate-800/50">
+                     <!-- Dynamic rows injected by loadColdLeads() -->
+                  </tbody>
+               </table>
+               <div id="reat-empty" class="text-center py-10">
+                  <div class="w-14 h-14 rounded-2xl bg-emerald-400/10 flex items-center justify-center mx-auto mb-3">
+                     <i data-lucide="check-circle" class="w-7 h-7 text-emerald-400"></i>
+                  </div>
+                  <p class="text-sm font-bold text-slate-400">Nenhum lead frio no momento</p>
+                  <p class="text-xs text-slate-600 mt-1">Sua IA está mantendo todos os leads engajados.</p>
+               </div>
+            </div>
          </div>
 
       </div>
 
 
 
-      <!-- ========= VIEW: RELATRIOS (LOCKED) ========= -->
+      <!-- ========= VIEW: RELATÓRIOS (COMANDO TOTAL) ========= -->
 
       <div id="view-relatorios" class="view-section hidden">
 
-         <div class="glass-card p-8 locked-overlay" style="height: calc(100vh - 180px);">
-
-            <h3 class="text-2xl font-black text-white mb-6">Relatrio Executivo Semanal</h3>
-
-            <div class="bg-slate-800/30 rounded-xl p-6">
-
-               <div class="text-xs text-slate-500 mb-2">Relatrio da Semana 15</div>
-
-               <div class="text-sm font-bold text-white">Insights automticos da IA...</div>
-
+         <div class="flex items-center justify-between mb-6">
+            <div>
+               <h2 class="text-2xl font-black text-white flex items-center gap-3">Relatório Executivo <span class="text-xs font-black px-2 py-1 rounded-full" style="background: linear-gradient(135deg, rgba(34,211,238,0.15), rgba(168,85,247,0.15)); color: #a855f7; border: 1px solid rgba(168,85,247,0.3);">SEMANAL</span></h2>
+               <p class="text-sm text-slate-500 mt-1">Resumo inteligente gerado automaticamente pela IA</p>
             </div>
+            <button onclick="gerarRelatorio()" class="bg-violet-500 hover:bg-violet-400 text-white font-black text-sm px-5 py-2.5 rounded-xl transition-all hover:scale-105 shadow-lg shadow-violet-500/20 flex items-center gap-2">
+               <i data-lucide="file-text" class="w-4 h-4"></i> Gerar Relatório
+            </button>
+         </div>
 
-            <div class="lock-badge">
-
-               <div class="w-20 h-20 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto mb-4 shadow-lg">
-
-                  <i data-lucide="lock" class="w-8 h-8 text-slate-500"></i>
-
+         <!-- Report Period -->
+         <div class="glass-card p-6 mb-6 premium-glow">
+            <div class="flex items-center justify-between mb-4">
+               <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-violet-400/10 flex items-center justify-center">
+                     <i data-lucide="calendar" class="w-5 h-5 text-violet-400"></i>
+                  </div>
+                  <div>
+                     <div class="text-sm font-bold text-white" id="rel-periodo">Relatório desta Semana</div>
+                     <div class="text-xs text-slate-500" id="rel-datas">Carregando período...</div>
+                  </div>
                </div>
-
-               <div class="text-lg font-bold text-white mb-1">Disponvel exclusivamente no</div>
-
-               <div class="text-xl font-black bg-gradient-to-r from-cyan-400 to-violet-500 bg-clip-text text-transparent mb-4">Comando Total</div>
-
-               <a href="https://pay.kiwify.com.br/PIlSK9V" target="_blank" class="inline-block text-sm font-bold text-cyan-400 border border-cyan-400/30 px-6 py-3 rounded-full hover:bg-cyan-400/10 transition-colors">Fazer Upgrade ?</a>
-
+               <div class="text-xs font-bold text-emerald-400 bg-emerald-400/10 px-3 py-1 rounded-full border border-emerald-400/20">Atualizado agora</div>
             </div>
+         </div>
 
+         <!-- Report KPIs -->
+         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="glass-card p-5">
+               <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Leads na Semana</div>
+               <div class="text-3xl font-black text-cyan-400" id="rel-leads">0</div>
+            </div>
+            <div class="glass-card p-5">
+               <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Atendidos pela IA</div>
+               <div class="text-3xl font-black text-violet-400" id="rel-atendidos">0</div>
+            </div>
+            <div class="glass-card p-5">
+               <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Convertidos</div>
+               <div class="text-3xl font-black text-emerald-400" id="rel-convertidos">0</div>
+            </div>
+            <div class="glass-card p-5">
+               <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Sem Resposta</div>
+               <div class="text-3xl font-black text-red-400" id="rel-frios">0</div>
+            </div>
+         </div>
+
+         <!-- AI Insight Report -->
+         <div class="glass-card p-6">
+            <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i data-lucide="sparkles" class="w-5 h-5 text-cyan-400"></i> Insights da IA</h3>
+            <div class="space-y-4" id="rel-insights">
+               <div class="bg-slate-800/40 rounded-xl p-4 border-l-4 border-cyan-400">
+                  <p class="text-sm text-white font-bold mb-1">📊 Performance Geral</p>
+                  <p class="text-xs text-slate-400" id="rel-insight-perf">Clique em "Gerar Relatório" para obter a análise completa da semana.</p>
+               </div>
+               <div class="bg-slate-800/40 rounded-xl p-4 border-l-4 border-emerald-400">
+                  <p class="text-sm text-white font-bold mb-1">🎯 Recomendação de Ação</p>
+                  <p class="text-xs text-slate-400" id="rel-insight-acao">A IA analisará o comportamento dos leads e sugerirá ações concretas.</p>
+               </div>
+               <div class="bg-slate-800/40 rounded-xl p-4 border-l-4 border-amber-400">
+                  <p class="text-sm text-white font-bold mb-1">⚠️ Pontos de Atenção</p>
+                  <p class="text-xs text-slate-400" id="rel-insight-atencao">Alertas sobre leads que precisam de intervenção manual serão listados aqui.</p>
+               </div>
+            </div>
          </div>
 
       </div>
@@ -6658,6 +6764,198 @@ async function startAgentConfig() {
         checkUser();
       }
     </script>
+
+    <!-- ====== COMANDO TOTAL ENGINE ====== -->
+    <script>
+    // ── P&L FINANCEIRO ──
+    function recalcPL() {
+      const ads = parseFloat(document.getElementById('pl-ads-spend').value) || 0;
+      const rev = parseFloat(document.getElementById('pl-revenue').value) || 0;
+      const ticket = parseFloat(document.getElementById('pl-ticket').value) || 0;
+
+      const lucro = rev - ads;
+      const roas = ads > 0 ? (rev / ads).toFixed(1) : '0';
+      const margem = rev > 0 ? ((lucro / rev) * 100).toFixed(0) : '0';
+
+      // Pull real leads from KPIs already on page
+      const totalLeads = parseInt(document.getElementById('kpi-leads-hoje')?.textContent) || 0;
+      const convertidos = parseInt(document.getElementById('kpi-conversoes')?.textContent) || 0;
+      const cac = convertidos > 0 ? (ads / convertidos).toFixed(0) : '0';
+      const convRate = totalLeads > 0 ? ((convertidos / totalLeads) * 100).toFixed(1) : '0';
+      const ltv = ticket > 0 ? (ticket * 12).toLocaleString('pt-BR') : '0';
+
+      document.getElementById('pl-lucro').textContent = 'R$ ' + lucro.toLocaleString('pt-BR');
+      document.getElementById('pl-lucro').style.color = lucro >= 0 ? '#34d399' : '#f87171';
+      document.getElementById('pl-cac').textContent = 'R$ ' + cac;
+      document.getElementById('pl-roas').textContent = roas + 'x';
+      document.getElementById('pl-margem').textContent = margem + '%';
+      document.getElementById('pl-leads-total').textContent = totalLeads;
+      document.getElementById('pl-convertidos').textContent = convertidos;
+      document.getElementById('pl-conv-rate').textContent = convRate + '%';
+      document.getElementById('pl-ltv').textContent = 'R$ ' + ltv;
+
+      // Generate smart insight
+      let insight = '';
+      if (ads === 0 && rev === 0) {
+        insight = 'Preencha os campos de investimento e faturamento para receber insights automáticos.';
+      } else if (lucro < 0) {
+        insight = '🔴 ALERTA: Sua operação está no PREJUÍZO de R$ ' + Math.abs(lucro).toLocaleString('pt-BR') + '. Reduza o custo de ads ou melhore a taxa de conversão urgentemente. A IA recomenda pausar campanhas com ROAS abaixo de 2x.';
+      } else if (parseFloat(roas) < 3) {
+        insight = '🟡 Seu ROAS de ' + roas + 'x está abaixo do ideal (3x+). Considere otimizar criativos, segmentação e o tempo de resposta da IA. Cada hora de atraso no atendimento pode reduzir a conversão em até 40%.';
+      } else {
+        insight = '🟢 Operação SAUDÁVEL. ROAS de ' + roas + 'x com margem de ' + margem + '%. Para escalar, aumente o investimento em ads mantendo a eficiência. A IA sugere investir até R$ ' + (lucro * 0.3).toLocaleString('pt-BR', {maximumFractionDigits:0}) + ' adicionais em testes de novos criativos.';
+      }
+      document.getElementById('pl-insight').textContent = insight;
+    }
+
+    // ── REATIVAÇÃO IA (SDR AVANÇADO) ──
+    async function loadColdLeads() {
+      try {
+        if (typeof _sb === 'undefined') return;
+        const { data: leads } = await _sb.from('leads').select('*').eq('status', 'frio');
+        const cold = leads || [];
+        const tbody = document.getElementById('reat-leads-tbody');
+        const emptyEl = document.getElementById('reat-empty');
+        document.getElementById('reat-frios').textContent = cold.length;
+        document.getElementById('reat-list-count').textContent = cold.length + ' leads';
+
+        if (cold.length === 0) {
+          if(emptyEl) emptyEl.style.display = 'block';
+          return;
+        }
+        if(emptyEl) emptyEl.style.display = 'none';
+
+        tbody.innerHTML = '';
+        cold.forEach(lead => {
+          const lastDate = lead.updated_at ? new Date(lead.updated_at) : new Date(lead.created_at);
+          const daysSince = Math.floor((Date.now() - lastDate.getTime()) / (1000*60*60*24));
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-slate-800/30 transition-colors';
+          tr.innerHTML = `
+            <td class="py-3 pr-4"><span class="text-sm font-bold text-white">${lead.name || 'Lead'}</span></td>
+            <td class="py-3 pr-4"><span class="text-xs text-slate-400">${lead.phone || '—'}</span></td>
+            <td class="py-3 pr-4"><span class="text-xs text-slate-500">${lastDate.toLocaleDateString('pt-BR')}</span></td>
+            <td class="py-3 pr-4"><span class="text-xs font-bold ${daysSince > 30 ? 'text-red-400' : 'text-amber-400'}">${daysSince} dias</span></td>
+            <td class="py-3 text-right">
+              <button onclick="reativarLead('${lead.id}')" class="text-xs font-bold text-amber-400 bg-amber-400/10 border border-amber-400/20 px-3 py-1.5 rounded-lg hover:bg-amber-400/20 transition-colors">⚡ Reativar</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch(e) { console.warn('Erro ao carregar leads frios:', e); }
+    }
+
+    async function reativarLead(leadId) {
+      try {
+        await _sb.from('leads').update({ status: 'reativado', updated_at: new Date().toISOString() }).eq('id', leadId);
+        const count = parseInt(document.getElementById('reat-enviados').textContent) || 0;
+        document.getElementById('reat-enviados').textContent = count + 1;
+        if (typeof nexoToast === 'function') nexoToast('Lead reativado com sucesso! IA enviará mensagem.', 'success');
+        loadColdLeads();
+      } catch(e) { console.error('Erro ao reativar lead:', e); }
+    }
+
+    async function dispararReativacao() {
+      const btn = document.getElementById('btn-reativar');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="nexo-spinner" style="width:16px;height:16px;border-width:2px;border-top-color:#fff;"></div> Reativando...';
+      try {
+        if (typeof _sb === 'undefined') throw new Error('Supabase indisponível');
+        const { data: cold } = await _sb.from('leads').select('id').eq('status', 'frio');
+        if (!cold || cold.length === 0) {
+          if (typeof nexoToast === 'function') nexoToast('Nenhum lead frio encontrado.', 'error');
+          return;
+        }
+        const ids = cold.map(l => l.id);
+        await _sb.from('leads').update({ status: 'reativado', updated_at: new Date().toISOString() }).in('id', ids);
+        document.getElementById('reat-enviados').textContent = ids.length;
+        document.getElementById('reat-resgatados').textContent = '—';
+        document.getElementById('reat-taxa').textContent = '—';
+        if (typeof nexoToast === 'function') nexoToast(ids.length + ' leads reativados! A IA iniciará contato.', 'success');
+        loadColdLeads();
+      } catch(e) {
+        console.error('Erro na reativação em massa:', e);
+        if (typeof nexoToast === 'function') nexoToast('Erro na reativação: ' + e.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="zap" class="w-4 h-4"></i> Reativar Todos os Frios ⚡';
+        if (window.lucide) lucide.createIcons();
+      }
+    }
+
+    // ── RELATÓRIO SEMANAL ──
+    async function gerarRelatorio() {
+      // Set period dates
+      const hoje = new Date();
+      const inicioSemana = new Date(hoje);
+      inicioSemana.setDate(hoje.getDate() - hoje.getDay());
+      document.getElementById('rel-datas').textContent = 
+        inicioSemana.toLocaleDateString('pt-BR') + ' — ' + hoje.toLocaleDateString('pt-BR');
+      document.getElementById('rel-periodo').textContent = 'Semana ' + getWeekNumber(hoje);
+
+      try {
+        if (typeof _sb === 'undefined') return;
+        const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+        const { data: leads } = await _sb.from('leads').select('*').gte('created_at', weekAgo.toISOString());
+        const all = leads || [];
+        const atendidos = all.filter(l => l.status !== 'frio' && l.status !== 'novo');
+        const convertidos = all.filter(l => l.status === 'convertido');
+        const frios = all.filter(l => l.status === 'frio');
+
+        document.getElementById('rel-leads').textContent = all.length;
+        document.getElementById('rel-atendidos').textContent = atendidos.length;
+        document.getElementById('rel-convertidos').textContent = convertidos.length;
+        document.getElementById('rel-frios').textContent = frios.length;
+
+        // Performance insight
+        const taxaResp = all.length > 0 ? ((atendidos.length / all.length)*100).toFixed(0) : 0;
+        const taxaConv = all.length > 0 ? ((convertidos.length / all.length)*100).toFixed(0) : 0;
+        document.getElementById('rel-insight-perf').textContent = 
+          'Esta semana entraram ' + all.length + ' leads. A IA atendeu ' + taxaResp + '% automaticamente e a taxa de conversão foi de ' + taxaConv + '%.';
+        
+        // Action insight
+        if (frios.length > 0) {
+          document.getElementById('rel-insight-acao').textContent = 
+            'Existem ' + frios.length + ' leads sem resposta. Acesse a aba "Reativação IA" e dispare o SDR Avançado para tentar recuperá-los.';
+        } else {
+          document.getElementById('rel-insight-acao').textContent = 
+            'Excelente! Todos os leads foram atendidos. Continue monitorando o tempo de resposta para manter a qualidade.';
+        }
+
+        // Attention insight
+        if (parseInt(taxaConv) < 10) {
+          document.getElementById('rel-insight-atencao').textContent = 
+            'Taxa de conversão abaixo de 10%. Revise o prompt da IA (Configurações) para melhorar a qualificação e o fechamento. Considere ajustar o tom de voz para "Persuasivo".';
+        } else {
+          document.getElementById('rel-insight-atencao').textContent = 
+            'Nenhum alerta crítico. A operação está dentro dos parâmetros saudáveis.';
+        }
+
+        if (typeof nexoToast === 'function') nexoToast('Relatório semanal gerado com sucesso!', 'success');
+      } catch(e) { console.warn('Erro ao gerar relatório:', e); }
+    }
+
+    function getWeekNumber(d) {
+      d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+      d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+      var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+      return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+    }
+
+    // Auto-load when views are opened
+    const _origViewSwitch = document.querySelectorAll('.sidebar-item');
+    _origViewSwitch.forEach(item => {
+      item.addEventListener('click', () => {
+        setTimeout(() => {
+          if (item.textContent.includes('Reativação')) loadColdLeads();
+          if (item.textContent.includes('Relatórios')) gerarRelatorio();
+          if (item.textContent.includes('P&L')) recalcPL();
+        }, 200);
+      });
+    });
+    </script>
+    <!-- ====== FIM COMANDO TOTAL ENGINE ====== -->
+
 </body>
 
 
