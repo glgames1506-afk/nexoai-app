@@ -442,6 +442,12 @@
 
   </style>
 
+
+    <style>
+    .locked-overlay::after, .locked-overlay::before { display: none !important; }
+    .locked-overlay { pointer-events: auto !important; opacity: 1 !important; filter: none !important; }
+    </style>
+    
 </head>
 
 <body class="min-h-screen" style="display:none;">
@@ -6658,7 +6664,7 @@ async function startAgentConfig() {
         checkUser();
       }
     </script>
-<script>document.querySelectorAll('.locked-overlay').forEach(el => el.classList.remove('locked-overlay'));</script></body>
+<script>document.querySelectorAll('.').forEach(el => el.classList.remove(''));</script></body>
 
 
 

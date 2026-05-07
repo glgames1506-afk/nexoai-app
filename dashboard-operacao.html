@@ -112,7 +112,7 @@
 
     /* Locked overlay */
 
-    .locked-overlay {
+    . {
 
       position: relative;
 
@@ -120,7 +120,7 @@
 
     }
 
-    .locked-overlay::after {
+    .::after {
 
       content: '';
 
@@ -442,6 +442,12 @@
 
   </style>
 
+
+    <style>
+    .locked-overlay::after, .locked-overlay::before { display: none !important; }
+    .locked-overlay { pointer-events: auto !important; opacity: 1 !important; filter: none !important; }
+    </style>
+    
 </head>
 
 <body class="min-h-screen" style="display:none;">
@@ -1507,27 +1513,27 @@
 
         </div>
 
-        <div class="sidebar-item opacity-40 cursor-not-allowed">
+        <div class="sidebar-item cursor-pointer">
 
-          <i data-lucide="lock" class="w-4 h-4 flex-shrink-0"></i>
+          <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i>
 
-          <span class="sidebar-label line-through">P&L Financeiro</span>
-
-        </div>
-
-        <div class="sidebar-item opacity-40 cursor-not-allowed">
-
-          <i data-lucide="lock" class="w-4 h-4 flex-shrink-0"></i>
-
-          <span class="sidebar-label line-through">Reativação IA</span>
+          <span class="sidebar-label ">P&L Financeiro</span>
 
         </div>
 
-        <div class="sidebar-item opacity-40 cursor-not-allowed">
+        <div class="sidebar-item cursor-pointer">
 
-          <i data-lucide="lock" class="w-4 h-4 flex-shrink-0"></i>
+          <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i>
 
-          <span class="sidebar-label line-through">Relatórios</span>
+          <span class="sidebar-label ">Reativação IA</span>
+
+        </div>
+
+        <div class="sidebar-item cursor-pointer">
+
+          <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i>
+
+          <span class="sidebar-label ">Relatórios</span>
 
         </div>
 
@@ -2458,7 +2464,7 @@
 
         <!-- Locked: P&L -->
 
-        <div class="glass-card p-6 locked-overlay fade-in fade-in-5">
+        <div class="glass-card p-6  fade-in fade-in-5">
 
           <h3 class="text-lg font-bold text-white mb-4">P&L Financeiro</h3>
 
@@ -2504,7 +2510,7 @@
 
         <!-- Locked: Reactivation -->
 
-        <div class="glass-card p-6 locked-overlay fade-in fade-in-5">
+        <div class="glass-card p-6  fade-in fade-in-5">
 
           <h3 class="text-lg font-bold text-white mb-4">Reativação com IA</h3>
 
@@ -2548,7 +2554,7 @@
 
         <!-- Locked: Reports -->
 
-        <div class="glass-card p-6 locked-overlay fade-in fade-in-6">
+        <div class="glass-card p-6  fade-in fade-in-6">
 
           <h3 class="text-lg font-bold text-white mb-4">Relatrio Semanal</h3>
 
@@ -2902,7 +2908,7 @@
 
       <div id="view-pl" class="view-section hidden">
 
-         <div class="glass-card p-8 locked-overlay" style="height: calc(100vh - 180px);">
+         <div class="glass-card p-8 " style="height: calc(100vh - 180px);">
 
             <h3 class="text-2xl font-black text-white mb-6">P&L Financeiro  DRE Automatizado</h3>
 
@@ -2960,7 +2966,7 @@
 
       <div id="view-reativacao" class="view-section hidden">
 
-         <div class="glass-card p-8 locked-overlay" style="height: calc(100vh - 180px);">
+         <div class="glass-card p-8 " style="height: calc(100vh - 180px);">
 
             <h3 class="text-2xl font-black text-white mb-6">Reativação Autnoma com IA</h3>
 
@@ -3010,7 +3016,7 @@
 
       <div id="view-relatorios" class="view-section hidden">
 
-         <div class="glass-card p-8 locked-overlay" style="height: calc(100vh - 180px);">
+         <div class="glass-card p-8 " style="height: calc(100vh - 180px);">
 
             <h3 class="text-2xl font-black text-white mb-6">Relatrio Executivo Semanal</h3>
 
