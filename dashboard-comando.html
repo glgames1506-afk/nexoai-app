@@ -1507,27 +1507,27 @@
 
         </div>
 
-        <div class="sidebar-item opacity-40 cursor-not-allowed">
+        <div class="sidebar-item cursor-pointer hover:bg-slate-800/50">
 
-          <i data-lucide="lock" class="w-4 h-4 flex-shrink-0"></i>
+          <i data-lucide="zap" class="w-4 h-4 text-cyan-400 flex-shrink-0"></i>
 
-          <span class="sidebar-label line-through">P&L Financeiro</span>
-
-        </div>
-
-        <div class="sidebar-item opacity-40 cursor-not-allowed">
-
-          <i data-lucide="lock" class="w-4 h-4 flex-shrink-0"></i>
-
-          <span class="sidebar-label line-through">Reativação IA</span>
+          <span class="sidebar-label ">P&L Financeiro</span>
 
         </div>
 
-        <div class="sidebar-item opacity-40 cursor-not-allowed">
+        <div class="sidebar-item cursor-pointer hover:bg-slate-800/50">
 
-          <i data-lucide="lock" class="w-4 h-4 flex-shrink-0"></i>
+          <i data-lucide="zap" class="w-4 h-4 text-cyan-400 flex-shrink-0"></i>
 
-          <span class="sidebar-label line-through">Relatórios</span>
+          <span class="sidebar-label ">Reativação IA</span>
+
+        </div>
+
+        <div class="sidebar-item cursor-pointer hover:bg-slate-800/50">
+
+          <i data-lucide="zap" class="w-4 h-4 text-cyan-400 flex-shrink-0"></i>
+
+          <span class="sidebar-label ">Relatórios</span>
 
         </div>
 
@@ -6658,7 +6658,7 @@ async function startAgentConfig() {
         checkUser();
       }
     </script>
-</body>
+<script>document.querySelectorAll('.locked-overlay').forEach(el => el.classList.remove('locked-overlay'));</script></body>
 
 
 
