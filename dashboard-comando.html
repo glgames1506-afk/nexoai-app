@@ -110,49 +110,11 @@
 
 
 
-    /* Locked overlay */
+    /* unlock: clean */
 
-    . {
+    /* unlock: removed overlay */
 
-      position: relative;
-
-      overflow: hidden;
-
-    }
-
-    .::after {
-
-      content: '';
-
-      position: absolute;
-
-      inset: 0;
-
-      background: rgba(15,23,42,0.85);
-
-      backdrop-filter: blur(4px);
-
-      border-radius: 1rem;
-
-      z-index: 10;
-
-    }
-
-    .lock-badge {
-
-      position: absolute;
-
-      top: 50%;
-
-      left: 50%;
-
-      transform: translate(-50%, -50%);
-
-      z-index: 20;
-
-      text-align: center;
-
-    }
+    /* unlock: clean */
 
 
 
@@ -442,12 +404,6 @@
 
   </style>
 
-
-    <style>
-    .locked-overlay::after, .locked-overlay::before { display: none !important; }
-    .locked-overlay { pointer-events: auto !important; opacity: 1 !important; filter: none !important; }
-    </style>
-    
 </head>
 
 <body class="min-h-screen" style="display:none;">
@@ -1050,7 +1006,7 @@
 
             <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">E-mail</label>
 
-            <input type="email" id="profile-email" disabled class="w-full bg-slate-900/60 border border-slate-800 rounded-xl px-4 py-3 text-slate-500 text-sm cursor-not-allowed" />
+            <input type="email" id="profile-email" disabled class="w-full bg-slate-900/60 border border-slate-800 rounded-xl px-4 py-3 text-slate-500 text-sm cursor-pointer" />
 
             <p class="text-[10px] text-slate-600 mt-1">O e-mail principal não pode ser alterado por segurança.</p>
 
@@ -1459,7 +1415,7 @@
 
           <div class="text-lg font-black text-white tracking-tight">Nexo AI</div>
 
-          <div class="text-[10px] font-semibold text-cyan-400 uppercase tracking-widest">Comando Total</div>
+          <div class="text-[10px] font-semibold text-cyan-400 uppercase tracking-widest">Operação</div>
 
         </div>
 
@@ -1513,7 +1469,7 @@
 
         </div>
 
-        <div class="sidebar-item cursor-pointer hover:bg-slate-800/50">
+        <div class="sidebar-item cursor-pointer">
 
           <i data-lucide="zap" class="w-4 h-4 text-cyan-400 flex-shrink-0"></i>
 
@@ -1521,7 +1477,7 @@
 
         </div>
 
-        <div class="sidebar-item cursor-pointer hover:bg-slate-800/50">
+        <div class="sidebar-item cursor-pointer">
 
           <i data-lucide="zap" class="w-4 h-4 text-cyan-400 flex-shrink-0"></i>
 
@@ -1529,7 +1485,7 @@
 
         </div>
 
-        <div class="sidebar-item cursor-pointer hover:bg-slate-800/50">
+        <div class="sidebar-item cursor-pointer">
 
           <i data-lucide="zap" class="w-4 h-4 text-cyan-400 flex-shrink-0"></i>
 
@@ -2456,15 +2412,15 @@
 
 
 
-      <!-- Locked Premium Sections -->
+      <!-- Premium Sections -->
 
       <div class="grid lg:grid-cols-3 gap-6 mb-8">
 
         
 
-        <!-- Locked: P&L -->
+        <!-- P&L Financeiro -->
 
-        <div class="glass-card p-6  fade-in fade-in-5">
+        <div class="glass-card p-6 fade-in fade-in-5">
 
           <h3 class="text-lg font-bold text-white mb-4">P&L Financeiro</h3>
 
@@ -2488,29 +2444,15 @@
 
           </div>
 
-          <div class="lock-badge">
-
-            <div class="w-14 h-14 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto mb-3">
-
-              <i data-lucide="lock" class="w-6 h-6 text-slate-500"></i>
-
-            </div>
-
-            <div class="text-sm font-bold text-white">Disponvel no</div>
-
-            <div class="text-sm font-black bg-gradient-to-r from-cyan-400 to-violet-500 bg-clip-text text-transparent">Comando Total</div>
-
-            <a href="https://pay.kiwify.com.br/PIlSK9V" target="_blank" class="inline-block mt-3 text-xs font-bold text-cyan-400 border border-cyan-400/30 px-4 py-2 rounded-full hover:bg-cyan-400/10 transition-colors">Fazer Upgrade ?</a>
-
-          </div>
+          
 
         </div>
 
 
 
-        <!-- Locked: Reactivation -->
+        <!-- Reativacao com IA -->
 
-        <div class="glass-card p-6  fade-in fade-in-5">
+        <div class="glass-card p-6 fade-in fade-in-5">
 
           <h3 class="text-lg font-bold text-white mb-4">Reativação com IA</h3>
 
@@ -2532,29 +2474,15 @@
 
           </div>
 
-          <div class="lock-badge">
-
-            <div class="w-14 h-14 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto mb-3">
-
-              <i data-lucide="lock" class="w-6 h-6 text-slate-500"></i>
-
-            </div>
-
-            <div class="text-sm font-bold text-white">Disponvel no</div>
-
-            <div class="text-sm font-black bg-gradient-to-r from-cyan-400 to-violet-500 bg-clip-text text-transparent">Comando Total</div>
-
-            <a href="https://pay.kiwify.com.br/PIlSK9V" target="_blank" class="inline-block mt-3 text-xs font-bold text-cyan-400 border border-cyan-400/30 px-4 py-2 rounded-full hover:bg-cyan-400/10 transition-colors">Fazer Upgrade ?</a>
-
-          </div>
+          
 
         </div>
 
 
 
-        <!-- Locked: Reports -->
+        <!-- Relatorio Semanal -->
 
-        <div class="glass-card p-6  fade-in fade-in-6">
+        <div class="glass-card p-6 fade-in fade-in-6">
 
           <h3 class="text-lg font-bold text-white mb-4">Relatrio Semanal</h3>
 
@@ -2570,21 +2498,7 @@
 
           </div>
 
-          <div class="lock-badge">
-
-            <div class="w-14 h-14 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto mb-3">
-
-              <i data-lucide="lock" class="w-6 h-6 text-slate-500"></i>
-
-            </div>
-
-            <div class="text-sm font-bold text-white">Disponvel no</div>
-
-            <div class="text-sm font-black bg-gradient-to-r from-cyan-400 to-violet-500 bg-clip-text text-transparent">Comando Total</div>
-
-            <a href="https://pay.kiwify.com.br/PIlSK9V" target="_blank" class="inline-block mt-3 text-xs font-bold text-cyan-400 border border-cyan-400/30 px-4 py-2 rounded-full hover:bg-cyan-400/10 transition-colors">Fazer Upgrade ?</a>
-
-          </div>
+          
 
         </div>
 
@@ -2904,7 +2818,7 @@
 
 
 
-      <!-- ========= VIEW: P&L (LOCKED) ========= -->
+      <!-- ========= VIEW: P&L  ========= -->
 
       <div id="view-pl" class="view-section hidden">
 
@@ -2940,21 +2854,7 @@
 
             </div>
 
-            <div class="lock-badge">
-
-               <div class="w-20 h-20 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto mb-4 shadow-lg">
-
-                  <i data-lucide="lock" class="w-8 h-8 text-slate-500"></i>
-
-               </div>
-
-               <div class="text-lg font-bold text-white mb-1">Disponvel exclusivamente no</div>
-
-               <div class="text-xl font-black bg-gradient-to-r from-cyan-400 to-violet-500 bg-clip-text text-transparent mb-4">Comando Total</div>
-
-               <a href="https://pay.kiwify.com.br/PIlSK9V" target="_blank" class="inline-block text-sm font-bold text-cyan-400 border border-cyan-400/30 px-6 py-3 rounded-full hover:bg-cyan-400/10 transition-colors">Fazer Upgrade ?</a>
-
-            </div>
+            
 
          </div>
 
@@ -2962,7 +2862,7 @@
 
 
 
-      <!-- ========= VIEW: REATIVAO (LOCKED) ========= -->
+      <!-- ========= VIEW: REATIVAO  ========= -->
 
       <div id="view-reativacao" class="view-section hidden">
 
@@ -2990,21 +2890,7 @@
 
             </div>
 
-            <div class="lock-badge">
-
-               <div class="w-20 h-20 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto mb-4 shadow-lg">
-
-                  <i data-lucide="lock" class="w-8 h-8 text-slate-500"></i>
-
-               </div>
-
-               <div class="text-lg font-bold text-white mb-1">Disponvel exclusivamente no</div>
-
-               <div class="text-xl font-black bg-gradient-to-r from-cyan-400 to-violet-500 bg-clip-text text-transparent mb-4">Comando Total</div>
-
-               <a href="https://pay.kiwify.com.br/PIlSK9V" target="_blank" class="inline-block text-sm font-bold text-cyan-400 border border-cyan-400/30 px-6 py-3 rounded-full hover:bg-cyan-400/10 transition-colors">Fazer Upgrade ?</a>
-
-            </div>
+            
 
          </div>
 
@@ -3012,7 +2898,7 @@
 
 
 
-      <!-- ========= VIEW: RELATRIOS (LOCKED) ========= -->
+      <!-- ========= VIEW: RELATRIOS  ========= -->
 
       <div id="view-relatorios" class="view-section hidden">
 
@@ -3028,21 +2914,7 @@
 
             </div>
 
-            <div class="lock-badge">
-
-               <div class="w-20 h-20 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto mb-4 shadow-lg">
-
-                  <i data-lucide="lock" class="w-8 h-8 text-slate-500"></i>
-
-               </div>
-
-               <div class="text-lg font-bold text-white mb-1">Disponvel exclusivamente no</div>
-
-               <div class="text-xl font-black bg-gradient-to-r from-cyan-400 to-violet-500 bg-clip-text text-transparent mb-4">Comando Total</div>
-
-               <a href="https://pay.kiwify.com.br/PIlSK9V" target="_blank" class="inline-block text-sm font-bold text-cyan-400 border border-cyan-400/30 px-6 py-3 rounded-full hover:bg-cyan-400/10 transition-colors">Fazer Upgrade ?</a>
-
-            </div>
+            
 
          </div>
 
@@ -4186,7 +4058,7 @@
 
         const prev = document.createElement('button');
 
-        prev.className = `${btnBase} ${leadsPage<=1 ? 'bg-slate-900 text-slate-700 cursor-not-allowed' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'}`;
+        prev.className = `${btnBase} ${leadsPage<=1 ? 'bg-slate-900 text-slate-700 cursor-pointer' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'}`;
 
         prev.textContent = '? Anterior';
 
@@ -4224,7 +4096,7 @@
 
         const next = document.createElement('button');
 
-        next.className = `${btnBase} ${leadsPage>=totalPages ? 'bg-slate-900 text-slate-700 cursor-not-allowed' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'}`;
+        next.className = `${btnBase} ${leadsPage>=totalPages ? 'bg-slate-900 text-slate-700 cursor-pointer' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'}`;
 
         next.textContent = 'Prxima ?';
 
@@ -6564,99 +6436,7 @@ async function startAgentConfig() {
 
     <!-- ====== FIM DO NEXO SUPABASE ENGINE ====== -->
 
-    <!-- ====== DEMO UPGRADE BANNER ====== -->
-
-    <div id="demo-upgrade-banner" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-2xl px-4">
-
-      <div style="background:linear-gradient(135deg,rgba(15,23,42,0.97) 0%,rgba(15,23,42,0.97) 100%);border:1px solid rgba(34,211,238,0.3);box-shadow:0 0 40px rgba(34,211,238,0.15),0 20px 60px rgba(0,0,0,0.5);" class="rounded-2xl p-4 flex items-center gap-4">
-
-        <!-- cone -->
-
-        <div class="w-12 h-12 rounded-xl flex-shrink-0 flex items-center justify-center" style="background:linear-gradient(135deg,#22d3ee,#a855f7);">
-
-          <i data-lucide="zap" class="w-6 h-6 text-white"></i>
-
-        </div>
-
-        <!-- Texto -->
-
-        <div class="flex-1 min-w-0">
-
-          <p class="text-white font-black text-sm">Você est no modo Demo</p>
-
-          <p class="text-slate-400 text-xs mt-0.5">Adquira sua licença e conecte seus leads reais agora.</p>
-
-        </div>
-
-        <!-- CTA -->
-
-        <a href="https://pay.kiwify.com.br/nexoai" target="_blank"
-
-           style="background:linear-gradient(135deg,#22d3ee,#a855f7);box-shadow:0 0 20px rgba(34,211,238,0.3);"
-
-           class="flex-shrink-0 px-5 py-2.5 rounded-xl text-white font-black text-sm whitespace-nowrap hover:opacity-90 transition-opacity">
-
-          Ativar Licença ?
-
-        </a>
-
-        <!-- Fechar -->
-
-        <button onclick="document.getElementById('demo-upgrade-banner').remove();" class="flex-shrink-0 w-7 h-7 rounded-lg bg-slate-800 flex items-center justify-center text-slate-500 hover:text-white transition-colors">
-
-          <i data-lucide="x" class="w-3.5 h-3.5"></i>
-
-        </button>
-
-      </div>
-
-    </div>
-
-
-
-    <script>
-
-      // Exibe banner APENAS para conta demo
-
-      (function() {
-
-        var isDemo = false;
-
-        try {
-
-          var keys = Object.keys(localStorage);
-
-          for (var k of keys) {
-
-            var v = localStorage.getItem(k);
-
-            if (v && v.includes('demo@nexoai')) { isDemo = true; break; }
-
-          }
-
-        } catch(e){}
-
-        // Fallback: checa sessão via cookie/sessionStorage
-
-        if (!isDemo && document.cookie.includes('demo@nexoai')) isDemo = true;
-
-        if (!isDemo && sessionStorage.getItem('nexo_demo')) isDemo = true;
-
-
-
-        if (isDemo) {
-
-          var banner = document.getElementById('demo-upgrade-banner');
-
-          if (banner) banner.classList.remove('hidden');
-
-        }
-
-      })();
-
-    </script>
-
-    <!-- ====== FIM DEMO UPGRADE BANNER ====== -->
+    <!-- unlock: demo upgrade banner removido -->
 
     <script>
       // Garante a verificação de sessão e remoção do display:none
@@ -6664,7 +6444,7 @@ async function startAgentConfig() {
         checkUser();
       }
     </script>
-<script>document.querySelectorAll('.').forEach(el => el.classList.remove(''));</script></body>
+</body>
 
 
 
