@@ -2587,7 +2587,70 @@
 
       <!-- Funcionalidades Avancadas -->
 
-      <!-- Footer -->
+      
+        <!-- Funcionalidades Premium -->
+        <div class="grid lg:grid-cols-3 gap-4 mb-8">
+
+          <!-- P&L Financeiro -->
+          <div class="glass-card p-6 fade-in fade-in-5 cursor-pointer hover:border-cyan-400/30 transition-all group" onclick="showView('pl')">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-cyan-400/10 flex items-center justify-center group-hover:bg-cyan-400/20 transition-all">
+                <i data-lucide="bar-chart-2" class="w-5 h-5 text-cyan-400"></i>
+              </div>
+              <span class="text-xs font-black px-2 py-1 rounded-full bg-slate-800 text-slate-400">P&L</span>
+            </div>
+            <div class="text-base font-black text-white mb-1">P&L Financeiro</div>
+            <div class="text-xs text-slate-500 mb-4">Calculadora de lucro, margem e CAC em tempo real</div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div>
+                <span class="text-xs text-cyan-400 font-bold">Abrir Calculadora</span>
+              </div>
+              <i data-lucide="arrow-right" class="w-4 h-4 text-slate-600 group-hover:text-cyan-400 transition-all group-hover:translate-x-1"></i>
+            </div>
+          </div>
+
+          <!-- Reativacao IA -->
+          <div class="glass-card p-6 fade-in fade-in-6 cursor-pointer hover:border-violet-400/30 transition-all group" onclick="showView('reativacao')">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-violet-400/10 flex items-center justify-center group-hover:bg-violet-400/20 transition-all">
+                <i data-lucide="refresh-cw" class="w-5 h-5 text-violet-400"></i>
+              </div>
+              <span class="text-xs font-black px-2 py-1 rounded-full bg-slate-800 text-slate-400">IA</span>
+            </div>
+            <div class="text-base font-black text-white mb-1">Reativação com IA</div>
+            <div class="text-xs text-slate-500 mb-4">Dispara mensagens para leads parados há mais de 30 dias</div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5" id="reat-card-status">
+                <div class="w-1.5 h-1.5 rounded-full bg-slate-600"></div>
+                <span class="text-xs text-slate-500 font-bold">Verificando leads...</span>
+              </div>
+              <i data-lucide="arrow-right" class="w-4 h-4 text-slate-600 group-hover:text-violet-400 transition-all group-hover:translate-x-1"></i>
+            </div>
+          </div>
+
+          <!-- Relatorios -->
+          <div class="glass-card p-6 fade-in fade-in-7 cursor-pointer hover:border-emerald-400/30 transition-all group" onclick="showView('relatorios')">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-emerald-400/10 flex items-center justify-center group-hover:bg-emerald-400/20 transition-all">
+                <i data-lucide="file-text" class="w-5 h-5 text-emerald-400"></i>
+              </div>
+              <span class="text-xs font-black px-2 py-1 rounded-full bg-slate-800 text-slate-400">AUTO</span>
+            </div>
+            <div class="text-base font-black text-white mb-1">Relatórios</div>
+            <div class="text-xs text-slate-500 mb-4">Análise executiva com dados reais da operação</div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5" id="rel-card-status">
+                <div class="w-1.5 h-1.5 rounded-full bg-slate-600"></div>
+                <span class="text-xs text-slate-500 font-bold">Verificando dados...</span>
+              </div>
+              <i data-lucide="arrow-right" class="w-4 h-4 text-slate-600 group-hover:text-emerald-400 transition-all group-hover:translate-x-1"></i>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Footer -->
 
       <footer class="text-center py-6 border-t border-slate-800/50">
 
@@ -2951,7 +3014,7 @@
         <div class="h-2 bg-slate-800 rounded-full"><div id="bar-ads" class="h-2 bg-amber-400 rounded-full transition-all" style="width:0%"></div></div>
       </div>
       <div>
-        <div class="flex justify-between text-xs mb-1"><span class="text-slate-400">Outros Custos</span><span id="bar-outros-pct" class="text-rose-400">0%</span></div>
+        <div class="flex justify-between text-xs mb-1"><span class="text-slate-400">Outros</span><span id="bar-outros-pct" class="text-rose-400">0%</span></div>
         <div class="h-2 bg-slate-800 rounded-full"><div id="bar-outros" class="h-2 bg-rose-400 rounded-full transition-all" style="width:0%"></div></div>
       </div>
       <div>
@@ -2962,39 +3025,7 @@
   </div>
 </div>
 
-                  <div class="text-3xl font-black text-white">R$ 4.250</div>
-
-               </div>
-
-               <div class="bg-slate-800/30 rounded-xl p-5">
-
-                  <div class="text-slate-500 text-xs uppercase font-bold mb-2">Faturamento</div>
-
-                  <div class="text-3xl font-black text-emerald-400">R$ 38.900</div>
-
-               </div>
-
-               <div class="bg-slate-800/30 rounded-xl p-5">
-
-                  <div class="text-slate-500 text-xs uppercase font-bold mb-2">ROAS</div>
-
-                  <div class="text-3xl font-black text-cyan-400">9.1x</div>
-
-               </div>
-
-            </div>
-
-            
-
-         </div>
-
-      </div>
-
-
-
-      <!-- ========= VIEW: REATIVAO  ========= -->
-
-      <div id="view-reativacao" class="view-section hidden">
+<div id="view-reativacao" class="view-section hidden">
   <div class="grid grid-cols-3 gap-4 mb-6">
     <div class="glass-card p-5 text-center">
       <div class="text-xs text-slate-500 mb-1">Leads Congelados (&gt;30 dias)</div>
