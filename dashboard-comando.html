@@ -3030,11 +3030,96 @@
   </div>
 </div>
 
-<div id="view-reativacao" class="view-section hidden"
+<div id="view-reativacao" class="view-section hidden">
+  <div class="grid grid-cols-3 gap-4 mb-6">
+    <div class="glass-card p-5 text-center">
+      <div class="text-xs text-slate-500 mb-1">Leads Congelados (&gt;30 dias)</div>
+      <div id="reat-congelados" class="text-3xl font-black text-amber-400">—</div>
+    </div>
+    <div class="glass-card p-5 text-center">
+      <div class="text-xs text-slate-500 mb-1">Selecionados</div>
+      <div id="reat-selecionados" class="text-3xl font-black text-cyan-400">0</div>
+    </div>
+    <div class="glass-card p-5 text-center">
+      <div class="text-xs text-slate-500 mb-1">Reativados</div>
+      <div id="reat-resgatados" class="text-3xl font-black text-emerald-400">—</div>
+    </div>
+  </div>
+  <div class="glass-card p-6 mb-4">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-white font-bold">Mensagem de Reativação</h3>
+      <button onclick="loadLeadsCongelados()" class="text-xs text-cyan-400 border border-cyan-400/30 px-3 py-1 rounded-lg hover:bg-cyan-400/10 transition-all">Carregar Leads</button>
+    </div>
+    <textarea id="reat-msg" rows="3"
+      class="w-full bg-slate-800 text-white rounded-lg p-3 border border-slate-700 focus:border-cyan-400 outline-none text-sm resize-none"
+      placeholder="Ex: Oi {nome}! Vi que você demonstrou interesse. Ainda posso te ajudar?">Oi {nome}! Vi que você teve interesse na Nexo AI mas ainda não deu o próximo passo. Posso esclarecer alguma dúvida agora?</textarea>
+    <div class="flex gap-3 mt-3">
+      <button onclick="dispararReativacao()" class="flex-1 bg-cyan-500 hover:bg-cyan-400 text-white font-black py-3 rounded-xl transition-all hover:scale-105 flex items-center justify-center gap-2">
+        <i data-lucide="zap" class="w-4 h-4"></i> Disparar Reativação
+      </button>
+      <button onclick="selecionarTodos()" class="px-4 py-3 border border-slate-600 text-slate-300 rounded-xl hover:border-cyan-400/50 transition-all text-sm">Selecionar Todos</button>
+    </div>
+  </div>
+  <div class="glass-card p-4">
+    <div class="text-xs text-slate-500 font-bold uppercase mb-3">Leads para Reativar</div>
+    <div id="reat-lista" class="space-y-2 max-h-64 overflow-y-auto">
+      <div class="text-sm text-slate-500 text-center py-8">Clique em "Carregar Leads" para buscar leads congelados</div>
+    </div>
+  </div>
+</div>
 
       <!-- ========= VIEW: RELATRIOS  ========= -->
 
-      <div id="view-relatorios" class="view-section hidden"
+      <div id="view-relatorios" class="view-section hidden">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h2 class="text-2xl font-black text-white">Relatório Executivo</h2>
+      <p class="text-sm text-slate-500 mt-1">Gerado com dados reais da operação</p>
+    </div>
+    <div class="flex gap-3">
+      <select id="rel-periodo" class="bg-slate-800 text-white rounded-lg px-3 py-2 border border-slate-700 text-sm outline-none focus:border-cyan-400">
+        <option value="7">Últimos 7 dias</option>
+        <option value="15" selected>Últimos 15 dias</option>
+        <option value="30">Últimos 30 dias</option>
+      </select>
+      <button onclick="gerarRelatorio()" class="bg-cyan-500 hover:bg-cyan-400 text-white font-black px-5 py-2 rounded-xl text-sm transition-all hover:scale-105 flex items-center gap-2">
+        <i data-lucide="refresh-cw" class="w-4 h-4"></i> Gerar
+      </button>
+    </div>
+  </div>
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="glass-card p-5 text-center">
+      <div class="text-xs text-slate-500 mb-1">Total de Leads</div>
+      <div id="rel-total" class="text-3xl font-black text-white">—</div>
+    </div>
+    <div class="glass-card p-5 text-center">
+      <div class="text-xs text-slate-500 mb-1">Qualificados</div>
+      <div id="rel-quali" class="text-3xl font-black text-emerald-400">—</div>
+    </div>
+    <div class="glass-card p-5 text-center">
+      <div class="text-xs text-slate-500 mb-1">Aguardando</div>
+      <div id="rel-aguard" class="text-3xl font-black text-amber-400">—</div>
+    </div>
+    <div class="glass-card p-5 text-center">
+      <div class="text-xs text-slate-500 mb-1">Taxa de Conversão</div>
+      <div id="rel-taxa" class="text-3xl font-black text-cyan-400">—</div>
+    </div>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div class="glass-card p-6">
+      <div class="text-sm font-bold text-white mb-4">Distribuição por Estágio</div>
+      <div id="rel-estagios" class="space-y-3">
+        <div class="text-sm text-slate-500 text-center py-4">Clique em "Gerar" para carregar</div>
+      </div>
+    </div>
+    <div class="glass-card p-6">
+      <div class="text-sm font-bold text-white mb-4">Insights da IA</div>
+      <div id="rel-insights" class="space-y-3">
+        <div class="text-sm text-slate-500 text-center py-4">Clique em "Gerar" para carregar</div>
+      </div>
+    </div>
+  </div>
+</div>
 
       <!-- ========= VIEW: CONFIGURAES ========= -->
 
