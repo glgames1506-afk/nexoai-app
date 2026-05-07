@@ -1,0 +1,11 @@
+node_modules/
+.env
+*.log
+.DS_Store
+dist/
+build/
+*.py
+NEXO_*.json
+all_workflows.json
+qrcode.png
+*.bak*

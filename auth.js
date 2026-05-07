@@ -28,10 +28,18 @@ window.addEventListener('DOMContentLoaded', () => {
       btnLogin.textContent = 'Entrando...';
 
       try {
-        const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
+        const { data: { user }, error } = await supabase.auth.signInWithPassword({ email, password: pass });
         if (error) throw error;
         showFeedback('Acesso autorizado! Redirecionando...', 'success');
-        setTimeout(() => { window.location.href = 'dashboard-operacao.html'; }, 1200);
+        
+        setTimeout(() => { 
+          const userPlan = user?.user_metadata?.plan || 'operacao';
+          if (userPlan === 'comando') {
+            window.location.href = 'dashboard-comando.html';
+          } else {
+            window.location.href = 'dashboard-operacao.html';
+          }
+        }, 1200);
       } catch(err) {
         showFeedback('Erro: ' + err.message, 'error');
         btnLogin.disabled    = false;
@@ -59,7 +67,9 @@ async function checkUser() {
     window.location.href = 'login.html'; return;
   }
   if (session && path.includes('login.html')) {
-    window.location.href = 'dashboard-operacao.html'; return;
+    const userPlan = session.user?.user_metadata?.plan || 'operacao';
+    window.location.href = userPlan === 'comando' ? 'dashboard-comando.html' : 'dashboard-operacao.html';
+    return;
   }
   if (session) {
     updateDashboardUI(session.user);
