@@ -2585,99 +2585,7 @@
 
 
 
-      <!-- Premium Sections -->
-
-      <div class="grid lg:grid-cols-3 gap-6 mb-8">
-
-        
-
-        <!-- P&L Financeiro -->
-
-        <div class="glass-card p-6 fade-in fade-in-5">
-
-          <h3 class="text-lg font-bold text-white mb-4">P&L Financeiro</h3>
-
-          <div class="grid grid-cols-2 gap-3">
-
-            <div class="bg-slate-800/30 rounded-lg p-3">
-
-              <div class="text-2xl font-black text-white">R$ 87k</div>
-
-              <div class="text-xs text-slate-500">Lucro Lquido</div>
-
-            </div>
-
-            <div class="bg-slate-800/30 rounded-lg p-3">
-
-              <div class="text-2xl font-black text-white">R$ 47</div>
-
-              <div class="text-xs text-slate-500">CAC</div>
-
-            </div>
-
-          </div>
-
-          
-
-        </div>
-
-
-
-        <!-- Reativacao com IA -->
-
-        <div class="glass-card p-6 fade-in fade-in-5">
-
-          <h3 class="text-lg font-bold text-white mb-4">Reativação com IA</h3>
-
-          <div class="space-y-2">
-
-            <div class="bg-slate-800/30 rounded-lg p-3 flex items-center gap-3">
-
-              <div class="w-8 h-8 rounded-full bg-slate-700"></div>
-
-              <div>
-
-                <div class="text-sm font-bold text-white">Lead parado h 30 dias</div>
-
-                <div class="text-xs text-slate-500">Reativar com IA...</div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-          
-
-        </div>
-
-
-
-        <!-- Relatorio Semanal -->
-
-        <div class="glass-card p-6 fade-in fade-in-6">
-
-          <h3 class="text-lg font-bold text-white mb-4">Relatrio Semanal</h3>
-
-          <div class="space-y-2">
-
-            <div class="bg-slate-800/30 rounded-lg p-3">
-
-              <div class="text-xs text-slate-500">Relatrio da Semana 15</div>
-
-              <div class="text-sm font-bold text-white mt-1">Insights automticos da IA...</div>
-
-            </div>
-
-          </div>
-
-          
-
-        </div>
-
-      </div>
-
-
+      <!-- Funcionalidades Avancadas -->
 
       <!-- Footer -->
 
@@ -6741,6 +6649,44 @@ async function startAgentConfig() {
         checkUser();
       }
     </script>
+<script>
+    // ── STATUS DOS CARDS DE FUNCIONALIDADES ──────────────────────
+    async function atualizarStatusCards() {
+      try {
+        const sb = window.nexoSupabase || window._sb;
+        if (!sb) return;
+        const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 30);
+        const { count: congelados } = await sb.from('leads')
+          .select('*', { count: 'exact', head: true })
+          .lt('ultima_interacao', cutoff.toISOString())
+          .neq('estagio', 'fechado');
+        const reatEl = document.getElementById('reat-card-status');
+        if (reatEl) {
+          const n = congelados || 0;
+          const cor = n > 0 ? 'amber' : 'emerald';
+          reatEl.innerHTML = `<div class="w-1.5 h-1.5 rounded-full bg-${cor}-400"></div>
+            <span class="text-xs text-${cor}-400 font-bold">${n > 0 ? n + ' leads para reativar' : 'Nenhum lead congelado'}</span>`;
+        }
+        const { count: totalLeads } = await sb.from('leads')
+          .select('*', { count: 'exact', head: true });
+        const relEl = document.getElementById('rel-card-status');
+        if (relEl) {
+          const n = totalLeads || 0;
+          relEl.innerHTML = `<div class="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
+            <span class="text-xs text-emerald-400 font-bold">${n} leads no banco</span>`;
+        }
+      } catch(e) {
+        // silencioso
+      }
+    }
+
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(atualizarStatusCards, 2000);
+    });
+
+</script>
 </body>
 
 
