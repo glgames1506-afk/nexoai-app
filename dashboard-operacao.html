@@ -6191,11 +6191,33 @@ async function startAgentConfig() {
       if (statusEl) statusEl.classList.add('hidden');
 
       try {
-        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
-        const res = await fetch(proxyUrl);
-        if (!res.ok) throw new Error('Falha ao acessar o site. Verifique a URL.');
-        const data = await res.json();
-        const rawHtml = data.contents || '';
+        // Proxies CORS em cascata — tenta um por um até funcionar
+        const proxies = [
+          (u) => `https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
+          (u) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+          (u) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`
+        ];
+
+        let rawHtml = '';
+        let success = false;
+
+        for (const makeProxy of proxies) {
+          try {
+            if (statusEl) statusEl.textContent = `⏳ Tentando proxy...`;
+            const r = await fetch(makeProxy(url), { signal: AbortSignal.timeout(10000) });
+            if (!r.ok) continue;
+            const ct = r.headers.get('content-type') || '';
+            if (ct.includes('application/json')) {
+              const d = await r.json();
+              rawHtml = d.contents || d.data || '';
+            } else {
+              rawHtml = await r.text();
+            }
+            if (rawHtml.length > 100) { success = true; break; }
+          } catch(e) { continue; }
+        }
+
+        if (!success || !rawHtml) throw new Error('Todos os proxies falharam. Site pode bloquear acesso externo.');
 
         const parser = new DOMParser();
         const doc = parser.parseFromString(rawHtml, 'text/html');
