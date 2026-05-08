@@ -1346,81 +1346,6 @@
     </div>
 
 
-    <!-- ====== NOTIFICATIONS DROPDOWN ====== -->
-
-
-
-    <div id="notifications-dropdown" class="hidden fixed z-50 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl shadow-black/40 w-80" style="top:70px;right:100px;">
-
-      <div class="p-4 border-b border-slate-800 flex items-center justify-between">
-
-        <h4 class="text-sm font-bold text-white">Notificações</h4>
-
-        <button onclick="clearNotifications()" class="text-[10px] text-cyan-400 hover:text-cyan-300 font-bold transition-colors">Limpar tudo</button>
-
-      </div>
-
-      <div id="notifications-list" class="max-h-72 overflow-y-auto">
-
-        <div class="p-4 hover:bg-slate-800/50 transition-colors border-b border-slate-800/50 cursor-pointer">
-
-          <div class="flex items-center gap-3">
-
-            <div class="w-8 h-8 rounded-full bg-emerald-400/10 flex items-center justify-center flex-shrink-0">
-
-              <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
-
-            </div>
-
-            <div class="flex-1 min-w-0">
-
-              <p class="text-xs font-bold text-white truncate">Conta criada com sucesso</p>
-
-              <p class="text-[10px] text-slate-500">Seu ecossistema está pronto para configurar.</p>
-
-            </div>
-
-            <span class="text-[9px] text-slate-600 flex-shrink-0">Agora</span>
-
-          </div>
-
-        </div>
-
-        <div class="p-4 hover:bg-slate-800/50 transition-colors border-b border-slate-800/50 cursor-pointer">
-
-          <div class="flex items-center gap-3">
-
-            <div class="w-8 h-8 rounded-full bg-cyan-400/10 flex items-center justify-center flex-shrink-0">
-
-              <i data-lucide="zap" class="w-4 h-4 text-cyan-400"></i>
-
-            </div>
-
-            <div class="flex-1 min-w-0">
-
-              <p class="text-xs font-bold text-white truncate">IA ativada no seu plano</p>
-
-              <p class="text-[10px] text-slate-500">Conecte o WhatsApp para começar.</p>
-
-            </div>
-
-            <span class="text-[9px] text-slate-600 flex-shrink-0">5 min</span>
-
-          </div>
-
-        </div>
-
-      </div>
-
-      <div class="p-3 text-center border-t border-slate-800">
-
-        <span class="text-[10px] text-slate-600">Nexo AI  Plano Operação</span>
-
-      </div>
-    </div>
-
-
-
     <!-- Sidebar Backdrop (ALL screen sizes) -->
 
     <div class="sidebar-mobile-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
@@ -1561,7 +1486,7 @@
 
       <!-- Header -->
 
-      <header class="flex items-center justify-between mb-8 fade-in fade-in-1">
+      <header class="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-8 gap-4 lg:gap-0 fade-in fade-in-1 w-full pl-12 lg:pl-0">
 
         <div>
 
@@ -1575,7 +1500,7 @@
 
           <!-- AI Indicator -->
 
-          <div class="flex items-center gap-2 bg-cyan-400/10 border border-cyan-400/20 rounded-full px-4 py-2">
+          <div class="hidden md:flex items-center gap-2 bg-cyan-400/10 border border-cyan-400/20 rounded-full px-4 py-2">
 
             <div class="w-2 h-2 rounded-full bg-cyan-400 ai-pulse"></div>
 
@@ -1583,15 +1508,25 @@
 
           </div>
 
-          <!-- Notifications -->
-
-          <button onclick="toggleNotifications()" class="relative p-2 rounded-xl bg-slate-800/50 hover:bg-slate-700/50 transition-colors">
-
-            <i data-lucide="bell" class="w-5 h-5 text-slate-400"></i>
-
-            <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] font-bold text-white flex items-center justify-center" id="notif-badge">2</span>
-
-          </button>
+          <!-- Notifications Dropdown Container -->
+          <div class="relative">
+            <button onclick="toggleNotifications(event)" class="relative p-2 rounded-xl bg-slate-800/50 hover:bg-slate-700/50 transition-colors">
+              <i data-lucide="bell" class="w-5 h-5 text-slate-400 pointer-events-none"></i>
+              <span id="notif-badge" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] text-white flex items-center justify-center font-bold pointer-events-none">2</span>
+            </button>
+            <div id="notifications-dropdown" class="hidden absolute z-50 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl shadow-black/40 w-80 right-0 top-12 overflow-hidden">
+              <div class="p-4 border-b border-slate-800 flex items-center justify-between">
+                <h4 class="text-sm font-bold text-white">Notificações</h4>
+                <button onclick="clearNotifications()" class="text-[10px] text-cyan-400 hover:text-cyan-300 font-bold transition-colors">Limpar tudo</button>
+              </div>
+              <div id="notifications-list" class="max-h-72 overflow-y-auto">
+                <div class="p-8 text-center text-slate-500 text-xs">Nenhuma notificação nova.</div>
+              </div>
+              <div class="p-3 text-center border-t border-slate-800 bg-slate-900/50">
+                <span class="text-[10px] text-slate-600">Nexo AI • Plano Operação</span>
+              </div>
+            </div>
+          </div>
 
           <!-- Avatar -->
 
@@ -2139,8 +2074,7 @@
 
               </thead>
 
-              <tbody id="leads-tbody" class="divide-y divide-slate-800/50">
-
+              <tbody id="leads-tbody-overview" class="divide-y divide-slate-800/50">
               </tbody>
 
             </table>
@@ -2461,7 +2395,7 @@
             </div>
           </div>
           <div class="relative z-10">
-            <a href="#" class="px-6 py-3 bg-white text-slate-900 font-bold rounded-xl hover:bg-cyan-400 transition-colors shadow-lg flex items-center gap-2 group">
+            <a href="#" onclick="showToast('Em breve: Os planos premium estarão disponíveis no próximo update!', 'info'); return false;" class="px-6 py-3 bg-white text-slate-900 font-bold rounded-xl hover:bg-cyan-400 transition-colors shadow-lg flex items-center gap-2 group">
               Fazer Upgrade Agora
               <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
             </a>
@@ -3875,10 +3809,10 @@
     async function loadLeadsTable() {
 
       const tbody = document.getElementById("leads-tbody");
+      const tbodyOverview = document.getElementById("leads-tbody-overview");
 
-      if (!tbody) return;
-
-      tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-500 text-sm animate-pulse">Carregando leads...</td></tr>`;
+      if (tbody) tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-500 text-sm animate-pulse">Carregando leads...</td></tr>`;
+      if (tbodyOverview) tbodyOverview.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-500 text-sm animate-pulse">Carregando leads...</td></tr>`;
 
       try {
 
@@ -4008,6 +3942,22 @@
 
         }).join('');
 
+        if (tbodyOverview) {
+          tbodyOverview.innerHTML = page.slice(0, 5).map(lead => {
+            const action = lead.status === "convertido"
+              ? `<span class="text-emerald-400 font-bold text-xs">? Fechado</span>`
+              : lead.status === "frio"
+                ? `<button onclick="triggerReactivation('${lead.id}')" class="text-amber-400 hover:text-amber-300 font-bold text-xs">Reenviar IA ?</button>`
+                : `<button onclick="openChat('${lead.id}','${(lead.name||'').replace(/'/g,'')}')" class="text-cyan-400 hover:text-cyan-300 font-bold text-xs">Abrir Chat ?</button>`;
+            return `<tr class="hover:bg-white/[0.02] transition-colors">
+              <td class="py-4 px-4 text-white font-bold">${lead.name||''}</td>
+              <td class="py-4 px-4 text-slate-400">${lead.phone||''}</td>
+              <td class="py-4 px-4">${badge(lead.status)}</td>
+              <td class="py-4 px-4 text-slate-500 text-xs max-w-[150px] truncate">${lead.last_message||''}</td>
+              <td class="py-4 px-4 text-right">${action}</td>
+            </tr>`;
+          }).join('');
+        }
       }
 
 
@@ -5972,18 +5922,13 @@ async function startAgentConfig() {
 
     // -----------------------------------------------------------
 
-    function toggleNotifications() {
-
+    function toggleNotifications(e) {
+      if(e) e.stopPropagation();
       const dropdown = document.getElementById('notifications-dropdown');
-
       if(dropdown) {
-
         dropdown.classList.toggle('hidden');
-
         if(window.lucide) lucide.createIcons();
-
       }
-
     }
 
 
