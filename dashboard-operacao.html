@@ -4598,6 +4598,36 @@
 
 
 
+    // --- OPEN CHAT (called by "Abrir Chat?" button) ---
+    async function openChat(leadId, name) {
+      // Switch to WhatsApp view
+      document.querySelectorAll('.view-section').forEach(v => {
+        v.classList.add('hidden');
+        v.classList.remove('block');
+      });
+      const waView = document.getElementById('view-whatsapp');
+      if(waView) {
+        waView.classList.remove('hidden');
+        waView.classList.add('block');
+        waView.style.opacity = 1;
+      }
+
+      // Highlight sidebar item
+      document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+      Array.from(document.querySelectorAll('.sidebar-item'))
+        .find(i => i.innerText?.includes('WhatsApp'))?.classList.add('active');
+
+      // Fetch lead phone and load chat
+      try {
+        const leads = await sbFetch('leads', `id=eq.${leadId}&select=id,name,phone`);
+        const lead = leads && leads[0];
+        const phone = lead?.phone || '';
+        await loadChat(leadId, name || lead?.name || 'Lead', phone);
+      } catch(e) {
+        await loadChat(leadId, name || 'Lead', '');
+      }
+    }
+
     function openChatContact(name, initials, gradient) {
 
       const header = document.getElementById('chat-window')?.querySelector('.p-4.border-b');
