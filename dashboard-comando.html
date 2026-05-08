@@ -49,44 +49,32 @@
     let leadsParaReativar = [];
     async function loadLeadsCongelados() {
       const el = document.getElementById('reat-lista');
-      el.innerHTML = '<div class="text-sm text-slate-500 text-center py-4">Carregando...</div>';
+      if (!el) return;
+      el.innerHTML = '<div class="text-sm text-slate-500 text-center py-4">Carregando leads frios...</div>';
       try {
-        let sb = window.nexoSupabase || window._sb;
-        if (!sb && window.supabase && typeof window.supabase.from === 'function') { sb = window.supabase; }
-        const isDemo = !sb || typeof sb.from !== 'function';
+        const data = await sbFetch('leads', 'status=eq.frio&select=id,name,phone,updated_at&order=updated_at.asc&limit=50');
+        const leads = data || [];
+        
+        const countEl = document.getElementById('reat-congelados');
+        if (countEl) countEl.textContent = leads.length;
 
-        let data = null, error = null;
-        if (!isDemo) {
-          try {
-            const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 30);
-            const res = await sb.from('leads')
-              .select('id, nome, telefone, estagio, ultima_interacao')
-              .lt('ultima_interacao', cutoff.toISOString())
-              .neq('estagio', 'fechado')
-              .order('ultima_interacao', { ascending: true })
-              .limit(50);
-            data = res.data; error = res.error;
-          } catch(e) { error = e; }
+        if (leads.length === 0) {
+          el.innerHTML = '<div class="text-sm text-slate-500 text-center py-4">Nenhum lead com status "frio" encontrado.</div>';
+          return;
         }
 
-        leadsParaReativar = data || [];
-        if (isDemo || leadsParaReativar.length === 0 || error) {
-          leadsParaReativar = [
-            { id: 1, nome: 'Carlos Silva', telefone: '11999991111', estagio: 'contato', ultima_interacao: new Date(Date.now() - 32*86400000).toISOString() },
-            { id: 2, nome: 'Mariana Costa', telefone: '11999992222', estagio: 'novo', ultima_interacao: new Date(Date.now() - 45*86400000).toISOString() },
-            { id: 3, nome: 'Roberto Almeida', telefone: '11999993333', estagio: 'qualificado', ultima_interacao: new Date(Date.now() - 31*86400000).toISOString() }
-          ];
-        }
-        document.getElementById('reat-congelados').textContent = leadsParaReativar.length;
-        el.innerHTML = leadsParaReativar.map((l, i) => `
+        el.innerHTML = leads.map((l) => {
+          const dias = Math.floor((Date.now() - new Date(l.updated_at || Date.now())) / 86400000);
+          return `
           <label class="flex items-center gap-3 p-3 bg-slate-800/40 rounded-lg cursor-pointer hover:bg-slate-800/70 transition-all">
-            <input type="checkbox" class="reat-check w-4 h-4 accent-cyan-400" data-id="${l.id}" data-nome="${l.nome||'Lead'}" data-tel="${l.telefone||''}" checked>
+            <input type="checkbox" class="reat-check w-4 h-4 accent-cyan-400" data-id="${l.id}" data-nome="${l.name||'Lead'}" checked onchange="atualizarContadorSelecionados()">
             <div class="flex-1">
-              <div class="text-sm font-bold text-white">${l.nome || 'Sem nome'}</div>
-              <div class="text-xs text-slate-500">${l.telefone || 'Sem telefone'} · ${l.estagio || '—'}</div>
+              <div class="text-sm font-bold text-white">${l.name || 'Sem nome'}</div>
+              <div class="text-xs text-slate-500">${l.phone || 'Sem telefone'}</div>
             </div>
-            <div class="text-xs text-amber-400">${Math.floor((Date.now() - new Date(l.ultima_interacao)) / 86400000)}d atrás</div>
-          </label>`).join('');
+            <div class="text-xs text-amber-400">${dias}d atrás</div>
+          </label>`;
+        }).join('');
         atualizarContadorSelecionados();
       } catch(e) {
         el.innerHTML = `<div class="text-sm text-rose-400 text-center py-4">Erro: ${e.message}</div>`;
@@ -100,28 +88,40 @@
 
     async function dispararReativacao() {
       const checks = [...document.querySelectorAll('.reat-check:checked')];
-      if (checks.length === 0) { alert('Selecione ao menos um lead.'); return; }
+      if (checks.length === 0) { showToast('Selecione ao menos um lead.', 'error'); return; }
       const msg = document.getElementById('reat-msg').value.trim();
-      if (!msg) { alert('Digite a mensagem de reativação.'); return; }
-      if (!confirm(`Disparar reativação para ${checks.length} leads?`)) return;
+      if (!msg) { showToast('Digite a mensagem de reativação.', 'error'); return; }
+      if (!confirm(`Disparar reativação para ${checks.length} leads via IA?`)) return;
+
+      const btn = event.currentTarget;
+      const oldHtml = btn.innerHTML;
+      btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Disparando...';
+      btn.disabled = true;
+
       let ok = 0, fail = 0;
       for (const c of checks) {
+        const leadId = c.dataset.id;
         const nome = c.dataset.nome || 'Lead';
-        const tel = c.dataset.tel;
-        const texto = msg.replace('{nome}', nome.split(' ')[0]);
+        const texto = msg.replace(/{nome}/g, nome.split(' ')[0]);
         try {
-          const res = await fetch('/api/send-waha', {
-            method: 'POST',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({ phone: tel, message: texto })
-          });
-          if (res.ok) ok++; else fail++;
+          await sbUpdate('leads', leadId, { status: 'atendimento', last_message: 'Reativação: ' + texto });
+          await sbInsert('chats', { lead_id: leadId, sender: 'ia', message: texto });
+          ok++;
         } catch { fail++; }
       }
-      document.getElementById('reat-resgatados').textContent = ok;
-      alert(`Reativação concluída!
-Enviados: ${ok}
-Falhas: ${fail}`);
+      
+      const resEl = document.getElementById('reat-resgatados');
+      if (resEl) resEl.textContent = parseInt(resEl.textContent || '0') + ok;
+      
+      showToast(`Reativação concluída! Enviados: ${ok}, Falhas: ${fail}`, ok > 0 ? 'success' : 'error');
+      
+      btn.innerHTML = oldHtml;
+      btn.disabled = false;
+      if (window.lucide) window.lucide.createIcons();
+      
+      loadLeadsCongelados();
+      if (typeof loadFunnelCounts === 'function') loadFunnelCounts();
+      if (typeof loadLeadsTable === 'function') loadLeadsTable();
     }
 
     // ── RELATÓRIO ────────────────────────────────────────────────
