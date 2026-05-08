@@ -8,6 +8,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 let supabase = null;
 try {
   supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  window.nexoSupabase = supabase; // Expor globalmente para o dashboard
 } catch(e) { console.error('Supabase init error:', e); }
 
 // ── Lógica do Login (executa só depois do DOM estar pronto) ──
