@@ -3942,6 +3942,7 @@
 
         }).join('');
 
+        const tbodyOverview = document.getElementById("leads-tbody-overview");
         if (tbodyOverview) {
           tbodyOverview.innerHTML = page.slice(0, 5).map(lead => {
             const action = lead.status === "convertido"
