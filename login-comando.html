@@ -1,0 +1,220 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — Nexo AI | Portal do Cliente</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #020617;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      overflow: hidden;
+    }
+    .orb {
+      position: fixed; border-radius: 50%;
+      filter: blur(100px); pointer-events: none; z-index: 0;
+    }
+    .orb1 { width: 500px; height: 500px; background: rgba(34,211,238,0.07); top: -100px; left: -100px; }
+    .orb2 { width: 500px; height: 500px; background: rgba(168,85,247,0.07); bottom: -100px; right: -100px; }
+    .card {
+      position: relative; z-index: 1;
+      width: 100%; max-width: 440px;
+      background: rgba(15,23,42,0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 24px;
+      padding: 2.5rem;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.5);
+    }
+    .logo { display: block; height: 48px; margin: 0 auto 1rem; }
+    h1 { color: #fff; font-size: 1.5rem; font-weight: 900; text-align: center; margin-bottom: .25rem; }
+    .subtitle { color: #64748b; font-size: .875rem; text-align: center; margin-bottom: 2rem; }
+    label { display: block; font-size: .7rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: .1em; margin-bottom: .5rem; }
+    .field { position: relative; margin-bottom: 1.25rem; }
+    .field-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #475569; font-size: .9rem; }
+    input[type=email], input[type=password] {
+      width: 100%;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: .875rem 1rem .875rem 2.75rem;
+      color: #fff;
+      font-size: .875rem;
+      font-family: inherit;
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+    }
+    input:focus { border-color: #22d3ee; box-shadow: 0 0 0 3px rgba(34,211,238,0.1); }
+    .btn-login {
+      width: 100%; padding: 1rem;
+      background: linear-gradient(135deg, #22d3ee, #a855f7);
+      border: none; border-radius: 16px;
+      color: #fff; font-weight: 900; font-size: .9rem;
+      font-family: inherit; cursor: pointer;
+      transition: opacity .2s, transform .1s;
+      box-shadow: 0 0 20px rgba(34,211,238,0.2);
+      margin-top: .5rem;
+    }
+    .btn-login:hover { opacity: .9; transform: translateY(-1px); }
+    .btn-login:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+    #feedback {
+      margin-top: 1rem; padding: .75rem 1rem;
+      border-radius: 10px; font-size: .85rem;
+      font-weight: 700; text-align: center;
+      display: none;
+    }
+    #feedback.success { background: rgba(52,211,153,0.1); color: #34d399; border: 1px solid rgba(52,211,153,0.2); }
+    #feedback.error   { background: rgba(248,113,113,0.1); color: #f87171; border: 1px solid rgba(248,113,113,0.2); }
+    .demo-badge {
+      background: rgba(34,211,238,0.1);
+      border: 1px solid rgba(34,211,238,0.2);
+      color: #22d3ee;
+      font-size: .75rem; font-weight: 700;
+      padding: .625rem 1rem; border-radius: 10px;
+      text-align: center; margin-bottom: 1.5rem;
+    }
+    .signup-link { text-align: center; margin-top: 1.5rem; font-size: .8rem; color: #475569; }
+    .signup-link a { color: #fff; font-weight: 700; text-decoration: none; }
+    .signup-link a:hover { color: #22d3ee; }
+  </style>
+</head>
+<body>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+
+  <div class="card">
+    <a href="index.html">
+      <img src="logo.png" alt="Nexo AI" class="logo" onerror="this.style.display='none'">
+    </a>
+    <h1>Portal do Cliente</h1>
+    <p class="subtitle">Acesse seu painel de inteligência</p>
+
+    <div id="demo-badge" class="demo-badge" style="display:none;">
+      ⚡ Modo Demo ativo — clique em ENTRAR para acessar o painel
+    </div>
+
+    <div>
+      <label for="email">E-mail</label>
+      <div class="field">
+        <span class="field-icon">✉</span>
+        <input type="email" id="email" placeholder="seu@email.com" autocomplete="email">
+      </div>
+
+      <label for="password">Senha</label>
+      <div class="field">
+        <span class="field-icon">🔒</span>
+        <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+
+      
+      <div style="display:flex; gap:10px; margin-top:.5rem;">
+        <button class="btn-login" id="btn-login" type="button" style="flex:1;">
+          ENTRAR
+        </button>
+        <button id="btn-register" type="button" style="flex:1; background: rgba(34,211,238,0.1); color: #22d3ee; border: 1px solid rgba(34,211,238,0.3); border-radius: 16px; font-weight: 900; font-size:.9rem; cursor:pointer; transition: opacity .2s;">
+          CRIAR CONTA
+        </button>
+      </div>
+
+
+      <div id="feedback"></div>
+    </div>
+
+    <p class="signup-link">
+      Não tem uma licença? <a href="index.html#licenca">Adquira agora →</a>
+    </p>
+  </div>
+
+  <!-- Supabase SDK v2 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
+  <script>
+    // ── Config ──
+    var SUPA_URL = 'https://tqqtjrunrimabitmersr.supabase.co';
+    var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxcXRqcnVucmltYWJpdG1lcnNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NjYwMjgsImV4cCI6MjA5MjA0MjAyOH0.CEJRX8rYb_5S5pN_M2KemyBRxdSPd9jf8Y-Xm3vlTDc';
+
+    // Inicializar cliente usando o namespace correto do CDN v2
+    var _supabase = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+    // ── Demo auto-fill ──
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('demo') === 'true') {
+      document.getElementById('email').value    = 'demo@nexoai.app.br';
+      document.getElementById('password').value = 'NexoDemo2026';
+      document.getElementById('demo-badge').style.display = 'block';
+    }
+
+    // ── Se já logado, redireciona ──
+    _supabase.auth.getSession().then(function(res) {
+      if (res.data && res.data.session) {
+        window.location.href = 'dashboard-comando.html';
+      }
+    });
+
+    // ── Login ──
+    document.getElementById('btn-login').addEventListener('click', async function() {
+      var email = document.getElementById('email').value.trim();
+      var pass  = document.getElementById('password').value;
+      var btn   = document.getElementById('btn-login');
+      var fb    = document.getElementById('feedback');
+
+      if (!email || !pass) { showFb('Preencha todos os campos.', 'error'); return; }
+
+      btn.disabled   = true;
+      btn.textContent = 'Entrando...';
+
+      var result = await _supabase.auth.signInWithPassword({ email: email, password: pass });
+
+      if (result.error) {
+        showFb('Erro: ' + result.error.message, 'error');
+        btn.disabled    = false;
+        btn.textContent = 'ENTRAR NO DASHBOARD';
+      } else {
+        showFb('Acesso autorizado! Redirecionando...', 'success');
+        setTimeout(function() { window.location.href = 'dashboard-comando.html'; }, 1000);
+      }
+    });
+
+    
+    // ── Cadastro ──
+    document.getElementById('btn-register').addEventListener('click', async function() {
+      var email = document.getElementById('email').value.trim();
+      var pass  = document.getElementById('password').value;
+      var btn   = document.getElementById('btn-register');
+
+      if (!email || !pass) { showFb('Preencha todos os campos.', 'error'); return; }
+      if (pass.length < 6) { showFb('A senha deve ter no mínimo 6 caracteres.', 'error'); return; }
+
+      btn.disabled   = true;
+      btn.textContent = 'Criando...';
+
+      var result = await _supabase.auth.signUp({ email: email, password: pass });
+
+      if (result.error) {
+        showFb('Erro: ' + result.error.message, 'error');
+        btn.disabled    = false;
+        btn.textContent = 'CRIAR CONTA';
+      } else {
+        showFb('Conta criada e logada com sucesso! Redirecionando...', 'success');
+        setTimeout(function() { window.location.href = 'dashboard-comando.html'; }, 1000);
+      }
+    });
+
+    function showFb(msg, type) {
+      var el = document.getElementById('feedback');
+      el.textContent = msg;
+      el.className   = type;
+      el.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
+
+
