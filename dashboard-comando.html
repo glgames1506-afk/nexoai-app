@@ -52,96 +52,6 @@
       el.innerHTML = '<div class="text-sm text-slate-500 text-center py-4">Carregando...</div>';
       try {
         
-        let sb = window.nexoSupabase || window._sb;
-        if (!sb && window.supabase && typeof window.supabase.from === 'function') {
-          sb = window.supabase;
-        }
-        const isDemo = !sb || typeof sb.from !== 'function';
-
-        const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 30);
-        const { data, error } = await sb.from('leads')
-          .select('id, nome, telefone, estagio, ultima_interacao')
-          .lt('ultima_interacao', cutoff.toISOString())
-          .neq('estagio', 'fechado')
-          .order('ultima_interacao', { ascending: true })
-          .limit(50);
-        if (error) throw error;
-                leadsParaReativar = data || [];
-        // [DEMO FALLBACK] Se nao tiver leads, injeta leads falsos para o CEO demonstrar
-        if (isDemo || leadsParaReativar.length === 0 || error) {
-          leadsParaReativar = [
-            { id: 1, nome: 'Carlos Silva', telefone: '11999991111', estagio: 'contato', ultima_interacao: new Date(Date.now() - 32*86400000).toISOString() },
-            { id: 2, nome: 'Mariana Costa', telefone: '11999992222', estagio: 'novo', ultima_interacao: new Date(Date.now() - 45*86400000).toISOString() },
-            { id: 3, nome: 'Roberto Almeida', telefone: '11999993333', estagio: 'qualificado', ultima_interacao: new Date(Date.now() - 31*86400000).toISOString() }
-          ];
-        }
-        document.getElementById('reat-congelados').textContent = leadsParaReativar.length;
-        if (leadsParaReativar.length === 0) {
-          el.innerHTML = '<div class="text-sm text-emerald-400 text-center py-4">Nenhum lead congelado encontrado!</div>';
-          return;
-        }
-        el.innerHTML = leadsParaReativar.map((l, i) => `
-          <label class="flex items-center gap-3 p-3 bg-slate-800/40 rounded-lg cursor-pointer hover:bg-slate-800/70 transition-all">
-            <input type="checkbox" class="reat-check w-4 h-4 accent-cyan-400" data-id="${l.id}" data-nome="${l.nome||'Lead'}" data-tel="${l.telefone||''}" checked>
-            <div class="flex-1">
-              <div class="text-sm font-bold text-white">${l.nome || 'Sem nome'}</div>
-              <div class="text-xs text-slate-500">${l.telefone || 'Sem telefone'} · ${l.estagio || '—'}</div>
-            </div>
-            <div class="text-xs text-amber-400">${diasAtras(l.ultima_interacao)}d atrás</div>
-          </label>`).join('');
-        atualizarContadorSelecionados();
-        document.querySelectorAll('.reat-check').forEach(c => c.addEventListener('change', atualizarContadorSelecionados));
-      } catch(e) {
-        el.innerHTML = `<div class="text-sm text-rose-400 text-center py-4">Erro: ${e.message}</div>`;
-      }
-    }
-    function diasAtras(iso) {
-      if (!iso) return '?';
-      return Math.floor((Date.now() - new Date(iso)) / 86400000);
-    }
-    function atualizarContadorSelecionados() {
-      document.getElementById('reat-selecionados').textContent =
-        document.querySelectorAll('.reat-check:checked').length;
-    }
-    function selecionarTodos() {
-      document.querySelectorAll('.reat-check').forEach(c => c.checked = true);
-      atualizarContadorSelecionados();
-    }
-    async function dispararReativacao() {
-      const checks = [...document.querySelectorAll('.reat-check:checked')];
-      if (checks.length === 0) { alert('Selecione ao menos um lead.'); return; }
-      const msg = document.getElementById('reat-msg').value.trim();
-      if (!msg) { alert('Digite a mensagem de reativação.'); return; }
-      if (!confirm(`Disparar reativação para ${checks.length} leads?`)) return;
-      let ok = 0, fail = 0;
-      for (const c of checks) {
-        const nome = c.dataset.nome || 'Lead';
-        const tel = c.dataset.tel;
-        const texto = msg.replace('{nome}', nome.split(' ')[0]);
-        try {
-          const res = await fetch('/api/send-waha', {
-            method: 'POST',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({ phone: tel, message: texto })
-          });
-          if (res.ok) ok++; else fail++;
-        } catch { fail++; }
-      }
-      document.getElementById('reat-resgatados').textContent = ok;
-      alert(`Reativacao concluida!\nEnviados: ${ok}\nFalhas: ${fail}`);
-    }
-
-    // ── RELATÓRIO ────────────────────────────────────────────────
-    async function gerarRelatorio() {
-      const dias = parseInt(document.getElementById('rel-periodo').value);
-      const ids = ['rel-total','rel-quali','rel-aguard','rel-taxa','rel-estagios','rel-insights'];
-      ids.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.innerHTML = id.includes('estagios') || id.includes('insights')
-          ? '<div class="text-sm text-slate-500 text-center py-2">Carregando...</div>'
-          : '<span class="text-slate-500 animate-pulse">...</span>';
-      });
-      try {
         
         let sb = window.nexoSupabase || window._sb;
         if (!sb && window.supabase && typeof window.supabase.from === 'function') {
@@ -149,14 +59,22 @@
         }
         const isDemo = !sb || typeof sb.from !== 'function';
 
-        const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - dias);
-        const { data, error } = await sb.from('leads')
-          .select('estagio, created_at')
-          .gte('created_at', cutoff.toISOString());
-        if (error) throw error;
-                const leads = data || [];
+        let data = null, error = null;
+        if (!isDemo) {
+           try {
+             const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - dias);
+             const res = await sb.from('leads')
+               .select('estagio, created_at')
+               .gte('created_at', cutoff.toISOString());
+             data = res.data;
+             error = res.error;
+           } catch(err) { error = err; }
+        }
+
+        const leads = data || [];
         // [DEMO FALLBACK]
         if (isDemo || leads.length === 0 || error) {
+
           for(let i=0; i<45; i++) leads.push({estagio: 'novo', created_at: new Date()});
           for(let i=0; i<30; i++) leads.push({estagio: 'contato', created_at: new Date()});
           for(let i=0; i<15; i++) leads.push({estagio: 'qualificado', created_at: new Date()});
