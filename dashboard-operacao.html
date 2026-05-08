@@ -2395,7 +2395,7 @@
             </div>
           </div>
           <div class="relative z-10">
-            <a href="https://pay.kiwify.com.br/Ynr9hy7" target="_blank" class="px-6 py-3 bg-white text-slate-900 font-bold rounded-xl hover:bg-cyan-400 transition-colors shadow-lg flex items-center gap-2 group">
+            <a href="dashboard-comando.html" class="px-6 py-3 bg-white text-slate-900 font-bold rounded-xl hover:bg-cyan-400 transition-colors shadow-lg flex items-center gap-2 group">
               Fazer Upgrade Agora
               <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
             </a>
@@ -4843,7 +4843,8 @@
           loadLeadsTable(),
           loadWhatsappContacts(),
           loadFunnelCounts(),
-          loadLeadsChart()
+          loadLeadsChart(),
+          loadDynamicNotifications()
         ]);
         console.log("? Nexo AI Engine  Dados do Supabase carregados.");
       } catch(err) {
@@ -4887,7 +4888,8 @@
             loadLeadsTable(),
             loadWhatsappContacts(),
             loadFunnelCounts(),
-            loadLeadsChart()
+            loadLeadsChart(),
+            loadDynamicNotifications()
           ]).catch(e => console.error(e));
         }, 400);
       }
@@ -6031,6 +6033,40 @@ async function startAgentConfig() {
 
       updateNotifBadge();
 
+    }
+
+    async function loadDynamicNotifications() {
+      try {
+        const list = document.getElementById('notifications-list');
+        if(list) list.innerHTML = '';
+        
+        const leads = await sbFetch("leads", "select=*&order=created_at.desc&limit=4") || [];
+        const chats = await sbFetch("chats", "select=*&order=created_at.desc&limit=6") || [];
+        
+        const all = [];
+        leads.forEach(l => all.push({ type: 'lead', date: new Date(l.created_at), data: l }));
+        chats.forEach(c => all.push({ type: 'chat', date: new Date(c.created_at), data: c }));
+        
+        // Sort ascending so afterbegin makes the newest at the top
+        all.sort((a,b) => a.date - b.date);
+        
+        all.forEach(item => {
+          if(item.type === 'lead') {
+            addNotification('Novo Lead Capturado', item.data.name || item.data.phone || 'Cliente', 'user-plus', 'emerald');
+          } else {
+            const isIA = item.data.sender === 'ia';
+            addNotification(isIA ? 'IA Respondeu' : 'Nova Mensagem', isIA ? 'Nexo IA conversou com o lead.' : 'O lead enviou uma mensagem.', isIA ? 'bot' : 'message-circle', isIA ? 'cyan' : 'violet');
+          }
+        });
+        
+        if (all.length === 0 && list) {
+          list.innerHTML = '<div class="p-6 text-center"><p class="text-xs text-slate-500">Nenhuma notificação</p></div>';
+        }
+        
+        updateNotifBadge();
+      } catch(e) {
+        console.error('Erro carregando notificações:', e);
+      }
     }
 
 
