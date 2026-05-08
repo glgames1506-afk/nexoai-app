@@ -3382,7 +3382,16 @@ Falhas: ${fail}`);
                         <span id="btn-scrape-text">Extrair Dados</span>
                      </button>
                   </div>
-                  <p id="scrape-status" class="text-xs text-emerald-400 font-bold mt-3 hidden">✅ Dados extraídos com sucesso e injetados na Base de Conhecimento!</p>
+                  <p id="scrape-status" class="text-xs text-emerald-400 font-bold mt-3 hidden"></p>
+                  <!-- Fallback manual quando proxies falham (Cloudflare, etc) -->
+                  <div id="scrape-manual-fallback" class="hidden mt-4 p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl">
+                    <p class="text-xs text-amber-400 font-bold mb-2">⚠️ Site protegido — extração automática bloqueada.</p>
+                    <p class="text-xs text-slate-400 mb-3">Abra o site, selecione todo o texto (<strong>Ctrl+A &rarr; Ctrl+C</strong>), cole abaixo e clique em <strong class="text-cyan-400">Injetar na Base</strong>.</p>
+                    <textarea id="scrape-manual-text" rows="5" placeholder="Cole aqui o conteúdo do site..." class="w-full bg-slate-950 text-white rounded-lg p-3 border border-slate-700 outline-none focus:border-amber-400 text-xs resize-none mb-2"></textarea>
+                    <button onclick="injectManualContent()" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border border-amber-500/40 font-bold px-4 py-2 rounded-lg text-xs transition-all">
+                      Injetar na Base de Conhecimento
+                    </button>
+                  </div>
                </div>
             </div>
 
@@ -6447,6 +6456,50 @@ async function startAgentConfig() {
     // --- SETTINGS PAGE & SCRAPING ----------------------------
 
     // -----------------------------------------------------------
+
+    
+    // ── MODO MANUAL: injetar texto copiado na base de conhecimento ─────────
+    async function injectManualContent() {
+      const manual = document.getElementById('scrape-manual-text');
+      const instrEl = document.getElementById('cfg-instructions');
+      const urlInput = document.getElementById('cfg-website');
+      const url = urlInput?.value?.trim() || 'Manual';
+
+      const text = manual?.value?.trim();
+      if (!text || text.length < 20) {
+        showToast('Cole o conteúdo do site antes de injetar.', 'error');
+        return;
+      }
+
+      const prefix = '[Fonte: ' + url + ' — colado manualmente]\n';
+      const current = instrEl?.value?.trim() || '';
+      if (instrEl) instrEl.value = current ? current + '\n\n' + prefix + text : prefix + text;
+
+      const session = nexoAuthCheck();
+      if (session?.user?.id) {
+        const userId = session.user.id;
+        const existing = await sbFetch('agent_configs', 'user_id=eq.' + userId + '&select=id&limit=1');
+        const payload = {
+          instructions: instrEl?.value?.trim() || '',
+          settings: JSON.stringify({ website_url: url, last_scrape: new Date().toISOString() })
+        };
+        if (existing && existing.length > 0) {
+          await sbUpdate('agent_configs', existing[0].id, payload);
+        } else {
+          await sbInsert('agent_configs', { ...payload, user_id: userId, name: 'Assistente Nexo', tone: 'amigavel', goal: 'venda' });
+        }
+      }
+
+      const fallback = document.getElementById('scrape-manual-fallback');
+      if (fallback) fallback.classList.add('hidden');
+      const statusEl = document.getElementById('scrape-status');
+      if (statusEl) {
+        statusEl.textContent = '\u2705 Conteúdo colado e injetado na Base de Conhecimento!';
+        statusEl.classList.remove('hidden');
+      }
+      showToast('Conteúdo manual injetado e salvo!');
+      if (manual) manual.value = '';
+    }
 
     async function scrapeWebsite() {
         const url = document.getElementById('cfg-website')?.value?.trim();
