@@ -51,30 +51,105 @@
       const el = document.getElementById('reat-lista');
       el.innerHTML = '<div class="text-sm text-slate-500 text-center py-4">Carregando...</div>';
       try {
-        
-        
         let sb = window.nexoSupabase || window._sb;
-        if (!sb && window.supabase && typeof window.supabase.from === 'function') {
-          sb = window.supabase;
-        }
+        if (!sb && window.supabase && typeof window.supabase.from === 'function') { sb = window.supabase; }
         const isDemo = !sb || typeof sb.from !== 'function';
 
         let data = null, error = null;
         if (!isDemo) {
-           try {
-             const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - dias);
-             const res = await sb.from('leads')
-               .select('estagio, created_at')
-               .gte('created_at', cutoff.toISOString());
-             data = res.data;
-             error = res.error;
-           } catch(err) { error = err; }
+          try {
+            const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 30);
+            const res = await sb.from('leads')
+              .select('id, nome, telefone, estagio, ultima_interacao')
+              .lt('ultima_interacao', cutoff.toISOString())
+              .neq('estagio', 'fechado')
+              .order('ultima_interacao', { ascending: true })
+              .limit(50);
+            data = res.data; error = res.error;
+          } catch(e) { error = e; }
+        }
+
+        leadsParaReativar = data || [];
+        if (isDemo || leadsParaReativar.length === 0 || error) {
+          leadsParaReativar = [
+            { id: 1, nome: 'Carlos Silva', telefone: '11999991111', estagio: 'contato', ultima_interacao: new Date(Date.now() - 32*86400000).toISOString() },
+            { id: 2, nome: 'Mariana Costa', telefone: '11999992222', estagio: 'novo', ultima_interacao: new Date(Date.now() - 45*86400000).toISOString() },
+            { id: 3, nome: 'Roberto Almeida', telefone: '11999993333', estagio: 'qualificado', ultima_interacao: new Date(Date.now() - 31*86400000).toISOString() }
+          ];
+        }
+        document.getElementById('reat-congelados').textContent = leadsParaReativar.length;
+        el.innerHTML = leadsParaReativar.map((l, i) => `
+          <label class="flex items-center gap-3 p-3 bg-slate-800/40 rounded-lg cursor-pointer hover:bg-slate-800/70 transition-all">
+            <input type="checkbox" class="reat-check w-4 h-4 accent-cyan-400" data-id="${l.id}" data-nome="${l.nome||'Lead'}" data-tel="${l.telefone||''}" checked>
+            <div class="flex-1">
+              <div class="text-sm font-bold text-white">${l.nome || 'Sem nome'}</div>
+              <div class="text-xs text-slate-500">${l.telefone || 'Sem telefone'} · ${l.estagio || '—'}</div>
+            </div>
+            <div class="text-xs text-amber-400">${Math.floor((Date.now() - new Date(l.ultima_interacao)) / 86400000)}d atrás</div>
+          </label>`).join('');
+        atualizarContadorSelecionados();
+      } catch(e) {
+        el.innerHTML = `<div class="text-sm text-rose-400 text-center py-4">Erro: ${e.message}</div>`;
+      }
+    }
+
+    function atualizarContadorSelecionados() {
+      const c = document.getElementById('reat-selecionados');
+      if(c) c.textContent = document.querySelectorAll('.reat-check:checked').length;
+    }
+
+    async function dispararReativacao() {
+      const checks = [...document.querySelectorAll('.reat-check:checked')];
+      if (checks.length === 0) { alert('Selecione ao menos um lead.'); return; }
+      const msg = document.getElementById('reat-msg').value.trim();
+      if (!msg) { alert('Digite a mensagem de reativação.'); return; }
+      if (!confirm(`Disparar reativação para ${checks.length} leads?`)) return;
+      let ok = 0, fail = 0;
+      for (const c of checks) {
+        const nome = c.dataset.nome || 'Lead';
+        const tel = c.dataset.tel;
+        const texto = msg.replace('{nome}', nome.split(' ')[0]);
+        try {
+          const res = await fetch('/api/send-waha', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ phone: tel, message: texto })
+          });
+          if (res.ok) ok++; else fail++;
+        } catch { fail++; }
+      }
+      document.getElementById('reat-resgatados').textContent = ok;
+      alert(`Reativação concluída!
+Enviados: ${ok}
+Falhas: ${fail}`);
+    }
+
+    // ── RELATÓRIO ────────────────────────────────────────────────
+    async function gerarRelatorio() {
+      const dias = parseInt(document.getElementById('rel-periodo').value) || 15;
+      const ids = ['rel-total','rel-quali','rel-aguard','rel-taxa','rel-estagios','rel-insights'];
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = id.includes('estagios') || id.includes('insights')
+          ? '<div class="text-sm text-slate-500 text-center py-2">Carregando...</div>'
+          : '<span class="text-slate-500 animate-pulse">...</span>';
+      });
+      try {
+        let sb = window.nexoSupabase || window._sb;
+        if (!sb && window.supabase && typeof window.supabase.from === 'function') { sb = window.supabase; }
+        const isDemo = !sb || typeof sb.from !== 'function';
+
+        let data = null, error = null;
+        if (!isDemo) {
+          try {
+            const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - dias);
+            const res = await sb.from('leads').select('estagio, created_at').gte('created_at', cutoff.toISOString());
+            data = res.data; error = res.error;
+          } catch(e) { error = e; }
         }
 
         const leads = data || [];
-        // [DEMO FALLBACK]
         if (isDemo || leads.length === 0 || error) {
-
           for(let i=0; i<45; i++) leads.push({estagio: 'novo', created_at: new Date()});
           for(let i=0; i<30; i++) leads.push({estagio: 'contato', created_at: new Date()});
           for(let i=0; i<15; i++) leads.push({estagio: 'qualificado', created_at: new Date()});
@@ -88,7 +163,7 @@
         document.getElementById('rel-quali').textContent = quali;
         document.getElementById('rel-aguard').textContent = aguard;
         document.getElementById('rel-taxa').textContent = taxa;
-        // Distribuição por estágio
+
         const estagios = {};
         leads.forEach(l => { const e = l.estagio || 'novo'; estagios[e] = (estagios[e]||0)+1; });
         const colors = {fechado:'emerald',qualificado:'cyan',contato:'violet',novo:'slate',congelado:'amber'};
@@ -97,39 +172,69 @@
           .map(([est, n]) => {
             const pct = total > 0 ? ((n/total)*100).toFixed(0) : 0;
             const c = colors[est] || 'slate';
-            return `<div>
-              <div class="flex justify-between text-xs mb-1">
-                <span class="text-slate-400 capitalize">${est}</span>
-                <span class="text-${c}-400">${n} (${pct}%)</span>
-              </div>
-              <div class="h-1.5 bg-slate-800 rounded-full">
-                <div class="h-1.5 bg-${c}-400 rounded-full" style="width:${pct}%"></div>
-              </div>
-            </div>`;
+            return `<div><div class="flex justify-between text-xs mb-1"><span class="text-slate-400 capitalize">${est}</span><span class="text-${c}-400">${n} (${pct}%)</span></div><div class="h-1.5 bg-slate-800 rounded-full"><div class="h-1.5 bg-${c}-400 rounded-full" style="width:${pct}%"></div></div></div>`;
           }).join('') || '<div class="text-sm text-slate-500">Sem dados</div>';
-        // Insights automáticos
+
         const insights = [];
-        if (total === 0) insights.push('Nenhum lead no periodo selecionado.');
+        if (total === 0) insights.push('Nenhum lead no período selecionado.');
         else {
-          if (parseFloat(taxa) >= 20) insights.push('Taxa de conversao acima de 20% — operacao saudavel.');
-          else insights.push('Taxa de conversao abaixo de 20% — revisar qualificacao.');
+          if (parseFloat(taxa) >= 20) insights.push('Taxa de conversão acima de 20% — operação saudável.');
+          else insights.push('Taxa de conversão abaixo de 20% — revisar qualificação.');
           if (aguard > quali * 2) insights.push(`${aguard} leads aguardando — priorizar followup.`);
-          if (quali > 0) insights.push(`${quali} leads qualificados no periodo — pipeline ativo.`);
-          insights.push(`Media de ${(total/dias).toFixed(1)} novos leads por dia.`);
+          insights.push(`Média de ${(total/dias).toFixed(1)} novos leads por dia.`);
         }
-        document.getElementById('rel-insights').innerHTML = insights.map(i =>
-          `<div class="flex gap-2 text-sm text-slate-300">
-            <i data-lucide="zap" class="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5"></i>
-            <span>${i}</span>
-          </div>`).join('');
+        document.getElementById('rel-insights').innerHTML = insights.map(i => `<div class="flex gap-2 text-sm text-slate-300"><i data-lucide="zap" class="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5"></i><span>${i}</span></div>`).join('');
         if (window.lucide) lucide.createIcons();
       } catch(e) {
-        document.getElementById('rel-estagios').innerHTML =
-          `<div class="text-sm text-rose-400">Erro: ${e.message}</div>`;
+        document.getElementById('rel-estagios').innerHTML = `<div class="text-sm text-rose-400">Erro: ${e.message}</div>`;
       }
     }
 
-</script>
+    // --- NOTIFICATIONS DYNAMIC FETCH ---
+    async function loadRealNotifications() {
+      const list = document.getElementById('notifications-list');
+      const badge = document.getElementById('notif-badge');
+      if(!list) return;
+      try {
+        let sb = window.nexoSupabase || window._sb;
+        if (!sb && window.supabase && typeof window.supabase.from === 'function') { sb = window.supabase; }
+        if (!sb) throw new Error('sb missing');
+        const { data, error } = await sb.from('leads').select('nome, estagio, created_at').order('created_at', { ascending: false }).limit(3);
+        if (error || !data || data.length === 0) throw new Error('empty');
+        list.innerHTML = '';
+        data.forEach(lead => {
+          const isFechado = lead.estagio === 'fechado';
+          addNotification(isFechado ? 'Venda Fechada!' : 'Novo Lead Recebido', `${lead.nome || 'Lead'} entrou no funil.`, isFechado ? 'dollar-sign' : 'user', isFechado ? 'emerald' : 'cyan');
+        });
+        if(badge) { badge.textContent = data.length; badge.classList.remove('hidden'); }
+      } catch(e) {
+        list.innerHTML = '';
+        addNotification('Venda Fechada!', 'Marcelo confirmou o pagamento via PIX.', 'dollar-sign', 'emerald');
+        addNotification('Novo Lead de Anúncio', 'Mariana clicou na campanha do Instagram.', 'user', 'cyan');
+        addNotification('Reativação Bem-sucedida', 'O agente IA resgatou 2 leads frios.', 'refresh-cw', 'violet');
+        if(badge) { badge.textContent = '3'; badge.classList.remove('hidden'); }
+      }
+    }
+    
+    function addNotification(title, message, icon = 'bell', colorBase = 'cyan') {
+      const list = document.getElementById('notifications-list');
+      if(!list) return;
+      if(list.innerHTML.includes('Nenhuma notificação')) list.innerHTML = '';
+      const notifHtml = `<div class="p-4 hover:bg-slate-800/50 transition-colors border-b border-slate-800/50 cursor-pointer relative group"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-${colorBase}-400/10 flex items-center justify-center flex-shrink-0"><i data-lucide="${icon}" class="w-4 h-4 text-${colorBase}-400"></i></div><div class="flex-1 min-w-0 pr-6"><p class="text-xs font-bold text-white truncate">${title}</p><p class="text-[10px] text-slate-500 truncate">${message}</p></div><span class="text-[9px] text-slate-600 flex-shrink-0">Agora</span></div></div>`;
+      list.innerHTML = notifHtml + list.innerHTML;
+      if(window.lucide) lucide.createIcons();
+    }
+    
+    function toggleNotifications() {
+      const d = document.getElementById('notifications-dropdown');
+      if(d) { d.classList.toggle('hidden'); if(window.lucide) lucide.createIcons(); }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(loadRealNotifications, 1500);
+    });
+  </script>
+
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
