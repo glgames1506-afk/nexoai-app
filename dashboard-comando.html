@@ -67,7 +67,7 @@
           const dias = Math.floor((Date.now() - new Date(l.updated_at || Date.now())) / 86400000);
           return `
           <label class="flex items-center gap-3 p-3 bg-slate-800/40 rounded-lg cursor-pointer hover:bg-slate-800/70 transition-all">
-            <input type="checkbox" class="reat-check w-4 h-4 accent-cyan-400" data-id="${l.id}" data-nome="${l.name||'Lead'}" checked onchange="atualizarContadorSelecionados()">
+            <input type="checkbox" class="reat-check w-4 h-4 accent-cyan-400" data-id="${l.id}" data-nome="${l.name||'Lead'}" data-tel="${l.phone||''}" checked onchange="atualizarContadorSelecionados()">
             <div class="flex-1">
               <div class="text-sm font-bold text-white">${l.name || 'Sem nome'}</div>
               <div class="text-xs text-slate-500">${l.phone || 'Sem telefone'}</div>
@@ -102,12 +102,34 @@
       for (const c of checks) {
         const leadId = c.dataset.id;
         const nome = c.dataset.nome || 'Lead';
+        const telRaw = c.dataset.tel || '';
         const texto = msg.replace(/{nome}/g, nome.split(' ')[0]);
+
+        if (!telRaw) { fail++; continue; }
+
+        let telLimpo = telRaw.replace(/\D/g, '');
+        if (telLimpo.length >= 10 && !telLimpo.startsWith('55')) telLimpo = '55' + telLimpo;
+        const chatId = telLimpo + '@c.us';
+
         try {
+          const wahaRes = await fetch('https://waha-production-6103.up.railway.app/api/sendText', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Api-Key': 'nexo123' },
+            body: JSON.stringify({ session: 'default', chatId: chatId, text: texto })
+          });
+
+          if (!wahaRes.ok) throw new Error('WAHA falhou');
+
           await sbUpdate('leads', leadId, { status: 'atendimento', last_message: 'Reativação: ' + texto });
           await sbInsert('chats', { lead_id: leadId, sender: 'ia', message: texto });
+          
           ok++;
-        } catch { fail++; }
+          // Pausa de 2 segundos entre disparos para não sobrecarregar
+          await new Promise(r => setTimeout(r, 2000));
+        } catch(e) { 
+          console.error("Falha ao reativar " + nome, e);
+          fail++; 
+        }
       }
       
       const resEl = document.getElementById('reat-resgatados');
