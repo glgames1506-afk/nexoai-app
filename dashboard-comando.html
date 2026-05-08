@@ -2279,7 +2279,7 @@ Falhas: ${fail}`);
 
               </thead>
 
-              <tbody id="leads-tbody" class="divide-y divide-slate-800/50">
+              <tbody id="leads-tbody-overview" class="divide-y divide-slate-800/50">
 
               </tbody>
 
@@ -4102,10 +4102,10 @@ Falhas: ${fail}`);
     async function loadLeadsTable() {
 
       const tbody = document.getElementById("leads-tbody");
+      const tbodyOverview = document.getElementById("leads-tbody-overview");
 
-      if (!tbody) return;
-
-      tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-500 text-sm animate-pulse">Carregando leads...</td></tr>`;
+      if (tbody) tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-500 text-sm animate-pulse">Carregando leads...</td></tr>`;
+      if (tbodyOverview) tbodyOverview.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-500 text-sm animate-pulse">Carregando leads...</td></tr>`;
 
       try {
 
@@ -4235,6 +4235,23 @@ Falhas: ${fail}`);
 
         }).join('');
 
+        const tbodyOverview = document.getElementById("leads-tbody-overview");
+        if (tbodyOverview) {
+          tbodyOverview.innerHTML = page.slice(0, 5).map(lead => {
+            const action = lead.status === "convertido"
+              ? `<span class="text-emerald-400 font-bold text-xs">? Fechado</span>`
+              : lead.status === "frio"
+                ? `<button onclick="triggerReactivation('${lead.id}')" class="text-amber-400 hover:text-amber-300 font-bold text-xs">Reenviar IA ?</button>`
+                : `<button onclick="openChat('${lead.id}','${(lead.name||'').replace(/'/g,'')}')" class="text-cyan-400 hover:text-cyan-300 font-bold text-xs">Abrir Chat ?</button>`;
+            return `<tr class="hover:bg-white/[0.02] transition-colors">
+              <td class="py-4 px-4 text-white font-bold">${lead.name||''}</td>
+              <td class="py-4 px-4 text-slate-400">${lead.phone||''}</td>
+              <td class="py-4 px-4">${badge(lead.status)}</td>
+              <td class="py-4 px-4 text-slate-500 text-xs max-w-[150px] truncate">${lead.last_message||''}</td>
+              <td class="py-4 px-4 text-right">${action}</td>
+            </tr>`;
+          }).join('');
+        }
       }
 
 
