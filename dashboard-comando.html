@@ -99,7 +99,8 @@
       btn.disabled = true;
 
       let ok = 0, fail = 0;
-      for (const c of checks) {
+      for (let i = 0; i < checks.length; i++) {
+        const c = checks[i];
         const leadId = c.dataset.id;
         const nome = c.dataset.nome || 'Lead';
         const telRaw = c.dataset.tel || '';
@@ -124,11 +125,15 @@
           await sbInsert('chats', { lead_id: leadId, sender: 'ia', message: texto });
           
           ok++;
-          // Pausa de 2 segundos entre disparos para não sobrecarregar
-          await new Promise(r => setTimeout(r, 2000));
         } catch(e) { 
           console.error("Falha ao reativar " + nome, e);
           fail++; 
+        }
+
+        // Pausa de 5 minutos entre disparos, exceto no último lead
+        if (i < checks.length - 1) {
+          btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Disparado ${ok}/${checks.length} (Aguardando 5m...)`;
+          await new Promise(r => setTimeout(r, 300000));
         }
       }
       
