@@ -6673,6 +6673,99 @@ async function startAgentConfig() {
 
     }
 
+    // ── MOTOR DE APRENDIZAGEM: SCRAPE WEBSITE ──────────────────────
+    async function scrapeWebsite() {
+      const urlInput = document.getElementById('cfg-website');
+      const btnText  = document.getElementById('btn-scrape-text');
+      const statusEl = document.getElementById('scrape-status');
+      const instrEl  = document.getElementById('cfg-instructions');
+
+      const url = urlInput?.value?.trim();
+      if (!url || !url.startsWith('http')) {
+        showToast('Insira uma URL válida com https://', 'error');
+        return;
+      }
+
+      if (btnText) btnText.textContent = 'Extraindo...';
+      if (statusEl) statusEl.classList.add('hidden');
+
+      try {
+        // Usa allorigins como proxy CORS-free para ler o HTML da página
+        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+        const res = await fetch(proxyUrl);
+        if (!res.ok) throw new Error('Falha ao acessar o site. Verifique a URL.');
+        const data = await res.json();
+        const rawHtml = data.contents || '';
+
+        // Extrai texto limpo do HTML
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(rawHtml, 'text/html');
+
+        // Remove scripts, styles, nav, footer, ads
+        ['script','style','nav','footer','header','aside','noscript','iframe'].forEach(tag => {
+          doc.querySelectorAll(tag).forEach(el => el.remove());
+        });
+
+        // Coleta texto relevante
+        const blocks = [];
+        doc.querySelectorAll('h1,h2,h3,h4,p,li,td,th,dd,dt,figcaption').forEach(el => {
+          const t = el.textContent.trim().replace(/\s+/g, ' ');
+          if (t.length > 20) blocks.push(t);
+        });
+
+        const extracted = [...new Set(blocks)].join('\n').substring(0, 4000);
+
+        if (!extracted || extracted.length < 30) {
+          throw new Error('Nenhum conteúdo útil encontrado no site. Tente outra URL.');
+        }
+
+        // Injeta no campo de base de conhecimento
+        const current = instrEl?.value?.trim() || '';
+        const prefix = `[Fonte: ${url} — extraído automaticamente]\n`;
+        if (instrEl) {
+          instrEl.value = current
+            ? current + '\n\n' + prefix + extracted
+            : prefix + extracted;
+        }
+
+        // Salva automaticamente no Supabase (dentro de agent_configs)
+        const session = nexoAuthCheck();
+        if (session?.user?.id) {
+          const userId = session.user.id;
+          const existing = await sbFetch('agent_configs', `user_id=eq.${userId}&select=id&limit=1`);
+          const payload = {
+            instructions: instrEl?.value?.trim() || '',
+            settings: JSON.stringify({
+              website_url: url,
+              last_scrape: new Date().toISOString()
+            })
+          };
+          if (existing && existing.length > 0) {
+            await sbUpdate('agent_configs', existing[0].id, payload);
+          } else {
+            await sbInsert('agent_configs', { ...payload, user_id: userId, name: 'Assistente Nexo', tone: 'amigavel', goal: 'venda' });
+          }
+        }
+
+        if (statusEl) {
+          statusEl.textContent = `✅ ${blocks.length} blocos de texto extraídos e injetados na Base de Conhecimento!`;
+          statusEl.classList.remove('hidden');
+        }
+        showToast('Site extraído e base de conhecimento atualizada!');
+        addNotification('Motor de Aprendizagem', `Site ${url} processado com sucesso.`, 'brain', 'cyan');
+
+      } catch (err) {
+        showToast('Erro: ' + err.message, 'error');
+        if (statusEl) {
+          statusEl.textContent = '❌ ' + err.message;
+          statusEl.className = 'text-xs text-red-400 font-bold mt-3';
+          statusEl.classList.remove('hidden');
+        }
+      } finally {
+        if (btnText) btnText.textContent = 'Extrair Dados';
+      }
+    }
+
 
 
     // Run on page load — usa DOMContentLoaded para não depender de CDNs lentos
