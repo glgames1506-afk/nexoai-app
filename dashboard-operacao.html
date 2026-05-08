@@ -5365,8 +5365,20 @@ async function startAgentConfig() {
 
         const payload = {
           user_id: userId,
-          name, tone, goal, action_link, instructions, human_transfer_trigger,
-          settings: { company_name, niche }
+          name, 
+          tone, 
+          company_name, 
+          niche,
+          settings: JSON.stringify({ 
+            name, 
+            tone, 
+            company_name, 
+            niche, 
+            goal, 
+            action_link, 
+            instructions, 
+            human_transfer_trigger 
+          })
         };
 
 
