@@ -6542,42 +6542,91 @@ async function startAgentConfig() {
     }
 
     async function scrapeWebsite() {
-        const url = document.getElementById('cfg-website')?.value?.trim();
-        if(!url) { showToast('Digite uma URL válida primeiro', 'error'); return; }
-        
-        const btnText = document.getElementById('btn-scrape-text');
-        const statusEl = document.getElementById('scrape-status');
-        if(btnText) btnText.textContent = 'Extraindo...';
-        
-        try {
-            const n8nBaseUrl = localStorage.getItem('nexo_n8n_webhook') || 'https://luanoliveira1506-nexo-n8n.hf.space';
-            const scrapeWebhook = n8nBaseUrl.replace(/\/$/, '') + '/webhook/scrape-website';
-            // Chamada para o webhook do n8n
-            const res = await fetch(scrapeWebhook, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ url })
-            });
-            
-            if(res.ok) {
-                const data = await res.json();
-                const instructions = document.getElementById('cfg-instructions');
-                if(instructions && data.markdown) {
-                    instructions.value = instructions.value + '\n\n--- INFORMAÇÕES DO SITE ---\n' + data.markdown;
-                    statusEl.classList.remove('hidden');
-                    showToast('Site lido com sucesso! Salve as configurações.', 'success');
-                } else {
-                    showToast('O site foi lido, mas nenhum texto útil foi encontrado.', 'error');
-                }
+      const urlInput = document.getElementById('cfg-website');
+      const btnText  = document.getElementById('btn-scrape-text');
+      const statusEl = document.getElementById('scrape-status');
+      const instrEl  = document.getElementById('cfg-instructions');
+
+      const url = urlInput?.value?.trim();
+      if (!url || !url.startsWith('http')) {
+        showToast('Insira uma URL válida com https://', 'error');
+        return;
+      }
+
+      if (btnText) btnText.textContent = 'Extraindo...';
+      if (statusEl) statusEl.classList.add('hidden');
+
+      try {
+        // Proxies CORS em cascata — tenta um por um até funcionar
+        const proxies = [
+          (u) => `https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
+          (u) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+          (u) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`
+        ];
+
+        let rawHtml = '';
+        let success = false;
+
+        for (const makeProxy of proxies) {
+          try {
+            if (statusEl) statusEl.textContent = `⏳ Tentando proxy...`;
+            const r = await fetch(makeProxy(url), { signal: AbortSignal.timeout(10000) });
+            if (!r.ok) continue;
+            const ct = r.headers.get('content-type') || '';
+            if (ct.includes('application/json')) {
+              const d = await r.json();
+              rawHtml = d.contents || d.data || '';
             } else {
-                showToast('Erro ao ler o site. O motor pode estar inativo.', 'error');
+              rawHtml = await r.text();
             }
-        } catch(e) {
-            console.error('Scrape err:', e);
-            showToast('Erro na conexão com o motor de extração.', 'error');
-        } finally {
-            if(btnText) btnText.textContent = 'Extrair Dados';
+            if (rawHtml.length > 100) { success = true; break; }
+          } catch(e) { continue; }
         }
+
+        if (!success || !rawHtml) throw new Error('Todos os proxies falharam. Site bloqueado.');
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(rawHtml, 'text/html');
+        ['script','style','nav','footer','header','aside','noscript','iframe'].forEach(tag => {
+          doc.querySelectorAll(tag).forEach(el => el.remove());
+        });
+
+        const blocks = [];
+        doc.querySelectorAll('h1,h2,h3,h4,p,li,td,th,dd,dt,figcaption').forEach(el => {
+          const t = el.textContent.trim().replace(/\s+/g, ' ');
+          if (t.length > 20) blocks.push(t);
+        });
+
+        const extracted = [...new Set(blocks)].join('\n').substring(0, 4000);
+        if (!extracted || extracted.length < 30) throw new Error('Nenhum conteúdo útil encontrado no site.');
+
+        const current = instrEl?.value?.trim() || '';
+        const prefix = `[Fonte: ${url} — extraído automaticamente]\n`;
+        if (instrEl) {
+          instrEl.value = current ? current + '\n\n' + prefix + extracted : prefix + extracted;
+        }
+
+        const session = nexoAuthCheck();
+        if (session?.user?.id) {
+          await sbUpdate("agent_configs", session.user.id, {
+            settings: JSON.stringify({ website_url: url, last_scrape: new Date().toISOString() })
+          }, "user_id");
+        }
+
+        if (statusEl) {
+          statusEl.textContent = 'Extração concluída!';
+          statusEl.classList.remove('hidden');
+        }
+        showToast('Site lido com sucesso! Salve as configurações.', 'success');
+
+      } catch(e) {
+        console.error('Scrape err:', e);
+        showToast(e.message || 'Erro ao extrair o site.', 'error');
+        const fallback = document.getElementById('scrape-manual-fallback');
+        if (fallback) fallback.classList.remove('hidden');
+      } finally {
+        if (btnText) btnText.textContent = 'Extrair Dados';
+      }
     }
 
     async function loadSettings() {
