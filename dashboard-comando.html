@@ -1064,6 +1064,17 @@
 
         <input type="file" id="csv-file-input" accept=".csv,.xlsx" class="hidden" onchange="handleCSVFile(event)" />
 
+        <!-- Status Selector -->
+        <div class="mb-4">
+          <label class="block text-xs font-bold text-slate-400 mb-2">Qual o status inicial destes contatos?</label>
+          <select id="csv-import-status" class="w-full bg-slate-800 text-white border border-slate-700 rounded-lg px-3 py-2 text-sm outline-none focus:border-cyan-400">
+            <option value="novo">Novos (Aguardando Atendimento)</option>
+            <option value="frio">Frios (Prontos para Reativação em Massa)</option>
+            <option value="convertido">Convertidos (Histórico de Vendas / PL)</option>
+            <option value="atendimento">Em Atendimento</option>
+          </select>
+        </div>
+
 
 
         <!-- Upload Zone -->
@@ -5924,6 +5935,8 @@ async function startAgentConfig() {
 
         
 
+        const targetStatus = document.getElementById('csv-import-status')?.value || 'novo';
+
         // Map contacts to Supabase schema (Bulk format)
 
         const payload = parsedContacts.map(c => ({
@@ -5934,7 +5947,7 @@ async function startAgentConfig() {
 
           phone: c.phone,
 
-          status: 'novo',
+          status: targetStatus,
 
           source: 'Importação CSV'
 
