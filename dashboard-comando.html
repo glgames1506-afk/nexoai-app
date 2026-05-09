@@ -121,6 +121,7 @@
         try {
           const wahaRes = await wahaFetch('/api/sendText', {
             method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ session: 'default', chatId: chatId, text: texto })
           });
 
@@ -129,9 +130,13 @@
           const userSession = typeof nexoAuthCheck === 'function' ? nexoAuthCheck() : null;
           const uid = userSession?.user?.id;
 
-          await sbUpdate('leads', leadId, { status: 'atendimento', last_message: 'Reativação: ' + texto });
-          if (uid) await sbInsert('chats', { user_id: uid, lead_id: leadId, sender: 'ia', message: texto });
-          if (uid) await sbInsert('reativacoes_log', { user_id: uid, lead_id: leadId, mensagem_enviada: texto, status_envio: 'sucesso' });
+          try {
+            await sbUpdate('leads', leadId, { status: 'atendimento', last_message: 'Reativação: ' + texto });
+            if (uid) await sbInsert('chats', { user_id: uid, lead_id: leadId, sender: 'ia', message: texto });
+            if (uid) await sbInsert('reativacoes_log', { user_id: uid, lead_id: leadId, mensagem_enviada: texto, status_envio: 'sucesso' });
+          } catch(dbErr) {
+            console.warn('Mensagem enviada, mas falha ao salvar log no banco:', dbErr);
+          }
           
           ok++;
         } catch(e) { 
