@@ -134,14 +134,8 @@ function showFeedback(msg, type) {
   el.classList.remove('hidden');
 }
 
-// Verifica sessão assim que o DOM estiver pronto
-if (supabase) {
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => checkUser());
-  } else {
-    checkUser();
-  }
-}
+// checkUser() é chamado explicitamente por cada dashboard no DOMContentLoaded
+// (ver final de dashboard-comando.html e dashboard-operacao.html)
 
 // ── Auditoria de Sessão (Keep-Alive) ──
 // Garante que o token de acesso não expire durante demonstrações longas

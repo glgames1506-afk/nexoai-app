@@ -7090,6 +7090,13 @@ async function startAgentConfig() {
 <script>
     document.addEventListener('DOMContentLoaded', function() {
       setTimeout(atualizarStatusCards, 2000);
+      // ── Auth check: libera o body após verificar sessão ──
+      if (typeof checkUser === 'function') {
+        checkUser();
+      } else {
+        // Fallback se auth.js não carregou corretamente
+        document.body.style.display = 'block';
+      }
     });
 
 </script>
