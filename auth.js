@@ -75,8 +75,8 @@ async function checkUser() {
     return;
   }
   if (session) {
-    updateDashboardUI(session.user);
-    document.body.style.display = 'block';
+    document.body.style.display = 'block'; // Exibe PRIMEIRO, antes de qualquer erro na UI
+    try { updateDashboardUI(session.user); } catch(e) { console.warn('[auth] updateDashboardUI error:', e); }
   }
 }
 
