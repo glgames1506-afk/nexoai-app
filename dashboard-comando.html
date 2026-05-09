@@ -50,34 +50,40 @@
     async function loadLeadsCongelados() {
       const el = document.getElementById('reat-lista');
       if (!el) return;
-      el.innerHTML = '<div class="text-sm text-slate-500 text-center py-4">Carregando leads frios...</div>';
+      el.innerHTML = '<div class="text-sm text-slate-500 text-center py-4 animate-pulse">Carregando leads frios...</div>';
       try {
-        const data = await sbFetch('leads', 'status=eq.frio&select=id,name,phone,updated_at&order=updated_at.asc&limit=50');
+        // Query mais robusta, similar à tabela principal
+        const data = await sbFetch('leads', 'status=eq.frio&select=*&order=created_at.desc&limit=50');
         const leads = data || [];
         
+        console.log(`[Reativação] Leads frios encontrados:`, leads.length);
+
         const countEl = document.getElementById('reat-congelados');
         if (countEl) countEl.textContent = leads.length;
 
         if (leads.length === 0) {
-          el.innerHTML = '<div class="text-sm text-slate-500 text-center py-4">Nenhum lead com status "frio" encontrado.</div>';
+          el.innerHTML = '<div class="text-sm text-slate-500 text-center py-8">Nenhum lead com status "frio" encontrado.<br><span class="text-[10px] text-slate-600">Verifique se existem leads com status "Sem Resposta" na sua lista.</span></div>';
           return;
         }
 
         el.innerHTML = leads.map((l) => {
-          const dias = Math.floor((Date.now() - new Date(l.updated_at || Date.now())) / 86400000);
+          const dateRef = l.updated_at || l.created_at || new Date().toISOString();
+          const dias = Math.floor((Date.now() - new Date(dateRef)) / 86400000);
           return `
-          <label class="flex items-center gap-3 p-3 bg-slate-800/40 rounded-lg cursor-pointer hover:bg-slate-800/70 transition-all">
-            <input type="checkbox" class="reat-check w-4 h-4 accent-cyan-400" data-id="${l.id}" data-nome="${l.name||'Lead'}" data-tel="${l.phone||''}" checked onchange="atualizarContadorSelecionados()">
+          <label class="flex items-center gap-3 p-3 bg-slate-800/40 border border-white/5 rounded-xl cursor-pointer hover:bg-slate-800/70 transition-all group">
+            <input type="checkbox" class="reat-check w-4 h-4 rounded border-slate-600 bg-slate-700 text-cyan-500 focus:ring-cyan-500/20" data-id="${l.id}" data-nome="${(l.name||'Lead').replace(/'/g,'')}" data-tel="${l.phone||''}" checked onchange="atualizarContadorSelecionados()">
             <div class="flex-1">
-              <div class="text-sm font-bold text-white">${l.name || 'Sem nome'}</div>
-              <div class="text-xs text-slate-500">${l.phone || 'Sem telefone'}</div>
+              <div class="text-sm font-bold text-white group-hover:text-cyan-400 transition-colors">${l.name || 'Sem nome'}</div>
+              <div class="text-[10px] text-slate-500">${l.phone || 'Sem telefone'}</div>
             </div>
-            <div class="text-xs text-amber-400">${dias}d atrás</div>
+            <div class="text-[10px] font-bold ${dias > 7 ? 'text-amber-400' : 'text-slate-500'} bg-white/5 px-2 py-1 rounded-lg">${dias}d atrás</div>
           </label>`;
         }).join('');
         atualizarContadorSelecionados();
+        if (window.lucide) lucide.createIcons();
       } catch(e) {
-        el.innerHTML = `<div class="text-sm text-rose-400 text-center py-4">Erro: ${e.message}</div>`;
+        console.error('[loadLeadsCongelados] Erro:', e);
+        el.innerHTML = `<div class="text-sm text-rose-400 text-center py-4">Erro ao carregar leads: ${e.message}</div>`;
       }
     }
 
@@ -4234,11 +4240,7 @@
 
 
 
-      if(label) label.textContent = total === 0
-
-        ? 'Nenhum lead encontrado'
-
-        : `Mostrando ${start+1}${Math.min(start+page.length, total)} de ${total} leads`;
+        : `Mostrando ${start + 1}-${Math.min(start + page.length, total)} de ${total} leads`;
 
 
 
@@ -5242,7 +5244,8 @@
           loadLeadsTable(),
           loadWhatsappContacts(),
           loadFunnelCounts(),
-          loadLeadsChart()
+          loadLeadsChart(),
+          loadLeadsCongelados()
         ]);
         console.log("? Nexo AI Engine  Dados do Supabase carregados.");
       } catch(err) {
