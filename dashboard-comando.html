@@ -119,16 +119,19 @@
         const chatId = telLimpo + '@c.us';
 
         try {
-          const wahaRes = await fetch('https://waha-production-6103.up.railway.app/api/sendText', {
+          const wahaRes = await wahaFetch('/api/sendText', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-Api-Key': 'nexo123' },
             body: JSON.stringify({ session: 'default', chatId: chatId, text: texto })
           });
 
-          if (!wahaRes.ok) throw new Error('WAHA falhou');
+          if (!wahaRes.ok) throw new Error('WAHA falhou ao enviar');
+
+          const userSession = typeof nexoAuthCheck === 'function' ? nexoAuthCheck() : null;
+          const uid = userSession?.user?.id;
 
           await sbUpdate('leads', leadId, { status: 'atendimento', last_message: 'Reativação: ' + texto });
-          await sbInsert('chats', { lead_id: leadId, sender: 'ia', message: texto });
+          if (uid) await sbInsert('chats', { user_id: uid, lead_id: leadId, sender: 'ia', message: texto });
+          if (uid) await sbInsert('reativacoes_log', { user_id: uid, lead_id: leadId, mensagem_enviada: texto, status_envio: 'sucesso' });
           
           ok++;
         } catch(e) { 
@@ -144,7 +147,11 @@
       }
       
       const resEl = document.getElementById('reat-resgatados');
-      if (resEl) resEl.textContent = parseInt(resEl.textContent || '0') + ok;
+      if (resEl) {
+        let current = parseInt(resEl.textContent);
+        if (isNaN(current)) current = 0;
+        resEl.textContent = current + ok;
+      }
       
       showToast(`Reativação concluída! Enviados: ${ok}, Falhas: ${fail}`, ok > 0 ? 'success' : 'error');
       
