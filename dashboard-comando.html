@@ -141,6 +141,7 @@
           ok++;
         } catch(e) { 
           console.error("Falha ao reativar " + nome, e);
+          showToast(`Erro no lead ${nome}: ${e.message}`, 'error');
           fail++; 
         }
 
