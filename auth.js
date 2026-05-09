@@ -60,23 +60,48 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// ── Verificação de Sessão e UI ──
 async function checkUser() {
-  if (!supabase) return;
-  const { data: { session } } = await supabase.auth.getSession();
-  const path = window.location.pathname;
+  // Fallback: se qualquer coisa falhar, mostra o body em 3 segundos
+  const bodyFallback = setTimeout(() => {
+    console.warn('[auth] fallback timeout: forçando display do body');
+    document.body.style.display = 'block';
+  }, 3000);
 
-  if (!session && (path.includes('dashboard') || path.includes('demo'))) {
-    window.location.href = 'login.html'; return;
-  }
-  if (session && path.includes('login.html')) {
-    const userPlan = session.user?.user_metadata?.plan || 'operacao';
-    window.location.href = userPlan === 'comando' ? 'dashboard-comando.html' : 'dashboard-operacao.html';
-    return;
-  }
-  if (session) {
-    document.body.style.display = 'block'; // Exibe PRIMEIRO, antes de qualquer erro na UI
-    try { updateDashboardUI(session.user); } catch(e) { console.warn('[auth] updateDashboardUI error:', e); }
+  try {
+    if (!supabase) {
+      clearTimeout(bodyFallback);
+      document.body.style.display = 'block';
+      return;
+    }
+
+    const { data, error } = await supabase.auth.getSession();
+    const session = data?.session;
+    const path = window.location.pathname;
+
+    clearTimeout(bodyFallback); // Cancela o fallback — chegamos aqui sem erro
+
+    if (!session && (path.includes('dashboard') || path.includes('demo'))) {
+      // Sem sessão: redireciona para login
+      const loginUrl = path.startsWith('/dashboard-comando') ? '/login-comando.html' : '/login.html';
+      window.location.href = loginUrl;
+      return;
+    }
+    if (session && (path.includes('login'))) {
+      const userPlan = session.user?.user_metadata?.plan || 'operacao';
+      window.location.href = userPlan === 'comando' ? '/dashboard-comando' : '/dashboard-operacao';
+      return;
+    }
+    if (session) {
+      document.body.style.display = 'block';
+      try { updateDashboardUI(session.user); } catch(e) { console.warn('[auth] updateDashboardUI error:', e); }
+    } else {
+      // Sem sessão e não é dashboard/demo: apenas mostra o body
+      document.body.style.display = 'block';
+    }
+  } catch(e) {
+    console.error('[auth] checkUser error:', e);
+    clearTimeout(bodyFallback);
+    document.body.style.display = 'block'; // Nunca deixa o usuário na tela branca
   }
 }
 
