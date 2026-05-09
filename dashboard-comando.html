@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html lang="pt-BR">
 
@@ -4999,39 +4999,22 @@
     // --- AUTH GUARD ------------------------------------------
 
     function nexoAuthCheck() {
-
-      const localSess = localStorage.getItem('sb-tqqtjrunrimabitmersr-auth-token');
-
-      if(!localSess) { window.location.replace('login.html'); return null; }
-
+      const found = typeof _findSbSession === 'function' ? _findSbSession() : null;
+      if(!found) { window.location.replace('login.html'); return null; }
       try {
-
-        const raw = JSON.parse(localSess);
-
+        const raw = found.raw;
         // Normalize: handle all Supabase session storage formats
-
         const normalized = raw?.user ? raw 
-
           : raw?.currentSession ? raw.currentSession
-
           : raw?.session ? raw.session
-
           : raw?.data?.session ? raw.data.session
-
           : raw;
-
         if(!normalized?.user) { window.location.replace('login.html'); return null; }
-
         return normalized;
-
       } catch(e) {
-
         window.location.replace('login.html');
-
         return null;
-
       }
-
     }
 
 
@@ -5181,9 +5164,8 @@
     // --- INIT ENGINE -----------------------------------------
 
     async function initNexoEngine() {
-
       const session = nexoAuthCheck();
-
+      document.body.style.display = 'block';
       if(!session) return;
 
 
@@ -5585,6 +5567,7 @@
 
     async function checkWahaStatus() {
       const session = nexoAuthCheck();
+      document.body.style.display = 'block';
       if(!session) return;
       const userId = session?.user?.id || 'default';
       
@@ -7082,6 +7065,14 @@ async function startAgentConfig() {
 <script>
     document.addEventListener('DOMContentLoaded', function() {
       setTimeout(atualizarStatusCards, 2000);
+      
+      // Failsafe absoluto anti-tela branca
+      setTimeout(function() {
+        if (document.body.style.display === 'none' || document.body.style.display === '') {
+          console.warn("Failsafe final: Forçando display block");
+          document.body.style.display = 'block';
+        }
+      }, 3000);
     });
 </script>
 </body>
