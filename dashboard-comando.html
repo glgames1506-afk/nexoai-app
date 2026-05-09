@@ -131,7 +131,7 @@
           const uid = userSession?.user?.id;
 
           try {
-            await sbUpdate('leads', leadId, { status: 'atendimento', last_message: 'Reativação: ' + texto });
+            await sbUpdate('leads', leadId, { status: 'atendimento' });
             if (uid) await sbInsert('chats', { user_id: uid, lead_id: leadId, sender: 'ia', message: texto });
             if (uid) await sbInsert('reativacoes_log', { user_id: uid, lead_id: leadId, mensagem_enviada: texto, status_envio: 'sucesso' });
           } catch(dbErr) {
@@ -4799,8 +4799,10 @@ Nosso horário é de segunda a sexta, das 8h às 18h..." class="w-full bg-slate-
     async function triggerReactivation(leadId) {
       if (!confirm("Deseja que a IA envie uma mensagem de reativação para este lead?")) return;
       try {
-        await sbUpdate("leads", leadId, { status: "atendimento", last_message: "Reativação IA disparada..." });
-        await sbInsert("chats", { lead_id: leadId, sender: "ia", message: "Olá! Percebi que você demonstrou interesse anteriormente. Ainda posso te ajudar? Temos novidades que podem te interessar." });
+        const userSession = typeof nexoAuthCheck === 'function' ? nexoAuthCheck() : null;
+        const uid = userSession?.user?.id;
+        await sbUpdate("leads", leadId, { status: "atendimento" });
+        if (uid) await sbInsert("chats", { user_id: uid, lead_id: leadId, sender: "ia", message: "Olá! Percebi que você demonstrou interesse anteriormente. Ainda posso te ajudar? Temos novidades que podem te interessar." });
         showToast("Reativação disparada com sucesso!", "success");
         await loadLeadsTable();
         await loadFunnelCounts();
