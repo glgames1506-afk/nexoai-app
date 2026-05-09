@@ -115,8 +115,17 @@
         if (!telRaw) { fail++; continue; }
 
         let telLimpo = telRaw.replace(/\D/g, '');
-        if (telLimpo.length >= 10 && !telLimpo.startsWith('55')) telLimpo = '55' + telLimpo;
-        const chatId = telLimpo + '@c.us';
+        if (telLimpo.startsWith('55')) telLimpo = telLimpo.substring(2);
+        
+        // Regra do WhatsApp no Brasil: DDD > 30 perde o 9º dígito no JID
+        if (telLimpo.length === 11) {
+          const ddd = parseInt(telLimpo.substring(0, 2));
+          if (ddd > 30) {
+            telLimpo = telLimpo.substring(0, 2) + telLimpo.substring(3);
+          }
+        }
+        
+        const chatId = '55' + telLimpo + '@c.us';
 
         try {
           const wahaRes = await wahaFetch('/api/sendText', {
