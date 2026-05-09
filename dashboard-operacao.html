@@ -1154,11 +1154,18 @@
               <option value="Instagram">Instagram</option>
 
               <option value="Indicação">Indicação</option>
-
               <option value="WhatsApp">WhatsApp</option>
-
             </select>
+          </div>
 
+          <div class="mb-6">
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Status Inicial</label>
+            <select id="new-lead-status" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-cyan-400 transition-colors">
+              <option value="novo">Novo (Aguardando Atendimento)</option>
+              <option value="atendimento">Em Atendimento</option>
+              <option value="frio">Frio (Para Reativação)</option>
+              <option value="convertido">Convertido (Venda Fechada)</option>
+            </select>
           </div>
 
           <div class="flex gap-3">
@@ -4069,11 +4076,13 @@
       const name = document.getElementById('new-lead-name')?.value.trim();
       const phone = document.getElementById('new-lead-phone')?.value.trim();
       const source = document.getElementById('new-lead-source')?.value || 'Manual';
+      const status = document.getElementById('new-lead-status')?.value || 'novo';
+      
       if(!name || !phone) { showToast('Preencha Nome e WhatsApp.', 'error'); return; }
 
       try {
         const session = nexoAuthCheck();
-        await sbInsert("leads", { user_id: session?.user?.id, name, phone, source, status: 'novo' });
+        await sbInsert("leads", { user_id: session?.user?.id, name, phone, source, status });
         showToast('Lead adicionado com sucesso!', 'success');
         addNotification(`Novo lead manual: ${name}`, 'user');
         closeAddLeadModal();
