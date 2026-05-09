@@ -109,9 +109,14 @@ function showFeedback(msg, type) {
   el.classList.remove('hidden');
 }
 
-// O checkUser deve ser chamado explicitamente pelos arquivos que o utilizam
-// para evitar redirecionamentos prematuros antes da inicialização completa dos motores.
-// if (supabase) checkUser();
+// Verifica sessão assim que o DOM estiver pronto
+if (supabase) {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => checkUser());
+  } else {
+    checkUser();
+  }
+}
 
 // ── Auditoria de Sessão (Keep-Alive) ──
 // Garante que o token de acesso não expire durante demonstrações longas
