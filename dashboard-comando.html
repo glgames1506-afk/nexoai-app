@@ -1552,7 +1552,8 @@
         </div>
 
         <div class="mt-6 flex gap-3">
-          <button type="button" onclick="closeDossier()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm py-3 rounded-xl transition-colors">Fechar Dossiê</button>
+          <button type="button" onclick="closeDossier()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm py-3 rounded-xl transition-colors">Fechar</button>
+          <button type="button" id="dossier-delete-btn" class="flex-1 bg-red-500/10 hover:bg-red-500/20 text-red-500 font-bold text-sm py-3 rounded-xl border border-red-500/20 transition-colors">Excluir</button>
           <button type="button" id="dossier-chat-btn" class="flex-1 bg-cyan-500 hover:bg-cyan-400 text-slate-900 font-black text-sm py-3 rounded-xl transition-all hover:scale-[1.02] shadow-lg shadow-cyan-500/20">Assumir Chat</button>
         </div>
       </div>
@@ -3938,7 +3939,30 @@ Nosso horário é de segunda a sexta, das 8h às 18h..." class="w-full bg-slate-
 
 
 
-            async function sbInsert(table, body) {
+    async function sbDelete(table, id) {
+      const doDelete = async () => {
+        const token = getAuthToken();
+        return fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, {
+          method: "DELETE",
+          headers: {
+            "apikey": SUPABASE_KEY,
+            "Authorization": token
+          }
+        });
+      };
+      let res = await doDelete();
+      if (res.status === 401) {
+        const refreshed = await refreshSession();
+        if (refreshed) res = await doDelete();
+      }
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || 'Delete failed');
+      }
+      return true;
+    }
+
+    async function sbInsert(table, body) {
 
         const doInsert = async () => {
 
@@ -4795,6 +4819,9 @@ Nosso horário é de segunda a sexta, das 8h às 18h..." class="w-full bg-slate-
        const chatBtn = document.getElementById('dossier-chat-btn');
        chatBtn.onclick = () => { closeDossier(); openChat(lead.id, lead.name); };
 
+       const delBtn = document.getElementById('dossier-delete-btn');
+       if (delBtn) delBtn.onclick = () => { deleteLead(lead.id); };
+
        const overlay = document.getElementById('dossier-modal');
        if(overlay) overlay.classList.add('active');
        if(window.lucide) lucide.createIcons();
@@ -4803,6 +4830,20 @@ Nosso horário é de segunda a sexta, das 8h às 18h..." class="w-full bg-slate-
     function closeDossier() {
        const overlay = document.getElementById('dossier-modal');
        if(overlay) overlay.classList.remove('active');
+    }
+
+    async function deleteLead(leadId) {
+      if (!confirm("TEM CERTEZA? Isso excluirá o lead e todo o histórico permanentemente!")) return;
+      try {
+        await sbDelete('leads', leadId);
+        showToast("Lead excluído com sucesso!", "success");
+        closeDossier();
+        if (typeof loadLeadsTable === 'function') loadLeadsTable();
+        if (typeof loadFunnelCounts === 'function') loadFunnelCounts();
+        if (typeof loadKPIs === 'function') loadKPIs();
+      } catch (e) {
+        showToast("Erro ao excluir lead: " + e.message, "error");
+      }
     }
 
     function addLead() {
