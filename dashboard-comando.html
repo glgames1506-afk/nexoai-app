@@ -4521,11 +4521,19 @@ Nosso horário é de segunda a sexta, das 8h às 18h..." class="w-full bg-slate-
         const msg = `Olá ${firstName}! Sou a IA da Nexo. Vi que você demonstrou interesse em automatizar sua operação. Como posso te ajudar hoje?`;
 
         // 3. Disparar via WAHA
+        let telLimpo = phone.replace(/\D/g, '');
+        if (telLimpo.startsWith('55')) telLimpo = telLimpo.substring(2);
+        if (telLimpo.length === 11) {
+          const ddd = parseInt(telLimpo.substring(0, 2));
+          if (ddd > 30) { telLimpo = telLimpo.substring(0, 2) + telLimpo.substring(3); }
+        }
+        const finalChatId = phone.includes('@') ? phone : '55' + telLimpo + '@c.us';
+
         const wahaRes = await fetch(`${WAHA_BASE}/api/sendText`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'X-Api-Key': WAHA_API_KEY },
           body: JSON.stringify({
-            chatId: phone.includes('@') ? phone : `${phone}@c.us`,
+            chatId: finalChatId,
             text: msg,
             session: 'default'
           })
