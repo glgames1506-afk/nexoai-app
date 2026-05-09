@@ -4238,10 +4238,9 @@
 
       const page = filtered.slice(start, start + LEADS_PER_PAGE);
 
-
-
+      if(label) label.textContent = total === 0
+        ? 'Nenhum lead encontrado'
         : `Mostrando ${start + 1}-${Math.min(start + page.length, total)} de ${total} leads`;
-
 
 
       if(page.length === 0) {
