@@ -4133,6 +4133,62 @@
 
     // --- LOAD CHAT ---------------------------------------------
 
+    async function sendFirstMessage(leadId) {
+      const btn = event.target;
+      const originalText = btn.innerHTML;
+      btn.textContent = 'Iniciando...';
+      btn.disabled = true;
+
+      try {
+        // 1. Puxar dados do lead
+        const leads = await sbFetch('leads', `id=eq.${leadId}&select=name,phone`);
+        if(!leads || !leads.length) throw new Error('Lead não encontrado.');
+        const lead = leads[0];
+        const phone = lead.phone;
+        if(!phone) throw new Error('Lead sem número de WhatsApp.');
+
+        // 2. Definir a mensagem (pode ser customizada ou padrão)
+        const firstName = lead.name.split(' ')[0];
+        const msg = `Olá ${firstName}! Sou a IA da Nexo. Vi que você demonstrou interesse em automatizar sua operação. Como posso te ajudar hoje?`;
+
+        // 3. Disparar via WAHA
+        const wahaRes = await fetch(`${WAHA_BASE}/api/sendText`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Api-Key': WAHA_API_KEY },
+          body: JSON.stringify({
+            chatId: phone.includes('@') ? phone : `${phone}@c.us`,
+            text: msg,
+            session: 'default'
+          })
+        });
+
+        if(!wahaRes.ok) throw new Error('Falha ao enviar via WhatsApp.');
+
+        // 4. Salvar no Supabase
+        const session = nexoAuthCheck();
+        await sbInsert('chats', {
+          user_id: session?.user?.id,
+          lead_id: leadId,
+          sender: 'ia',
+          message: msg
+        });
+
+        // 5. Atualizar status para atendimento
+        await sbUpdate('leads', leadId, { status: 'atendimento' }, 'id');
+
+        showToast('Abordagem iniciada com sucesso!', 'success');
+        
+        // 6. Recarregar chat
+        await loadChat(leadId, lead.name, phone);
+
+      } catch(e) {
+        console.error('Erro ao iniciar abordagem:', e);
+        showToast('Erro: ' + e.message, 'error');
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
+    }
+
     async function loadChat(leadId, name, phone) {
       const chatWindow = document.getElementById('chat-messages');
       const chatHeader = document.getElementById('chat-header-name');
