@@ -1785,7 +1785,7 @@
 
             <div class="hidden lg:block">
 
-              <div class="text-sm font-bold text-white" data-nexo-user-name>Usurio</div>
+              <div class="text-sm font-bold text-white" data-nexo-user-name>Usuário</div>
 
               <div class="text-[11px] text-slate-500">Administrador</div>
 
@@ -2139,7 +2139,7 @@
 
             <div>
 
-              <h3 class="text-lg font-bold text-white">Leads  ltimos 30 dias</h3>
+              <h3 class="text-lg font-bold text-white">Leads Últimos 30 dias</h3>
 
               <p class="text-xs text-slate-500 mt-1">Recebidos vs Respondidos pela IA</p>
 
@@ -3769,9 +3769,9 @@
 
     <script id="nexo-engine-v2">
 
-    const SUPABASE_URL = "https://tqqtjrunrimabitmersr.supabase.co";
-
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxcXRqcnVucmltYWJpdG1lcnNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NjYwMjgsImV4cCI6MjA5MjA0MjAyOH0.CEJRX8rYb_5S5pN_M2KemyBRxdSPd9jf8Y-Xm3vlTDc";
+    // SUPABASE_URL já declarada no auth.js (global scope)
+    // SUPABASE_KEY definida globalmente para alias do engine
+    window.SUPABASE_KEY = SUPABASE_ANON_KEY;
 
 
 
@@ -7048,13 +7048,6 @@ async function startAgentConfig() {
     <!-- ====== FIM DO NEXO SUPABASE ENGINE ====== -->
 
     <!-- unlock: demo upgrade banner removido -->
-
-    <script>
-      // Garante a verificação de sessão e remoção do display:none
-      if (typeof checkUser === 'function') {
-        checkUser();
-      }
-    </script>
 <script>
     // ── STATUS DOS CARDS DE FUNCIONALIDADES ──────────────────────
     async function atualizarStatusCards() {
@@ -7090,15 +7083,7 @@ async function startAgentConfig() {
 <script>
     document.addEventListener('DOMContentLoaded', function() {
       setTimeout(atualizarStatusCards, 2000);
-      // ── Auth check: libera o body após verificar sessão ──
-      if (typeof checkUser === 'function') {
-        checkUser();
-      } else {
-        // Fallback se auth.js não carregou corretamente
-        document.body.style.display = 'block';
-      }
     });
-
 </script>
 </body>
 
