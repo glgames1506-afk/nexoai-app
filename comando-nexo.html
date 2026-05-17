@@ -67,8 +67,12 @@ tbody tr:hover{background:var(--surface2)}
 tbody tr:last-child td{border-bottom:none}
 .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:600}
 .badge.pendente{background:rgba(245,158,11,.15);color:var(--yellow)}
+.badge.novo{background:rgba(255,255,255,.15);color:#fff}
+.badge.ativo{background:rgba(16,185,129,.15);color:var(--green)}
 .badge.frio{background:rgba(59,130,246,.15);color:var(--blue)}
 .badge.respondido{background:rgba(16,185,129,.15);color:var(--green)}
+#origin-cards .card { cursor: pointer; transition: 0.2s; }
+#origin-cards .card:hover { transform: translateY(-2px); border-color: var(--accent); }
 .badge.agendado{background:rgba(168,85,247,.15);color:var(--accent2)}
 .badge.ignorado{background:rgba(239,68,68,.15);color:var(--red)}
 .empty-state{text-align:center;padding:48px;color:var(--muted);font-size:.85rem}
@@ -153,7 +157,7 @@ table{font-size:.75rem}thead th,tbody td{padding:8px 10px}
 // ========== CONFIG ==========
 const SENHA_MESTRA = 'nexo@admin';
 const SUPABASE_URL = 'https://tqqtjrunrimabitmersr.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxcXRqcnVucmltYWJpdG1lcnNyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjQ2NjAyOCwiZXhwIjoyMDkyMDQyMDI4fQ.1xA3sEtWt1fo3zaCZj476UkfqYGzSvszUqHHsyjkscw';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxcXRqcnVucmltYWJpdG1lcnNyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NjQ4NjE2NiwiZXhwIjoyMDYyMDYyMTY2fQ.1xA3sEtWt1fo3zaCZj476UkfqYGzSvszUqHHsyjkscw';
 const TABLE = 'leads_prospeccao';
 
 let allLeads = [];
@@ -183,44 +187,17 @@ if(sessionStorage.getItem('nexo_auth')==='1') showDashboard();
 
 // ========== DATA ==========
 async function loadData(){
-  const statusEl = document.querySelector('.topbar .status');
   try{
-    // Tenta com order por created_at primeiro
-    let url = `${SUPABASE_URL}/rest/v1/${TABLE}?select=*&order=created_at.desc&limit=500`;
-    let res = await fetch(url,{
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}?select=*&order=created_at.desc&limit=500`,{
       headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`}
     });
-
-    // Se created_at nao existe, tenta sem ordenacao
-    if(!res.ok){
-      console.warn('Query com created_at falhou, tentando sem order...');
-      url = `${SUPABASE_URL}/rest/v1/${TABLE}?select=*&limit=500`;
-      res = await fetch(url,{
-        headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`}
-      });
-    }
-
-    if(!res.ok){
-      const errData = await res.text();
-      console.error('Supabase respondeu com erro:', res.status, errData);
-      statusEl.textContent = `Erro ${res.status}`;
-      statusEl.style.color = 'var(--red)';
-      document.getElementById('leads-body').innerHTML=`<tr><td colspan="5" class="empty-state">Erro ${res.status}: ${errData}</td></tr>`;
-      return;
-    }
-
     allLeads = await res.json();
     if(!Array.isArray(allLeads)) allLeads = [];
-    console.log(`[Nexo CRM] ${allLeads.length} leads carregados com sucesso.`);
-    statusEl.textContent = `Conectado • ${allLeads.length} leads`;
-    statusEl.style.color = 'var(--green)';
     updateMetrics();
     renderTable();
   }catch(e){
-    console.error('Erro de rede ao carregar:',e);
-    statusEl.textContent = 'Desconectado';
-    statusEl.style.color = 'var(--red)';
-    document.getElementById('leads-body').innerHTML='<tr><td colspan="5" class="empty-state">Erro de rede ao conectar ao Supabase.</td></tr>';
+    console.error('Erro ao carregar:',e);
+    document.getElementById('leads-body').innerHTML='<tr><td colspan="5" class="empty-state">Erro ao conectar ao Supabase.</td></tr>';
   }
 }
 
@@ -249,10 +226,37 @@ document.getElementById('filters').addEventListener('click', e => {
   renderTable();
 });
 
+document.getElementById('origin-cards').addEventListener('click', e => {
+  const card = e.target.closest('.card');
+  if(!card) return;
+  const label = card.querySelector('.label').textContent.toLowerCase();
+  let origin = '';
+  if(label.includes('instagram')) origin = 'instagram';
+  else if(label.includes('cnpj')) origin = 'cnpj';
+  else if(label.includes('vagas')) origin = 'vaga';
+  else if(label.includes('google')) origin = 'google';
+  
+  document.querySelectorAll('#filters button').forEach(b=>b.classList.remove('active'));
+  if(currentFilter === 'origem:' + origin) {
+     currentFilter = 'todos';
+     const btnTodos = document.querySelector('#filters button[data-filter="todos"]');
+     if(btnTodos) btnTodos.classList.add('active');
+  } else {
+     currentFilter = 'origem:' + origin;
+  }
+  renderTable();
+});
+
 // ========== TABLE ==========
 function renderTable(){
   const tbody = document.getElementById('leads-body');
-  let filtered = currentFilter==='todos' ? allLeads : allLeads.filter(l=>(l.status||'').toLowerCase()===currentFilter);
+  let filtered = allLeads;
+  if(currentFilter.startsWith('origem:')){
+    const orig = currentFilter.split(':')[1];
+    filtered = allLeads.filter(l => (l.origem_lead||l.origem||'').toLowerCase().includes(orig));
+  } else if(currentFilter !== 'todos') {
+    filtered = allLeads.filter(l=>(l.status||'').toLowerCase()===currentFilter);
+  }
 
   if(filtered.length===0){
     tbody.innerHTML='<tr><td colspan="5" class="empty-state">Nenhum lead encontrado.</td></tr>';
@@ -269,10 +273,43 @@ function renderTable(){
       <td><strong>${esc(nome)}</strong></td>
       <td>${esc(tel)}</td>
       <td>${esc(origem)}</td>
-      <td><span class="badge ${status}">${status}</span></td>
+      <td>
+        <select class="badge ${status}" onchange="changeStatus('${l.id}', this.value)" style="border:none; outline:none; cursor:pointer; appearance:none; padding-right:12px; font-family:inherit;">
+          <option value="pendente" ${status==='pendente'?'selected':''} style="color:#000">pendente</option>
+          <option value="novo" ${status==='novo'?'selected':''} style="color:#000">novo</option>
+          <option value="frio" ${status==='frio'?'selected':''} style="color:#000">frio</option>
+          <option value="ativo" ${status==='ativo'?'selected':''} style="color:#000">ativo</option>
+          <option value="respondido" ${status==='respondido'?'selected':''} style="color:#000">respondido</option>
+          <option value="agendado" ${status==='agendado'?'selected':''} style="color:#000">agendado</option>
+          <option value="ignorado" ${status==='ignorado'?'selected':''} style="color:#000">ignorado</option>
+          ${['pendente','novo','frio','ativo','respondido','agendado','ignorado'].includes(status)?'':`<option value="${status}" selected style="color:#000">${status}</option>`}
+        </select>
+      </td>
       <td>${data}</td>
     </tr>`;
   }).join('');
+}
+
+async function changeStatus(id, newStatus){
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      },
+      body: JSON.stringify({ status: newStatus })
+    });
+    if(!res.ok) throw new Error('Falha ao atualizar');
+    const lead = allLeads.find(l => l.id === id);
+    if(lead) lead.status = newStatus;
+    updateMetrics();
+    renderTable();
+  } catch(e){
+    alert('Erro ao atualizar status: ' + e.message);
+    loadData();
+  }
 }
 
 function esc(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
