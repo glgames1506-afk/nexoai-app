@@ -183,17 +183,44 @@ if(sessionStorage.getItem('nexo_auth')==='1') showDashboard();
 
 // ========== DATA ==========
 async function loadData(){
+  const statusEl = document.querySelector('.topbar .status');
   try{
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}?select=*&order=created_at.desc&limit=500`,{
+    // Tenta com order por created_at primeiro
+    let url = `${SUPABASE_URL}/rest/v1/${TABLE}?select=*&order=created_at.desc&limit=500`;
+    let res = await fetch(url,{
       headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`}
     });
+
+    // Se created_at nao existe, tenta sem ordenacao
+    if(!res.ok){
+      console.warn('Query com created_at falhou, tentando sem order...');
+      url = `${SUPABASE_URL}/rest/v1/${TABLE}?select=*&limit=500`;
+      res = await fetch(url,{
+        headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`}
+      });
+    }
+
+    if(!res.ok){
+      const errData = await res.text();
+      console.error('Supabase respondeu com erro:', res.status, errData);
+      statusEl.textContent = `Erro ${res.status}`;
+      statusEl.style.color = 'var(--red)';
+      document.getElementById('leads-body').innerHTML=`<tr><td colspan="5" class="empty-state">Erro ${res.status}: ${errData}</td></tr>`;
+      return;
+    }
+
     allLeads = await res.json();
     if(!Array.isArray(allLeads)) allLeads = [];
+    console.log(`[Nexo CRM] ${allLeads.length} leads carregados com sucesso.`);
+    statusEl.textContent = `Conectado • ${allLeads.length} leads`;
+    statusEl.style.color = 'var(--green)';
     updateMetrics();
     renderTable();
   }catch(e){
-    console.error('Erro ao carregar:',e);
-    document.getElementById('leads-body').innerHTML='<tr><td colspan="5" class="empty-state">Erro ao conectar ao Supabase.</td></tr>';
+    console.error('Erro de rede ao carregar:',e);
+    statusEl.textContent = 'Desconectado';
+    statusEl.style.color = 'var(--red)';
+    document.getElementById('leads-body').innerHTML='<tr><td colspan="5" class="empty-state">Erro de rede ao conectar ao Supabase.</td></tr>';
   }
 }
 
