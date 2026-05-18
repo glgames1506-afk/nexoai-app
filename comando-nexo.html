@@ -110,6 +110,7 @@ table{font-size:.75rem}thead th,tbody td{padding:8px 10px}
 <!-- METRICS -->
 <div class="cards" id="metrics">
 <div class="card accent"><div class="label">Total de Leads</div><div class="value" id="m-total">—</div><div class="sub">Capturados pela máquina</div></div>
+<div class="card green"><div class="label">Novos</div><div class="value" id="m-novo">—</div><div class="sub">Recém capturados</div></div>
 <div class="card yellow"><div class="label">Pendentes (Fila)</div><div class="value" id="m-pendente">—</div><div class="sub">Aguardando disparo</div></div>
 <div class="card blue"><div class="label">Frios (Enviados)</div><div class="value" id="m-frio">—</div><div class="sub">Aguardando resposta</div></div>
 <div class="card green"><div class="label">Respondidos</div><div class="value" id="m-respondido">—</div><div class="sub">Leads quentes 🔥</div></div>
@@ -157,7 +158,7 @@ table{font-size:.75rem}thead th,tbody td{padding:8px 10px}
 // ========== CONFIG ==========
 const SENHA_MESTRA = 'nexo@admin';
 const SUPABASE_URL = 'https://tqqtjrunrimabitmersr.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxcXRqcnVucmltYWJpdG1lcnNyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NjQ4NjE2NiwiZXhwIjoyMDYyMDYyMTY2fQ.1xA3sEtWt1fo3zaCZj476UkfqYGzSvszUqHHsyjkscw';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxcXRqcnVucmltYWJpdG1lcnNyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjQ2NjAyOCwiZXhwIjoyMDkyMDQyMDI4fQ.1xA3sEtWt1fo3zaCZj476UkfqYGzSvszUqHHsyjkscw';
 const TABLE = 'leads_prospeccao';
 
 let allLeads = [];
@@ -205,12 +206,13 @@ function updateMetrics(){
   const total = allLeads.length;
   const count = s => allLeads.filter(l=>(l.status||'').toLowerCase()===s).length;
   document.getElementById('m-total').textContent = total;
+  document.getElementById('m-novo').textContent = count('novo');
   document.getElementById('m-pendente').textContent = count('pendente');
   document.getElementById('m-frio').textContent = count('frio');
   document.getElementById('m-respondido').textContent = count('respondido');
   document.getElementById('m-ignorado').textContent = count('ignorado');
 
-  const oCount = o => allLeads.filter(l=>(l.origem_lead||l.origem||'').toLowerCase().includes(o)).length;
+  const oCount = o => allLeads.filter(l=>(l.origem_lead||l.origem||l.nicho||l.termo_busca||'').toLowerCase().includes(o)).length;
   document.getElementById('o-instagram').textContent = oCount('instagram');
   document.getElementById('o-cnpj').textContent = oCount('cnpj');
   document.getElementById('o-vagas').textContent = oCount('vaga');
@@ -253,7 +255,7 @@ function renderTable(){
   let filtered = allLeads;
   if(currentFilter.startsWith('origem:')){
     const orig = currentFilter.split(':')[1];
-    filtered = allLeads.filter(l => (l.origem_lead||l.origem||'').toLowerCase().includes(orig));
+    filtered = allLeads.filter(l => (l.origem_lead||l.origem||l.nicho||l.termo_busca||'').toLowerCase().includes(orig));
   } else if(currentFilter !== 'todos') {
     filtered = allLeads.filter(l=>(l.status||'').toLowerCase()===currentFilter);
   }
@@ -266,7 +268,7 @@ function renderTable(){
   tbody.innerHTML = filtered.map(l => {
     const nome = l.nome_empresa || l.nome || l.empresa || '—';
     const tel = l.telefone || l.phone || '—';
-    const origem = l.origem_lead || l.origem || '—';
+    const origem = l.origem_lead || l.origem || l.nicho || l.termo_busca || '—';
     const status = (l.status||'pendente').toLowerCase();
     const data = l.created_at ? new Date(l.created_at).toLocaleDateString('pt-BR') : '—';
     return `<tr>
