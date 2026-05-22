@@ -506,7 +506,7 @@
 
             <div class="nexo-spinner mx-auto mb-4"></div>
 
-            <p class="text-sm text-slate-400">Iniciando sessão WAHA...</p>
+            <p class="text-sm text-slate-400">Iniciando conexao Evolution...</p>
 
             <p class="text-[10px] text-slate-600 mt-1">Criando canal seguro</p>
 
@@ -668,7 +668,7 @@
 
           </div>
 
-          <span class="text-[10px] text-slate-600">Powered by WAHA</span>
+          <span class="text-[10px] text-slate-600">Powered by Evolution API</span>
 
         </div>
 
@@ -4162,15 +4162,12 @@
         const firstName = lead.name.split(' ')[0];
         const msg = `Olá ${firstName}! Sou a IA da Nexo. Vi que você demonstrou interesse em automatizar sua operação. Como posso te ajudar hoje?`;
 
-        // 3. Disparar via WAHA
-        const wahaRes = await fetch(`${WAHA_BASE}/api/sendText`, {
+        // 3. Disparar via Evolution
+        const chatId = normalizeWahaChatId(phone);
+        const wahaRes = await wahaFetch('/api/sendText', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-Api-Key': WAHA_API_KEY },
-          body: JSON.stringify({
-            chatId: phone.includes('@') ? phone : `${phone}@c.us`,
-            text: msg,
-            session: 'default'
-          })
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ session: wahaSessionId || 'default', chatId, text: msg })
         });
 
         if(!wahaRes.ok) throw new Error('Falha ao enviar via WhatsApp.');
@@ -5010,20 +5007,79 @@
     }
 
     // -----------------------------------------------------------
-    // --- WAHA WHATSAPP INTEGRATION ---------------------------
+    // --- EVOLUTION WHATSAPP INTEGRATION ----------------------
     // -----------------------------------------------------------
-    const WAHA_BASE = 'https://waha-production-6103.up.railway.app'; 
-    const WAHA_API_KEY = 'nexo123';
+    const EVOLUTION_BASE = (localStorage.getItem('nexo_evolution_base') || 'https://evolution-api-production-26a8.up.railway.app').replace(/\/$/, '');
+    const EVOLUTION_API_KEY = localStorage.getItem('nexo_evolution_key') || 'nexo-master-key-2026';
+
     let wahaSessionId = 'default';
     let wahaPollInterval = null;
     let wahaConnected = false;
 
-    async function wahaFetch(path, opts = {}) {
-      const def = { 'X-Api-Key': WAHA_API_KEY };
-      const heads = Object.assign(def, opts.headers || {});
+    function getWahaUserId() {
+      const session = typeof nexoAuthCheck === 'function' ? nexoAuthCheck() : null;
+      return session?.user?.id || 'default';
+    }
+
+    function getEvolutionInstanceStorageKey() {
+      return 'nexo_evolution_panel_instance_' + getWahaUserId();
+    }
+
+    function makeEvolutionInstanceName() {
+      const clean = String(getWahaUserId() || 'default').replace(/[^a-zA-Z0-9]/g, '').slice(0, 12) || 'default';
+      return 'nexo_painel_' + clean + '_' + Date.now().toString().slice(-6);
+    }
+
+    function getSavedEvolutionInstanceName() {
+      return localStorage.getItem(getEvolutionInstanceStorageKey()) || wahaSessionId || 'NexoBot';
+    }
+
+    function normalizeWahaChatId(raw) {
+      let n = String(raw || '').split('@')[0].split(':')[0].replace(/\D/g, '');
+      if (!n) return '';
+      if (n.length === 10 || n.length === 11) n = '55' + n;
+      return n + '@s.whatsapp.net';
+    }
+
+    function normalizeEvolutionNumber(raw) {
+      let n = String(raw || '').split('@')[0].split(':')[0].replace(/\D/g, '');
+      if (!n) return '';
+      if (n.length === 10 || n.length === 11) n = '55' + n;
+      return n;
+    }
+
+    async function evolutionFetch(path, opts = {}) {
+      const heads = Object.assign({ apikey: EVOLUTION_API_KEY }, opts.headers || {});
       try {
-        return await fetch(`${WAHA_BASE}${path}`, { ...opts, headers: heads });
-      } catch(e) { return { ok: false, status: 0, json: async () => ({}), blob: async () => new Blob() }; }
+        return await fetch(EVOLUTION_BASE + path, { ...opts, headers: heads });
+      } catch(e) {
+        return { ok: false, status: 0, json: async () => ({}), blob: async () => new Blob() };
+      }
+    }
+
+    async function evolutionJson(path, opts = {}) {
+      const res = await evolutionFetch(path, opts);
+      let data = {};
+      try { data = await res.json(); } catch(e) {}
+      return { res, data };
+    }
+
+    function getEvolutionState(data) {
+      return String(data?.instance?.state || data?.state || data?.status || '').toLowerCase();
+    }
+
+    async function wahaFetch(path, opts = {}) {
+      if (path === '/api/sendText') {
+        let payload = {};
+        try { payload = JSON.parse(opts.body || '{}'); } catch(e) {}
+        const number = normalizeEvolutionNumber(payload.number || payload.chatId);
+        return evolutionFetch('/message/sendText/' + encodeURIComponent(getSavedEvolutionInstanceName()), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ number, text: payload.text || '' })
+        });
+      }
+      return evolutionFetch(path, opts);
     }
 
     function startWhatsAppSetup() {
@@ -5041,147 +5097,84 @@
 
     async function initWahaSession() {
       showWahaState('loading');
-      wahaSessionId = 'default';
+      wahaSessionId = makeEvolutionInstanceName();
+      localStorage.setItem(getEvolutionInstanceStorageKey(), wahaSessionId);
       const sessionIdEl = document.getElementById('waha-session-id');
-      if(sessionIdEl) sessionIdEl.textContent = 'Sessão: default';
-      
+      if(sessionIdEl) sessionIdEl.textContent = 'Instancia: ' + wahaSessionId;
+
       try {
         const pollEl = () => document.getElementById('waha-poll-status');
-        updateWahaFooter('connecting', 'Reiniciando sessão...');
+        const pe = pollEl();
+        updateWahaFooter('connecting', 'Preparando Evolution...');
+        if(pe) pe.textContent = 'Criando nova instancia Evolution...';
 
-        // 1. Usa o endpoint /restart que o WAHA tem nativamente (mais confiável que stop+delete+create+start)
-        const restartRes = await wahaFetch('/api/sessions/default/restart', { method: 'POST' });
-        
-        // Se não tiver sessão, cria do zero
-        if (!restartRes.ok) {
-          await wahaFetch('/api/sessions/default/stop', { method: 'POST' });
-          await new Promise(r => setTimeout(r, 1000));
-          
-          const n8nBaseUrl = localStorage.getItem('nexo_n8n_webhook') || 'https://luanoliveira1506-nexo-n8n.hf.space';
-          const wahaWebhook = n8nBaseUrl.replace(/\/$/, '') + '/webhook/nexo-waha-webhook';
-          const createRes = await wahaFetch('/api/sessions', { 
-            method: 'POST', 
-            headers: { 'Content-Type': 'application/json' }, 
-            body: JSON.stringify({
-              name: 'default',
-              config: { webhooks: [{ url: wahaWebhook, events: ['message', 'session.status'] }] }
-            })
-          });
-          
-          // Se já existe (422), tenta iniciar direto
-          if (!createRes.ok) {
-            await wahaFetch('/api/sessions/default/start', { method: 'POST' });
-          }
-        }
+        const n8nBaseUrl = localStorage.getItem('nexo_n8n_webhook') || 'https://luanoliveira1506-nexo-n8n.hf.space';
+        const evolutionWebhook = n8nBaseUrl.replace(/\/$/, '') + '/webhook/nexo-evolution-webhook';
+
+        await evolutionJson('/instance/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            instanceName: wahaSessionId,
+            integration: 'WHATSAPP-BAILEYS',
+            qrcode: true,
+            rejectCall: true,
+            msgCall: 'No momento atendemos apenas por mensagem.',
+            groupsIgnore: true,
+            alwaysOnline: true,
+            readMessages: true,
+            readStatus: true,
+            webhook: {
+              url: evolutionWebhook,
+              byEvents: true,
+              base64: true,
+              events: ['QRCODE_UPDATED', 'MESSAGES_UPSERT', 'CONNECTION_UPDATE']
+            }
+          })
+        });
 
         showWahaState('qr');
-        updateWahaFooter('connecting', 'Aguardando sessão inicializar...');
+        updateWahaFooter('connecting', 'Gerando QR Code...');
+        if(pe) pe.textContent = 'Gerando QR Code da nova instancia...';
 
-        // 2. FASE CRÍTICA: Aguarda o status virar SCAN_QR_CODE antes de buscar o QR
-        let sessionReady = false;
-        let statusAttempts = 0;
-        const maxStatusAttempts = 30; // 30 x 2s = 60s
-
-        while (!sessionReady && statusAttempts < maxStatusAttempts) {
-          statusAttempts++;
-          await new Promise(r => setTimeout(r, 2000));
-          const pe = pollEl();
-          if(pe) pe.textContent = `Iniciando motor WhatsApp... (${statusAttempts}/${maxStatusAttempts})`;
-          
-          try {
-            const statusRes = await wahaFetch('/api/sessions/default');
-            if (statusRes.ok) {
-              const statusData = await statusRes.json();
-              const st = statusData?.status;
-              console.log(`WAHA status: ${st}`);
-              
-              if (st === 'SCAN_QR_CODE') {
-                sessionReady = true;
-                if(pe) pe.textContent = 'QR Code pronto! Buscando imagem...';
-              } else if (st === 'WORKING') {
-                // Já está conectado
-                onWahaConnected();
-                return;
-              } else if (st === 'FAILED') {
-                // Tenta reiniciar e continua aguardando
-                await wahaFetch('/api/sessions/default/start', { method: 'POST' });
-              }
-            }
-          } catch(e) { console.warn('Status poll error:', e); }
-        }
-
-        if (!sessionReady) {
-          // Mostra tela de retry amigável
-          const qrArea = document.getElementById('waha-qr-area');
-          if(qrArea) {
-            qrArea.innerHTML = `
-              <div class="py-6 text-center">
-                <div class="w-16 h-16 rounded-full bg-amber-400/20 border border-amber-400/30 flex items-center justify-center mx-auto mb-4">
-                  <i data-lucide="refresh-cw" class="w-8 h-8 text-amber-400"></i>
-                </div>
-                <p class="text-sm font-bold text-white mb-2">Servidor ainda inicializando</p>
-                <p class="text-xs text-slate-400 mb-4">O servidor pode levar até 30s para inicializar. Aguarde e tente novamente.</p>
-                <button onclick="closeWahaModal(); setTimeout(startWhatsAppSetup, 1000);" class="bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-sm px-6 py-3 rounded-xl transition-all hover:scale-105">
-                  ↻ Tentar Novamente
-                </button>
-              </div>
-            `;
-            if(window.lucide) lucide.createIcons();
-          }
-          updateWahaFooter('connecting', 'Servidor inicializando...');
-          return;
-        }
-
-        // 3. AGORA busca o QR Code (sessão está em SCAN_QR_CODE)
         let qrLoaded = false;
-        for (let attempt = 1; attempt <= 5; attempt++) {
-          try {
-            const qrImgRes = await wahaFetch('/api/default/auth/qr', { headers: { 'Accept': 'image/png' } });
-            if (qrImgRes.ok) {
-              const blob = await qrImgRes.blob();
-              if (blob.size > 100 && blob.type && blob.type.startsWith('image/')) {
-                const qrImg = document.getElementById('waha-qr-image');
-                if(qrImg) { qrImg.src = URL.createObjectURL(blob); qrImg.style.display = 'block'; }
-                const ph = document.getElementById('waha-qr-placeholder');
-                if(ph) ph.style.display = 'none';
-                qrLoaded = true;
-                updateWahaFooter('scanning', 'Aguardando escaneamento...');
-                const pe = pollEl();
-                if(pe) pe.textContent = 'Aguardando leitura do QR Code...';
-                break;
-              }
-            }
-            // Fallback JSON base64
-            const qrJsonRes = await wahaFetch('/api/default/auth/qr?format=json');
-            if (qrJsonRes.ok) {
-              const qrData = await qrJsonRes.json();
-              const b64 = qrData?.value || qrData?.qr || qrData?.image || null;
-              if (b64) {
-                const qrImg = document.getElementById('waha-qr-image');
-                if(qrImg) { qrImg.src = b64.startsWith('data:') ? b64 : `data:image/png;base64,${b64}`; qrImg.style.display = 'block'; }
-                const ph = document.getElementById('waha-qr-placeholder');
-                if(ph) ph.style.display = 'none';
-                qrLoaded = true;
-                updateWahaFooter('scanning', 'Aguardando escaneamento...');
-                break;
-              }
-            }
-          } catch(e) { console.warn(`QR fetch attempt ${attempt}:`, e); }
-          await new Promise(r => setTimeout(r, 1000));
+        for (let attempt = 1; attempt <= 8; attempt++) {
+          const { data } = await evolutionJson('/instance/connect/' + encodeURIComponent(wahaSessionId));
+          const rawBase64 = data?.base64 || data?.qrcode?.base64 || data?.qrCode?.base64 || data?.data?.base64 || null;
+          const code = data?.code || data?.qrcode?.code || data?.data?.code || null;
+          const qrImg = document.getElementById('waha-qr-image');
+          const ph = document.getElementById('waha-qr-placeholder');
+          if (rawBase64 && qrImg) {
+            qrImg.src = rawBase64.startsWith('data:') ? rawBase64 : 'data:image/png;base64,' + rawBase64;
+            qrImg.style.display = 'block';
+            if(ph) ph.style.display = 'none';
+            qrLoaded = true;
+            break;
+          }
+          if (code && qrImg) {
+            qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=' + encodeURIComponent(code);
+            qrImg.style.display = 'block';
+            if(ph) ph.style.display = 'none';
+            qrLoaded = true;
+            break;
+          }
+          await new Promise(r => setTimeout(r, 1500));
         }
 
         if (!qrLoaded) {
-          showToast('Erro ao carregar QR Code. Tente novamente.', 'error');
-          showWahaState('loading');
+          showToast('Nao consegui carregar o QR Code da Evolution. Tente novamente.', 'error');
           updateWahaFooter('connecting', 'Erro ao carregar QR');
+          showWahaState('loading');
           return;
         }
 
+        updateWahaFooter('scanning', 'Aguardando escaneamento...');
+        if(pe) pe.textContent = 'Aguardando leitura do QR Code...';
         startWahaPolling();
       } catch(err) {
-        console.error('WAHA error:', err);
-        showToast('Erro WAHA: ' + err.message, 'error');
-        showWahaState('error');
+        console.error('Evolution error:', err);
+        showToast('Erro Evolution: ' + err.message, 'error');
+        showWahaState('loading');
       }
     }
 
@@ -5189,10 +5182,9 @@
       if(wahaPollInterval) clearInterval(wahaPollInterval);
       wahaPollInterval = setInterval(async () => {
         try {
-          const res = await fetch(`${WAHA_BASE}/api/sessions/${wahaSessionId}`, { headers: { 'X-Api-Key': WAHA_API_KEY } });
-          const data = await res.json();
-          if(data && data.status === 'WORKING') { onWahaConnected(); }
-        } catch(err) { console.warn('Poll error:', err); }
+          const { data } = await evolutionJson('/instance/connectionState/' + encodeURIComponent(wahaSessionId));
+          if(getEvolutionState(data) === 'open') onWahaConnected();
+        } catch(err) { console.warn('Evolution poll error:', err); }
       }, 3000);
     }
 
@@ -5201,9 +5193,9 @@
       wahaConnected = true;
       showWahaState('connected');
       updateWahaFooter('connected', 'Conectado');
-      const session = nexoAuthCheck();
-      localStorage.setItem(`nexo_whatsapp_${session?.user?.id || 'default'}`, 'connected');
-      setTimeout(() => { closeWahaModal(); showToast('WhatsApp conectado!'); updateWhatsAppUI(); }, 2000);
+      const userId = getWahaUserId();
+      localStorage.setItem('nexo_whatsapp_' + userId, 'connected');
+      setTimeout(() => { closeWahaModal(); showToast('WhatsApp conectado pela Evolution!'); updateWhatsAppUI(); }, 1800);
     }
 
     function showWahaState(state) {
@@ -5221,37 +5213,24 @@
     }
 
     function updateWhatsAppUI() {
-      // Atualiza os botões
       document.querySelectorAll('button').forEach(btn => {
         const txt = btn.textContent.trim();
         if(txt.startsWith('Conectar') || txt.includes('Escanear QR Code')) {
-          btn.innerHTML = '<i data-lucide="check-circle" class="w-4 h-4 inline mr-1"></i>Conectado ✅';
+          btn.innerHTML = '<i data-lucide="check-circle" class="w-4 h-4 inline mr-1"></i>Conectado';
           btn.className = 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold text-sm px-6 py-3 rounded-xl cursor-default w-full transition-all';
           btn.onclick = null;
-          
-          // Injectar botão de desconectar
-          if (!document.getElementById("btn-disconnect-waha")) {
-              const disBtn = document.createElement("button");
-              disBtn.id = "btn-disconnect-waha";
-              disBtn.innerHTML = '<i data-lucide="trash" class="w-4 h-4 inline mr-1"></i>Forçar Desconexão';
-              disBtn.className = 'mt-3 bg-red-500/10 border border-red-500/20 text-red-400 font-bold text-xs px-4 py-2 rounded-xl cursor-pointer w-full transition-all hover:bg-red-500/20';
-              disBtn.onclick = async () => {
-                  disBtn.innerText = 'Desconectando...';
-                  try {
-                      await fetch(`${WAHA_BASE}/api/sessions/${wahaSessionId}/stop`, { method: 'POST', headers: { 'X-Api-Key': WAHA_API_KEY }});
-                      await fetch(`${WAHA_BASE}/api/sessions/${wahaSessionId}/logout`, { method: 'POST', headers: { 'X-Api-Key': WAHA_API_KEY }});
-                  } catch(e) {}
-                  const session = nexoAuthCheck();
-                  localStorage.removeItem(`nexo_whatsapp_${session?.user?.id || "default"}`);
-                  location.reload();
-              };
-              btn.parentNode.appendChild(disBtn);
+
+          if (!document.getElementById('btn-disconnect-waha')) {
+            const disBtn = document.createElement('button');
+            disBtn.id = 'btn-disconnect-waha';
+            disBtn.innerHTML = '<i data-lucide="trash" class="w-4 h-4 inline mr-1"></i>Desconectar Evolution';
+            disBtn.className = 'mt-3 bg-red-500/10 border border-red-500/20 text-red-400 font-bold text-xs px-4 py-2 rounded-xl cursor-pointer w-full transition-all hover:bg-red-500/20';
+            disBtn.onclick = forceDisconnectWaha;
+            btn.parentNode.appendChild(disBtn);
           }
-          
-          // Atualiza o estado do card pai
+
           const card = btn.closest('.glass-card');
           if(card) {
-            // Bolinha de status
             const statusDot = card.querySelector('.bg-slate-500');
             if(statusDot) {
               statusDot.className = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse';
@@ -5261,7 +5240,6 @@
                 statusText.className = 'text-[10px] font-bold text-emerald-400';
               }
             }
-            // Título e texto vazio
             const h4 = card.querySelector('h4');
             if(h4) h4.textContent = 'WhatsApp Operante';
             const p = card.querySelector('p.text-xs');
@@ -5269,67 +5247,56 @@
           }
         }
       });
-      
-      // Atualiza o bloco "Nenhum lead ainda" para sucesso se existir
+
       const emptyLeadText = document.querySelector('h3.text-slate-400');
       if(emptyLeadText && emptyLeadText.textContent.includes('Nenhum lead ainda')) {
          emptyLeadText.innerHTML = '<span class="text-emerald-400">WhatsApp Conectado!</span> Aguardando novos leads...';
          const emptySub = emptyLeadText.nextElementSibling;
-         if(emptySub) emptySub.textContent = 'A IA responderá automaticamente assim que chegarem.';
+         if(emptySub) emptySub.textContent = 'A IA respondera automaticamente assim que chegarem.';
       }
 
       if(window.lucide) lucide.createIcons();
     }
 
     async function checkWahaStatus() {
-      const session = nexoAuthCheck();
-      if(!session) return;
-      const userId = session?.user?.id || 'default';
-      
+      const userId = getWahaUserId();
+      wahaSessionId = getSavedEvolutionInstanceName();
+
       try {
-        // SEMPRE checar o servidor real primeiro — com timeout de 6s para não bloquear
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), 6000);
-        const res = await fetch(`${WAHA_BASE}/api/sessions/${wahaSessionId}`, { 
-          headers: { 'X-Api-Key': WAHA_API_KEY },
+        const res = await fetch(EVOLUTION_BASE + '/instance/connectionState/' + encodeURIComponent(wahaSessionId), {
+          headers: { apikey: EVOLUTION_API_KEY },
           signal: controller.signal
         });
         clearTimeout(timer);
-        
+
         if(res.ok) {
           const data = await res.json();
-          if(data && data.status === 'WORKING') {
-            // Servidor confirmou: está WORKING. Atualizar UI.
+          if(getEvolutionState(data) === 'open') {
             wahaConnected = true;
-            localStorage.setItem(`nexo_whatsapp_${userId}`, 'connected');
+            localStorage.setItem('nexo_whatsapp_' + userId, 'connected');
             updateWhatsAppUI();
-            return;
-          } else {
-            // Servidor respondeu mas sessão NÃO é WORKING (ex: SCAN_QR_CODE, FAILED)
-            // Forçar limpeza do cache mentiroso
-            wahaConnected = false;
-            localStorage.removeItem(`nexo_whatsapp_${userId}`);
-            console.info('WAHA: sessão não está WORKING, status =', data?.status, '— cache limpo.');
             return;
           }
         }
       } catch(err) {
-        // Servidor inacessível (Render dormindo) — NÃO confiar no localStorage
-        console.warn('WAHA Status: servidor inacessível, ignorando cache.', err?.message);
-        return;
+        console.warn('Evolution status: servidor inacessivel ou instancia offline.', err?.message);
       }
+
+      wahaConnected = false;
+      localStorage.removeItem('nexo_whatsapp_' + userId);
     }
 
     async function forceDisconnectWaha() {
-      const session = nexoAuthCheck();
-      const userId = session?.user?.id || 'default';
+      const userId = getWahaUserId();
+      wahaSessionId = getSavedEvolutionInstanceName();
       const btn = document.getElementById('btn-waha-disconnect');
       if(btn) btn.textContent = 'Desconectando...';
       try {
-        await wahaFetch(`/api/sessions/${wahaSessionId}/stop`, { method: 'POST' });
-        await wahaFetch(`/api/sessions/${wahaSessionId}/logout`, { method: 'POST' });
+        await evolutionFetch('/instance/logout/' + encodeURIComponent(wahaSessionId), { method: 'DELETE' });
       } catch(e) {}
-      localStorage.removeItem(`nexo_whatsapp_${userId}`);
+      localStorage.removeItem('nexo_whatsapp_' + userId);
       wahaConnected = false;
       setTimeout(() => location.reload(), 500);
     }
